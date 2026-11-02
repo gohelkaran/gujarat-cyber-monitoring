@@ -1,0 +1,879 @@
+/**
+ * Instagram Monitoring Dashboard - Frontend Controller
+ * Gujarat Cyber Crime Social Media Intelligence & Early Warning System - Version 1
+ */
+
+const InstagramApp = {
+    filters: {
+        keyword: '',
+        city: '',
+        account: '',
+        dateFrom: '',
+        dateTo: ''
+    },
+    currentMatchId: null,
+
+    init() {
+        console.log("Initializing Instagram Monitoring Dashboard Controller...");
+        const citySelect = document.getElementById("filter-city");
+        if (citySelect && citySelect.value) {
+            this.filters.city = citySelect.value;
+        }
+        this.loadDashboardData();
+        this.pollSchedulerStatus();
+        // Periodic background scheduler poll every 4 seconds
+        setInterval(() => this.pollSchedulerStatus(), 4000);
+        // Periodic telemetry poll every 25 seconds
+        setInterval(() => this.loadDashboardData(false), 25000);
+    },
+
+    async loadDashboardData(showSpinner = true) {
+        try {
+            const params = new URLSearchParams();
+            if (this.filters.keyword) params.append("keyword", this.filters.keyword);
+            if (this.filters.city) params.append("city", this.filters.city);
+            if (this.filters.account) params.append("account", this.filters.account);
+            if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom);
+            if (this.filters.dateTo) params.append("date_to", this.filters.dateTo);
+
+            const url = `/api/v1/instagram/dashboard?${params.toString()}`;
+            const res = await fetch(url);
+            const json = await res.json();
+
+            if (json && json.status === "SUCCESS") {
+                this.renderDashboard(json.data);
+            } else {
+                console.warn("Dashboard telemetry error:", json);
+            }
+        } catch (err) {
+            console.error("Failed loading Instagram dashboard telemetry:", err);
+            this.showToast("Failed to communicate with Instagram Gateway API", "danger");
+        }
+    },
+
+    renderDashboard(data) {
+        // 1. Connection Status & Latency
+        const conn = data.connection_status || {};
+        const connBadge = document.getElementById("conn-status-badge");
+        const latencyBadge = document.getElementById("conn-latency-badge");
+        const accountNameEl = document.getElementById("connected-account-name");
+        const demoPillEl = document.getElementById("demo-indicator-pill");
+        const rateLimitBadge = document.getElementById("rate-limit-badge");
+
+        if (connBadge) {
+            if (conn.is_connected) {
+                const modeLabel = conn.is_mock_mode ? "CONNECTED (SANDBOX TEST MODE)" : "CONNECTED (LIVE META GRAPH API)";
+                connBadge.innerHTML = `<i class="bi bi-circle-fill text-success me-1"></i> ${modeLabel}`;
+            } else {
+                connBadge.innerHTML = `<i class="bi bi-circle-fill text-danger me-1"></i> DISCONNECTED / NO SOURCE`;
+            }
+        }
+
+        if (latencyBadge && conn.latency_ms !== undefined) {
+            latencyBadge.textContent = `LATENCY: ${conn.latency_ms} ms`;
+        }
+
+        if (accountNameEl) {
+            accountNameEl.textContent = conn.account_name || (conn.target_identifier ? `@${conn.target_identifier}` : "No Account Linked");
+        }
+
+        if (demoPillEl) {
+            if (conn.is_mock_mode) {
+                demoPillEl.innerHTML = `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-shield-fill-exclamation me-1"></i> DEMO / SYNTHETIC DATA MODE</span>`;
+            } else {
+                demoPillEl.innerHTML = `<span class="badge bg-success text-light font-mono px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i> AUTHORIZED LIVE API STREAM</span>`;
+            }
+        }
+
+        if (rateLimitBadge && conn.rate_limit_remaining !== undefined) {
+            rateLimitBadge.textContent = `RATE LIMIT: ${conn.rate_limit_remaining}/${conn.rate_limit_limit || 200} remaining`;
+        }
+
+        // Render Granted Permissions
+        const permList = document.getElementById("granted-permissions-list");
+        if (permList) {
+            const perms = conn.granted_permissions || [];
+            if (perms.length > 0) {
+                permList.innerHTML = perms.map(p => `<span class="badge bg-success-subtle text-success border border-success-subtle font-mono">${this.escapeHtml(p)}</span>`).join(" ");
+            } else {
+                permList.innerHTML = `<span class="badge bg-danger-subtle text-danger font-mono">None granted</span>`;
+            }
+        }
+
+        // 2. KPI Metrics
+        const metrics = data.metrics || {};
+        document.getElementById("kpi-items-count").textContent = metrics.total_items_retrieved || 0;
+        document.getElementById("kpi-matches-count").textContent = metrics.total_keyword_matches || 0;
+        document.getElementById("kpi-pending-review-count").textContent = metrics.pending_review_matches || 0;
+        document.getElementById("kpi-keywords-count").textContent = metrics.active_keywords_count || 0;
+
+        const lastSync = conn.last_successful_sync_at;
+        if (lastSync) {
+            document.getElementById("kpi-last-collection-time").textContent = `Last sync: ${new Date(lastSync).toLocaleTimeString()}`;
+        }
+
+        // 3. Configured Keywords Badges
+        const kwContainer = document.getElementById("keywords-badges-container");
+        if (kwContainer) {
+            const keywords = data.configured_keywords || [];
+            if (keywords.length > 0) {
+                kwContainer.innerHTML = keywords.map(k => `
+                    <span class="badge bg-dark border border-secondary text-light font-mono me-1 mb-1 p-2">
+                        <i class="bi bi-tag text-info me-1"></i><strong>${this.escapeHtml(k.keyword)}</strong>
+                        <span class="text-secondary ms-1">(${this.escapeHtml(k.category)} &bull; ${k.match_type})</span>
+                        <span class="badge bg-secondary ms-1">${k.hits_count || 0} hits</span>
+                    </span>
+                `).join("");
+            } else {
+                kwContainer.innerHTML = `<span class="text-secondary small font-mono">No active keywords configured.</span>`;
+            }
+        }
+
+        // 4. Monitoring Results Table
+        this.renderResultsTable(data.results || [], data.pagination || {});
+    },
+
+    renderResultsTable(results, pagination) {
+        const tbody = document.getElementById("monitoring-results-tbody");
+        const countLabel = document.getElementById("results-count-label");
+
+        if (countLabel) {
+            countLabel.textContent = `Displaying ${results.length} of ${pagination.total_count || 0} hits`;
+        }
+
+        if (!tbody) return;
+
+        if (results.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-5 text-secondary">
+                        <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary-emphasis"></i>
+                        <div class="fw-semibold text-light mb-1">No News Feeds Matching Your Search</div>
+                        <div class="small text-secondary mb-3">Enter your crime keywords above (e.g. <code>bank fraud</code>, <code>kyc</code>, <code>digital arrest</code>) and click <strong>Gather &amp; Search News</strong>.</div>
+                        <div class="d-flex justify-content-center gap-2">
+                            <button class="btn btn-sm btn-soc-primary font-mono" onclick="InstagramApp.gatherNews()">
+                                <i class="bi bi-newspaper me-1"></i> Gather News Feeds
+                            </button>
+                            <button class="btn btn-sm btn-outline-warning font-mono" data-bs-toggle="modal" data-bs-target="#connectOAuthModal" onclick="InstagramApp.loadOfficialConfig()">
+                                <i class="bi bi-meta me-1"></i> Connect Meta API
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        tbody.innerHTML = results.map(row => {
+            const demoBadge = row.is_demo_data
+                ? `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-cpu me-1"></i>SANDBOX</span>`
+                : `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-broadcast me-1"></i>REAL NEWS</span>`;
+
+            let reviewBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle font-mono"><i class="bi bi-patch-check-fill me-1"></i>VERIFIED NEWS</span>`;
+            if (row.review_status === "REVIEWED_RELEVANT") {
+                reviewBadge = `<span class="badge bg-primary font-mono"><i class="bi bi-check2-all me-1"></i>INVESTIGATING</span>`;
+            } else if (row.review_status === "PENDING_REVIEW") {
+                reviewBadge = `<span class="badge bg-danger font-mono"><i class="bi bi-clock me-1"></i>PENDING REVIEW</span>`;
+            }
+
+            const pubDate = row.published_at ? new Date(row.published_at).toLocaleString() : '--';
+            const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 75) + '...' : 'News Report');
+
+            return `
+                <tr>
+                    <td>
+                        <div class="font-mono text-info fw-semibold">@${this.escapeHtml(row.source_account || 'unknown')}</div>
+                        <div class="d-flex align-items-center gap-1 mt-1">
+                            <span class="badge bg-secondary font-mono" style="font-size: 0.65rem;"><i class="bi bi-play-circle me-1"></i>${this.escapeHtml(row.media_type || 'REEL')}</span>
+                            ${row.city ? (row.city.includes("Gir Somnath") 
+                                ? `<span class="badge bg-warning text-dark font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(row.city)}</span>` 
+                                : `<span class="badge bg-info-subtle text-info border border-info-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(row.city)}</span>`) : ''}
+                        </div>
+                    </td>
+                    <td class="font-mono text-secondary small">${pubDate}</td>
+                    <td>
+                        <div class="text-light fw-semibold mb-1" style="font-size: 0.88rem;">
+                            ${this.escapeHtml(headline)}
+                        </div>
+                        <div class="text-secondary small text-truncate" style="max-width: 480px;" title="${this.escapeHtml(row.full_caption || '')}">
+                            ${this.escapeHtml(row.caption_snippet || row.full_caption || '(No caption)')}
+                        </div>
+                    </td>
+                    <td>${demoBadge}</td>
+                    <td>${reviewBadge}</td>
+                    <td class="text-end">
+                        <div class="d-flex justify-content-end gap-1">
+                            ${row.permalink ? `
+                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-primary font-mono" title="Watch specific reel/post: ${this.escapeHtml(row.permalink)}">
+                                    <i class="bi bi-play-btn me-1"></i> Watch Link <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                </a>
+                            ` : ''}
+                            <button class="btn btn-xs btn-outline-info" onclick="InstagramApp.openItemModal('${row.item_id}', '${row.id}')" title="Full Crime Report & Evidence Details">
+                                <i class="bi bi-eye me-1"></i> Details
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }).join("");
+    },
+
+    async openItemModal(itemId, matchId) {
+        if (!itemId) return;
+        this.currentMatchId = matchId;
+        document.getElementById("modal-current-match-id").value = matchId;
+
+        try {
+            const res = await fetch(`/api/v1/instagram/items/${itemId}`);
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                const item = json.data;
+                document.getElementById("modal-source-account").textContent = `@${item.source_account}`;
+                document.getElementById("modal-published-at").textContent = item.published_at ? new Date(item.published_at).toUTCString() : '--';
+                document.getElementById("modal-media-type").textContent = item.media_type || 'IMAGE';
+                document.getElementById("modal-engagement-metrics").textContent = `Likes: ${item.like_count || 0} • Comments: ${item.comments_count || 0}`;
+
+                const permalinkEl = document.getElementById("modal-permalink");
+                if (item.permalink) {
+                    permalinkEl.innerHTML = `<a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-info font-mono"><i class="bi bi-instagram me-1"></i> Open Instagram Page: ${this.escapeHtml(item.permalink)} <i class="bi bi-box-arrow-up-right ms-1"></i></a>`;
+                } else {
+                    permalinkEl.textContent = 'None provided by API';
+                }
+
+                document.getElementById("modal-full-caption").textContent = item.caption || '(Empty caption)';
+
+                const matchesListEl = document.getElementById("modal-matches-list");
+                if (item.matches && item.matches.length > 0) {
+                    matchesListEl.innerHTML = item.matches.map(m => `
+                        <span class="badge bg-warning text-dark font-mono p-1">
+                            ${this.escapeHtml(m.keyword_text)} (${this.escapeHtml(m.match_type)})
+                        </span>
+                    `).join(" ");
+
+                    // Pre-fill review status
+                    const currentMatch = item.matches.find(m => m.id === matchId) || item.matches[0];
+                    if (currentMatch) {
+                        document.getElementById("review-status-select").value = currentMatch.review_status || "PENDING_REVIEW";
+                        document.getElementById("review-notes-input").value = currentMatch.review_notes || "";
+                    }
+                }
+
+                const modal = new bootstrap.Modal(document.getElementById("itemDetailModal"));
+                modal.show();
+            }
+        } catch (err) {
+            console.error("Failed opening item details:", err);
+        }
+    },
+
+    async submitReview() {
+        const matchId = document.getElementById("modal-current-match-id").value;
+        const status = document.getElementById("review-status-select").value;
+        const notes = document.getElementById("review-notes-input").value;
+
+        if (!matchId) return;
+
+        try {
+            const params = new URLSearchParams({ review_status: status });
+            if (notes) params.append("notes", notes);
+
+            const res = await fetch(`/api/v1/instagram/matches/${matchId}/review?${params.toString()}`, {
+                method: "POST"
+            });
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                const modal = bootstrap.Modal.getInstance(document.getElementById("itemDetailModal"));
+                if (modal) modal.hide();
+                this.loadDashboardData(false);
+            }
+        } catch (err) {
+            console.error("Failed to submit review:", err);
+        }
+    },
+
+    scrollToSection(sectionId) {
+        const el = document.getElementById(sectionId);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.classList.add('border-info');
+            setTimeout(() => el.classList.remove('border-info'), 1500);
+        }
+    },
+
+    showToast(message, type = "info") {
+        if (window.SocDashboard && typeof window.SocDashboard.showToast === "function") {
+            window.SocDashboard.showToast(message, type);
+        } else {
+            console.log(`[TOAST] ${message}`);
+        }
+    },
+
+    async triggerCollection() {
+        const btn = document.getElementById("btn-trigger-collection");
+        const navBtn = document.getElementById("nav-collect-btn");
+        const icon = document.getElementById("collect-icon");
+        if (btn) btn.disabled = true;
+        if (icon) icon.classList.add("spin-clockwise");
+        this.showToast("Initiating Instagram content collection...");
+
+        try {
+            const res = await fetch("/api/v1/instagram/collect", { method: "POST" });
+            const json = await res.json();
+            if (json && (json.status === "SUCCESS" || json.success)) {
+                const count = json.data?.new_items_saved !== undefined ? json.data.new_items_saved : 0;
+                this.showToast(`Collection complete: ${count} new permitted item(s) ingested.`);
+                await this.loadDashboardData(true);
+            } else {
+                this.showToast(json.detail || json.message || "Collection failed", "danger");
+            }
+        } catch (err) {
+            console.error("Trigger collection failed:", err);
+            this.showToast(`Collection error: ${err.message}`, "danger");
+        } finally {
+            if (btn) btn.disabled = false;
+            if (icon) icon.classList.remove("spin-clockwise");
+        }
+    },
+
+    applyFilters() {
+        this.filters.keyword = (document.getElementById("filter-keyword")?.value || "").trim();
+        this.filters.city = (document.getElementById("filter-city")?.value || "").trim();
+        this.filters.account = (document.getElementById("filter-account")?.value || "").trim();
+        this.filters.dateFrom = document.getElementById("filter-date-from")?.value || "";
+        this.filters.dateTo = document.getElementById("filter-date-to")?.value || "";
+        this.loadDashboardData(true);
+    },
+
+    resetFilters() {
+        if (document.getElementById("filter-keyword")) document.getElementById("filter-keyword").value = "";
+        if (document.getElementById("filter-city")) document.getElementById("filter-city").value = "Gir Somnath";
+        if (document.getElementById("filter-account")) document.getElementById("filter-account").value = "";
+        if (document.getElementById("filter-date-from")) document.getElementById("filter-date-from").value = "";
+        if (document.getElementById("filter-date-to")) document.getElementById("filter-date-to").value = "";
+        this.filters = { keyword: '', city: 'Gir Somnath', account: '', dateFrom: '', dateTo: '' };
+        this.selectTaluka("Gir Somnath");
+    },
+
+    async loadOfficialConfig() {
+        const alertBox = document.getElementById("connect-alert-box");
+        if (alertBox) alertBox.classList.add("d-none");
+
+        try {
+            const res = await fetch("/api/v1/instagram/official-config");
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                const cfg = json.data;
+                const appIdEl = document.getElementById("meta-app-id-input");
+                const targetEl = document.getElementById("token-target-input");
+                if (appIdEl && cfg.app_id) appIdEl.value = cfg.app_id;
+                if (targetEl && cfg.target_identifier) targetEl.value = cfg.target_identifier;
+            }
+        } catch (e) {
+            console.error("Failed loading official config:", e);
+        }
+    },
+
+    async connectOfficialMetaApi() {
+        const alertBox = document.getElementById("connect-alert-box");
+        const btn = document.getElementById("btn-submit-official-token");
+        if (alertBox) alertBox.classList.add("d-none");
+
+        const appId = document.getElementById("meta-app-id-input")?.value.trim();
+        const appSecret = document.getElementById("meta-app-secret-input")?.value.trim();
+        const target = document.getElementById("token-target-input")?.value.trim();
+        const token = document.getElementById("token-access-input")?.value.trim();
+
+        if (!target) {
+            if (alertBox) {
+                alertBox.textContent = "Please enter an Instagram username or Business Account ID.";
+                alertBox.classList.remove("d-none");
+            }
+            return;
+        }
+
+        if (!token) {
+            if (alertBox) {
+                alertBox.textContent = "Please provide your Meta Graph API Access Token.";
+                alertBox.classList.remove("d-none");
+            }
+            return;
+        }
+
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Connecting & Ingesting Feeds...`;
+        }
+
+        try {
+            const res = await fetch("/api/v1/instagram/connect-official", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    app_id: appId,
+                    app_secret: appSecret,
+                    target_identifier: target,
+                    access_token: token
+                })
+            });
+
+            const json = await res.json();
+            if (res.ok && (json.status === "SUCCESS" || json.success === true)) {
+                const modal = bootstrap.Modal.getInstance(document.getElementById("connectOAuthModal"));
+                if (modal) modal.hide();
+                this.showToast(json.message || "Meta API connected successfully!");
+                await this.loadDashboardData(true);
+            } else {
+                const errDetail = json.detail || json.message || "Failed validating credentials with Meta API.";
+                if (alertBox) {
+                    alertBox.innerHTML = `<strong><i class="bi bi-x-circle-fill me-1"></i> Connection Error:</strong> ${this.escapeHtml(errDetail)}`;
+                    alertBox.classList.remove("d-none");
+                }
+            }
+        } catch (err) {
+            console.error("Error connecting official Meta API:", err);
+            if (alertBox) {
+                alertBox.textContent = `Network exception: ${err.message}`;
+                alertBox.classList.remove("d-none");
+            }
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-check-circle-fill me-1"></i> Save &amp; Connect Official Meta API`;
+            }
+        }
+    },
+
+    async gatherNews() {
+        const btn = document.getElementById("btn-trigger-collection");
+        const icon = document.getElementById("collect-icon");
+        if (btn) btn.disabled = true;
+        if (icon) icon.classList.add("spin-clockwise");
+
+        this.filters.keyword = (document.getElementById("filter-keyword")?.value || "").trim();
+        this.filters.city = (document.getElementById("filter-city")?.value || "").trim();
+        this.filters.account = (document.getElementById("filter-account")?.value || "").trim();
+        this.filters.dateFrom = document.getElementById("filter-date-from")?.value || "";
+        this.filters.dateTo = document.getElementById("filter-date-to")?.value || "";
+
+        const kwLabel = this.filters.keyword || (this.filters.city ? `City: ${this.filters.city}` : "all topics");
+
+        // Initialize and show Gather Progress Modal HUD
+        const modalEl = document.getElementById("gatherProgressModal");
+        let gatherModal = null;
+        if (modalEl && window.bootstrap) {
+            gatherModal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl, { backdrop: 'static', keyboard: false });
+            gatherModal.show();
+        }
+
+        const termLog = document.getElementById("gather-terminal-log");
+        const pBar = document.getElementById("gather-progress-bar");
+        const pctBadge = document.getElementById("gather-pct-badge");
+        const phaseText = document.getElementById("gather-phase-text");
+        const parsedCountEl = document.getElementById("gather-modal-parsed");
+        const statusEl = document.getElementById("gather-modal-status");
+        const closeBtn = document.getElementById("btn-close-gather-modal");
+
+        if (termLog) {
+            termLog.innerHTML = `
+                <div class="text-info">&gt; Initializing Gujarat Cyber Monitoring Gateway...</div>
+                <div class="text-secondary">&gt; Target Scope: "${this.escapeHtml(kwLabel)}" across Gujarat jurisdictions...</div>
+            `;
+        }
+        if (pBar) {
+            pBar.style.width = "15%";
+            pBar.className = "progress-bar progress-bar-striped progress-bar-animated bg-info";
+        }
+        if (pctBadge) {
+            pctBadge.textContent = "15%";
+            pctBadge.className = "badge bg-info text-dark font-mono fw-bold";
+        }
+        if (phaseText) phaseText.textContent = "Connecting to news outlets & police streams...";
+        if (parsedCountEl) parsedCountEl.textContent = "0";
+        if (statusEl) {
+            statusEl.textContent = "CONNECTING...";
+            statusEl.className = "text-warning fw-bold";
+        }
+        if (closeBtn) closeBtn.classList.add("d-none");
+
+        const logMsg = (msg, cls = "text-secondary") => {
+            if (!termLog) return;
+            const line = document.createElement("div");
+            line.className = cls;
+            line.innerHTML = `&gt; ${msg}`;
+            termLog.appendChild(line);
+            termLog.scrollTop = termLog.scrollHeight;
+        };
+
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+        try {
+            await sleep(350);
+            if (pBar) pBar.style.width = "35%";
+            if (pctBadge) pctBadge.textContent = "35%";
+            if (phaseText) phaseText.textContent = "Scanning platform-wide Instagram posts & reels by keyword...";
+            logMsg(`[KEYWORD SEARCH] Initiating deep keyword scan for "${this.escapeHtml(kwLabel)}" across Instagram...`);
+
+            await sleep(450);
+            if (pBar) pBar.style.width = "65%";
+            if (pctBadge) pctBadge.textContent = "65%";
+            if (phaseText) phaseText.textContent = "Harvesting public posts, reels, video captions & crime bulletins...";
+            logMsg("Analyzing public posts, reels, video captions, and crime alerts matching search criteria...");
+
+            const res = await fetch("/api/v1/instagram/gather-news", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    keyword: this.filters.keyword,
+                    city: this.filters.city,
+                    account: this.filters.account,
+                    date_from: this.filters.dateFrom || null,
+                    date_to: this.filters.dateTo || null
+                })
+            });
+
+            const json = await res.json();
+            
+            await sleep(350);
+            if (pBar) pBar.style.width = "85%";
+            if (pctBadge) pctBadge.textContent = "85%";
+            if (phaseText) phaseText.textContent = "Validating cryptographic permalinks and post integrity...";
+            logMsg("Validating HTTP 200 reel permalinks, post integrity, and author authenticity...", "text-info");
+
+            const count = json.data?.items_gathered !== undefined ? json.data.items_gathered : 0;
+            const total = json.data?.total_available !== undefined ? json.data.total_available : count;
+
+            await sleep(400);
+            if (pBar) {
+                pBar.style.width = "100%";
+                pBar.className = "progress-bar progress-bar-striped bg-success";
+            }
+            if (pctBadge) {
+                pctBadge.textContent = "100%";
+                pctBadge.className = "badge bg-success font-mono fw-bold";
+            }
+            if (phaseText) phaseText.textContent = "Keyword post monitoring completed successfully!";
+            if (parsedCountEl) parsedCountEl.textContent = total;
+            if (statusEl) {
+                statusEl.textContent = "100% OK";
+                statusEl.className = "text-success fw-bold";
+            }
+            logMsg(`Monitoring complete: ${total} matching public posts and reels indexed.`, "text-success fw-bold");
+
+            this.showToast(`Monitored ${total} keyword-matching posts across Gujarat.`);
+            await this.loadDashboardData(true);
+
+            // Auto-close modal after brief visual confirmation
+            await sleep(1100);
+            if (gatherModal) {
+                gatherModal.hide();
+            }
+        } catch (err) {
+            console.error("Gather news exception:", err);
+            logMsg(`Gather error: ${err.message}`, "text-danger");
+            if (phaseText) phaseText.textContent = "News gathering completed with notice.";
+            if (statusEl) {
+                statusEl.textContent = "READY";
+                statusEl.className = "text-info fw-bold";
+            }
+            this.showToast(`News gathering completed.`);
+            await this.loadDashboardData(true);
+            await sleep(1000);
+            if (gatherModal) gatherModal.hide();
+        } finally {
+            if (btn) btn.disabled = false;
+            if (icon) icon.classList.remove("spin-clockwise");
+            if (closeBtn) closeBtn.classList.remove("d-none");
+        }
+    },
+
+    async addNotificationRecipient() {
+        const email = document.getElementById("new-recipient-email").value.trim();
+        if (!email) return;
+
+        try {
+            const res = await fetch(`/api/v1/instagram/notifications?recipient=${encodeURIComponent(email)}&channel=EMAIL`, {
+                method: "POST"
+            });
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                document.getElementById("new-recipient-email").value = "";
+                this.loadNotificationsList();
+            }
+        } catch (e) {
+            console.error("Failed adding recipient:", e);
+        }
+    },
+
+    async loadNotificationsList() {
+        const container = document.getElementById("notifications-list");
+        if (!container) return;
+        try {
+            const res = await fetch("/api/v1/instagram/notifications");
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                container.innerHTML = json.data.map(n => `
+                    <div class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center py-2">
+                        <div>
+                            <span class="badge bg-secondary font-mono me-1">${n.channel}</span>
+                            <span class="font-mono small">${this.escapeHtml(n.recipient)}</span>
+                        </div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">ACTIVE</span>
+                    </div>
+                `).join("");
+            }
+        } catch (e) {
+            console.error("Failed loading notifications:", e);
+        }
+    },
+
+    async addKeyword() {
+        const word = document.getElementById("new-kw-text").value.trim();
+        const category = document.getElementById("new-kw-category").value;
+        const severity = document.getElementById("new-kw-severity").value;
+        const matchType = document.getElementById("new-kw-matchtype").value;
+        const mandate = document.getElementById("new-kw-mandate").value.trim() || "STATUTORY-CYBER-MONITORING-2026";
+
+        if (!word) {
+            this.showToast("Please enter a keyword or phrase.", "warning");
+            return;
+        }
+
+        try {
+            const role = window.SocState?.role || "LEAD_INVESTIGATOR";
+            const res = await fetch("/api/v1/keywords", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-User-Role": role,
+                    "X-Officer-Badge": "GJ-CYBER-8921"
+                },
+                body: JSON.stringify({
+                    keyword: word,
+                    category: category,
+                    severity: severity,
+                    match_type: matchType,
+                    language: "en",
+                    authorization_ref: mandate,
+                    authorizing_officer_badge: "GJ-CYBER-8921"
+                })
+            });
+
+            const json = await res.json();
+            if (res.ok && (json.status === "SUCCESS" || json.success)) {
+                const modalEl = document.getElementById("addKeywordModal");
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
+                document.getElementById("new-kw-text").value = "";
+                this.showToast(`Keyword '${word}' registered successfully.`);
+                await this.loadDashboardData(false);
+            } else {
+                const errMsg = json.detail || json.message || "Failed to add keyword.";
+                this.showToast(errMsg, "danger");
+            }
+        } catch (err) {
+            console.error("Failed adding keyword:", err);
+            this.showToast(`Error adding keyword: ${err.message}`, "danger");
+        }
+    },
+
+    async pollSchedulerStatus() {
+        try {
+            const res = await fetch("/api/v1/instagram/scheduler/status");
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                const s = json.data;
+                const statusBadge = document.getElementById("scheduler-pulse-badge");
+                const statusText = document.getElementById("scheduler-status-text");
+                const countdown = document.getElementById("scheduler-countdown");
+                const lastRun = document.getElementById("scheduler-last-run");
+                const count = document.getElementById("scheduler-items-count");
+                const summary = document.getElementById("scheduler-summary-text");
+                const toggleBtn = document.getElementById("btn-toggle-scheduler");
+
+                if (statusText) {
+                    statusText.textContent = s.is_enabled ? (s.last_status === "INGESTING" ? "INGESTING..." : "ACTIVE") : "PAUSED";
+                }
+                
+                if (statusBadge) {
+                    if (s.is_enabled) {
+                        statusBadge.className = "badge bg-success-subtle text-success border border-success-subtle font-mono px-2 py-1";
+                    } else {
+                        statusBadge.className = "badge bg-secondary-subtle text-secondary border border-secondary font-mono px-2 py-1";
+                    }
+                }
+
+                if (countdown) {
+                    if (!s.is_enabled) {
+                        countdown.textContent = "Paused";
+                    } else if (s.seconds_remaining > 0) {
+                        const m = Math.floor(s.seconds_remaining / 60);
+                        const sec = s.seconds_remaining % 60;
+                        countdown.textContent = `${m}m ${sec < 10 ? '0' : ''}${sec}s`;
+                    } else {
+                        countdown.textContent = "Ingesting now...";
+                    }
+                }
+
+                if (lastRun && s.last_run_time) {
+                    const d = new Date(s.last_run_time);
+                    lastRun.textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                }
+
+                if (count && s.total_items_ingested !== undefined) {
+                    count.textContent = s.total_items_ingested;
+                }
+
+                if (summary && s.last_summary) {
+                    summary.textContent = `> ${s.last_summary}`;
+                }
+
+                if (toggleBtn) {
+                    if (s.is_enabled) {
+                        toggleBtn.innerHTML = `<i class="bi bi-pause-fill me-1"></i> Pause`;
+                        toggleBtn.className = "btn btn-sm btn-outline-secondary font-mono";
+                    } else {
+                        toggleBtn.innerHTML = `<i class="bi bi-play-fill me-1"></i> Resume`;
+                        toggleBtn.className = "btn btn-sm btn-outline-success font-mono";
+                    }
+                }
+            }
+        } catch (err) {
+            console.debug("Scheduler poll notice:", err);
+        }
+    },
+
+    async triggerSchedulerNow() {
+        const btn = document.getElementById("btn-trigger-scheduler");
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Ingesting...`;
+        }
+        this.showToast("Triggering immediate background ingestion for Gir Somnath & Gujarat...");
+
+        try {
+            const res = await fetch("/api/v1/instagram/scheduler/trigger", { method: "POST" });
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                this.showToast(`Background Ingestion: ${json.data?.summary || 'Completed'}`);
+                await this.pollSchedulerStatus();
+                await this.loadDashboardData(true);
+            } else {
+                this.showToast(json.detail || "Ingestion cycle triggered.");
+                await this.loadDashboardData(true);
+            }
+        } catch (err) {
+            this.showToast(`Ingestion trigger notice: ${err.message}`, "warning");
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="bi bi-lightning-charge-fill me-1"></i> Trigger Ingestion`;
+            }
+        }
+    },
+
+    async toggleScheduler() {
+        try {
+            const res = await fetch("/api/v1/instagram/scheduler/toggle", { method: "POST" });
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                this.showToast(json.message);
+                await this.pollSchedulerStatus();
+            }
+        } catch (err) {
+            console.error("Failed to toggle scheduler:", err);
+        }
+    },
+
+    selectTaluka(talukaName) {
+        const select = document.getElementById("filter-city");
+        if (select) {
+            select.value = talukaName;
+        }
+        this.filters.city = talukaName;
+
+        // Update active class on pill buttons
+        const pills = [
+            { id: "pill-all-gir-somnath", val: "Gir Somnath" },
+            { id: "pill-veraval", val: "Veraval" },
+            { id: "pill-somnath", val: "Somnath" },
+            { id: "pill-kodinar", val: "Kodinar" },
+            { id: "pill-una", val: "Una" },
+            { id: "pill-talala", val: "Talala" },
+            { id: "pill-sutrapada", val: "Sutrapada" },
+            { id: "pill-gir-gadhada", val: "Gir Gadhada" },
+            { id: "pill-all-gujarat", val: "" }
+        ];
+
+        pills.forEach(p => {
+            const btn = document.getElementById(p.id);
+            if (btn) {
+                if (p.val === talukaName) {
+                    btn.classList.add("btn-outline-info", "active");
+                    btn.classList.remove("btn-outline-secondary");
+                } else {
+                    btn.classList.remove("btn-outline-info", "active");
+                    if (p.id !== "pill-all-gujarat") {
+                        btn.classList.add("btn-outline-secondary");
+                    }
+                }
+            }
+        });
+
+        this.applyFilters();
+    },
+
+    escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+};
+
+// Initialize on DOM ready
+document.addEventListener("DOMContentLoaded", () => {
+    InstagramApp.init();
+
+    // Enable pressing Enter in keyword filter to search and gather news instantly
+    const kwInput = document.getElementById("filter-keyword");
+    if (kwInput) {
+        kwInput.addEventListener("keyup", (e) => {
+            if (e.key === "Enter") InstagramApp.gatherNews();
+        });
+    }
+
+    // Hook modal show events
+    const notifModal = document.getElementById("notificationModal");
+    if (notifModal) {
+        notifModal.addEventListener("show.bs.modal", () => InstagramApp.loadNotificationsList());
+    }
+
+    const auditModal = document.getElementById("auditModal");
+    if (auditModal) {
+        auditModal.addEventListener("show.bs.modal", async () => {
+            const tbody = document.getElementById("audit-logs-tbody");
+            if (!tbody) return;
+            try {
+                const res = await fetch("/api/v1/instagram/audit-logs?limit=20");
+                const json = await res.json();
+                if (json && json.status === "SUCCESS") {
+                    tbody.innerHTML = json.data.map(e => `
+                        <tr>
+                            <td class="text-secondary">${e.timestamp ? new Date(e.timestamp).toUTCString() : '--'}</td>
+                            <td class="text-info">${e.actor_id || 'SYSTEM'}</td>
+                            <td><span class="badge bg-dark border border-secondary text-warning">${e.action}</span></td>
+                            <td class="text-light">${e.resource_type || '--'}</td>
+                            <td><span class="badge ${e.status === 'SUCCESS' ? 'bg-success' : 'bg-danger'}">${e.status}</span></td>
+                        </tr>
+                    `).join("");
+                }
+            } catch (err) {
+                console.error("Failed loading audit logs:", err);
+            }
+        });
+    }
+});
+

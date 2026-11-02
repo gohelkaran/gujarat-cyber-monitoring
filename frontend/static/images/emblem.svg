@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield Outline -->
+  <path d="M50 8 L85 22 V52 C85 72 50 92 50 92 C50 92 15 72 15 52 V22 Z" fill="url(#shieldGrad)" stroke="url(#goldGrad)" stroke-width="3"/>
+  <!-- Star / Ashoka Emblem Stylized Center -->
+  <polygon points="50,25 56,38 70,38 59,47 63,60 50,52 37,60 41,47 30,38 44,38" fill="url(#goldGrad)"/>
+  <!-- Inner ring -->
+  <circle cx="50" cy="44" r="7" fill="#0f172a" stroke="url(#goldGrad)" stroke-width="1.5"/>
+  <circle cx="50" cy="44" r="3" fill="#38bdf8"/>
+  <!-- Text Label -->
+  <text x="50" y="76" font-family="sans-serif" font-size="8" font-weight="bold" fill="#ffffff" text-anchor="middle" letter-spacing="1">GUJARAT</text>
+  <text x="50" y="84" font-family="sans-serif" font-size="6.5" font-weight="bold" fill="url(#goldGrad)" text-anchor="middle" letter-spacing="0.5">CYBER POLICE</text>
+</svg>

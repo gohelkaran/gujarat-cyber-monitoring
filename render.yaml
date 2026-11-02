@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: gujarat-cyber-monitoring
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        value: sqlite:///./gujarat_cyber.db
+      - key: META_WEBHOOK_VERIFY_TOKEN
+        value: gujarat_cyber_webhook_2026
