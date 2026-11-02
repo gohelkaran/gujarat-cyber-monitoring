@@ -493,12 +493,6 @@ const InstagramApp = {
             this.showToast("Failed copying metadata to clipboard.", "danger");
         });
     },
-                modal.show();
-            }
-        } catch (err) {
-            console.error("Failed opening item details:", err);
-        }
-    },
 
     async submitReview() {
         const matchId = document.getElementById("modal-current-match-id").value;

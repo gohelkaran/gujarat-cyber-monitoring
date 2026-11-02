@@ -131,7 +131,7 @@ def connect_official_meta_api(
     token_clean = payload.access_token.strip()
     target_clean = payload.target_identifier.strip().lstrip("@")
 
-    # Update .env
+    # Update runtime environment and persist to .env
     env_updates = {
         "INSTAGRAM_DEFAULT_ACCESS_TOKEN": token_clean,
         "INSTAGRAM_TARGET_ACCOUNT": target_clean
@@ -141,13 +141,14 @@ def connect_official_meta_api(
     if payload.app_secret and payload.app_secret.strip():
         env_updates["META_APP_SECRET"] = payload.app_secret.strip()
 
+    # Set in os.environ for immediate process availability
+    for k, v in env_updates.items():
+        os.environ[k] = v
+
     try:
         _update_env_dict(env_updates)
     except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed updating .env file: {str(e)}"
-        )
+        logger.warning(f"Notice: Could not write to .env (ephemeral cloud container environment): {e}")
 
     # Invalidate settings cache
     get_settings.cache_clear()
