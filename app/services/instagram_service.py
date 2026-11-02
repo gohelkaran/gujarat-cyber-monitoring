@@ -1557,12 +1557,17 @@ class InstagramService:
             items_q = items_q.filter(or_(*conds))
 
         if date_from:
-
-            items_q = items_q.filter(CollectedItem.published_at >= date_from)
+            # Normalize to naive UTC if tz-aware, for consistent SQLite comparison
+            df = date_from.replace(tzinfo=None) if date_from.tzinfo else date_from
+            items_q = items_q.filter(CollectedItem.published_at >= df)
 
         if date_to:
-
-            items_q = items_q.filter(CollectedItem.published_at <= date_to)
+            # Include full day up to 23:59:59
+            dt = date_to.replace(tzinfo=None) if date_to.tzinfo else date_to
+            from datetime import time as dt_time
+            if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
+                dt = dt.replace(hour=23, minute=59, second=59)
+            items_q = items_q.filter(CollectedItem.published_at <= dt)
 
         total_filtered_items = items_q.count()
 
@@ -1590,8 +1595,7 @@ class InstagramService:
                 "source_account": it.source_account or "sandeshnews",
                 "city": it.city or "All Gujarat",
                 "published_at": it.published_at.isoformat() if it.published_at else None,
-                "collected_at": it.collected_at.isoformat() if it.collected_at else None,
-                "media_type": it.media_type or "REEL",
+                "collected_at": it.collected_at.isoformat() if it.collected_at else None,                "media_type": it.media_type or "REEL",
                 "headline": headline,
                 "caption_snippet": caption_clean[:180] + ("..." if len(caption_clean) > 180 else ""),
                 "full_caption": caption_clean,
@@ -1980,7 +1984,7 @@ class InstagramService:
                     existing.like_count = news.get("likes", existing.like_count)
                     existing.comments_count = news.get("comments", existing.comments_count)
                     existing.published_at = pub_dt
-                    existing.collected_at = now
+                    # Do NOT overwrite collected_at — preserve original discovery time for correct ordering
                     existing.platform = "INSTAGRAM"
                     existing.raw_metadata = raw_meta
                     items_ingested += 1
@@ -2004,38 +2008,8 @@ class InstagramService:
                     self.db.add(new_rec)
                     items_ingested += 1
 
-        # Dynamic Platform-Wide Fallback:
-        # If user searched for a specific keyword and no existing items matched in catalog/DB,
-        # dynamically synthesize verified platform-wide post intelligence for this keyword
-        if search_terms:
-            existing_kw_match = self.db.query(CollectedItem).filter(
-                CollectedItem.caption.ilike(f"%{keyword.strip()}%")
-            ).first()
-            if not existing_kw_match:
-                kw_clean = keyword.strip()
-                kw_title = kw_clean.title()
-                city_name = target_city or "All Gujarat"
-                acct_name = target_account or "gujaratpolice_"
-                dyn_code = "DcJdJixIP8d"
-                dyn_link = f"https://www.instagram.com/reel/{dyn_code}/"
-                new_dyn = CollectedItem(
-                    source_id=source.id if source else None,
-                    external_id=f"kw_{re.sub(r'[^a-zA-Z0-9]', '', kw_clean)[:10]}_{int(now.timestamp())}",
-                    platform="INSTAGRAM",
-                    source_account=acct_name,
-                    city=city_name,
-                    caption=f"{kw_title} Cyber Crime Warning | Gujarat Police Cyber Crime Cell registers cases relating to {kw_clean}. Public urged to exercise caution against fraudulent links, unknown phone calls, and suspicious investment schemes. Contact 1930 Cyber Helpline or visit cybercrime.gov.in. #GujaratPolice #CyberCrime #{re.sub(r'[^a-zA-Z0-9]', '', kw_clean)}",
-                    media_type="REEL",
-                    permalink=dyn_link,
-                    published_at=now - timedelta(hours=4),
-                    collected_at=now,
-                    like_count=210,
-                    comments_count=18,
-                    is_demo_data=False,
-                    raw_metadata={"keyword_search": kw_clean, "verified": True}
-                )
-                self.db.add(new_dyn)
-                items_ingested += 1
+        # No synthetic fallback: if keyword has no results in catalog, return only genuine matches.
+        # This ensures data integrity — no fabricated posts are ever shown.
 
         self.db.commit()
 

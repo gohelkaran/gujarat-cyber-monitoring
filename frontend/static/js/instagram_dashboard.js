@@ -13,6 +13,10 @@ const InstagramApp = {
         dateTo: ''
     },
     currentMatchId: null,
+    currentPage: 1,
+    pageSize: 20,
+    _lastKnownCount: 0,
+    _newPostAlertShown: false,
 
     init() {
         console.log("Initializing Social Media Intelligence Dashboard Controller...");
@@ -20,12 +24,41 @@ const InstagramApp = {
         if (citySelect && citySelect.value) {
             this.filters.city = citySelect.value;
         }
+        this.currentPage = 1;
         this.loadDashboardData();
         this.pollSchedulerStatus();
         // Periodic background scheduler poll every 4 seconds
         setInterval(() => this.pollSchedulerStatus(), 4000);
-        // Periodic telemetry poll every 25 seconds
-        setInterval(() => this.loadDashboardData(false), 25000);
+        // Periodic telemetry poll every 30 seconds — check for new posts
+        setInterval(() => this._checkForNewPosts(), 30000);
+    },
+
+    async _checkForNewPosts() {
+        try {
+            const params = new URLSearchParams();
+            if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
+            if (this.filters.city) params.append("city", this.filters.city);
+            const res = await fetch(`/api/v1/instagram/dashboard?${params.toString()}&page_size=1`);
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                const newCount = json.data?.metrics?.total_items_retrieved || 0;
+                if (this._lastKnownCount > 0 && newCount > this._lastKnownCount) {
+                    const diff = newCount - this._lastKnownCount;
+                    this._flashNewPostAlert(diff);
+                }
+                this._lastKnownCount = newCount;
+                this.renderDashboard(json.data);
+            }
+        } catch(e) {}
+    },
+
+    _flashNewPostAlert(count) {
+        this.showToast(`🚨 ${count} new post${count > 1 ? 's' : ''} detected! Dashboard refreshed.`, "success");
+        const resultsSection = document.getElementById("results-section");
+        if (resultsSection) {
+            resultsSection.style.boxShadow = "0 0 20px rgba(13,202,240,0.6)";
+            setTimeout(() => { resultsSection.style.boxShadow = ""; }, 3000);
+        }
     },
 
     setPlatform(platform) {
@@ -128,8 +161,11 @@ const InstagramApp = {
             if (this.filters.city) params.append("city", this.filters.city);
             if (this.filters.account) params.append("account", this.filters.account);
             if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
-            if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom);
-            if (this.filters.dateTo) params.append("date_to", this.filters.dateTo);
+            // Send date filters as full ISO datetime strings (start of day / end of day)
+            if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom + "T00:00:00");
+            if (this.filters.dateTo) params.append("date_to", this.filters.dateTo + "T23:59:59");
+            params.append("page", this.currentPage || 1);
+            params.append("page_size", this.pageSize || 20);
 
             const url = `/api/v1/instagram/dashboard?${params.toString()}`;
             const res = await fetch(url);
@@ -226,15 +262,24 @@ const InstagramApp = {
 
         // 4. Monitoring Results Table
         this.renderResultsTable(data.results || [], data.pagination || {});
+
+        // Track total count for new-post detection
+        this._lastKnownCount = data.metrics?.total_items_retrieved || this._lastKnownCount;
     },
 
     renderResultsTable(results, pagination) {
         const tbody = document.getElementById("monitoring-results-tbody");
         const countLabel = document.getElementById("results-count-label");
+        const total = pagination.total_count || 0;
+        const page = pagination.page || 1;
+        const totalPages = pagination.total_pages || 1;
 
         if (countLabel) {
-            countLabel.textContent = `Displaying ${results.length} of ${pagination.total_count || 0} hits`;
+            countLabel.textContent = `Displaying ${results.length} of ${total} hits`;
         }
+
+        // Render pagination controls
+        this._renderPagination(page, totalPages, total);
 
         if (!tbody) return;
 
@@ -244,7 +289,7 @@ const InstagramApp = {
                     <td colspan="6" class="text-center py-5 text-secondary">
                         <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary-emphasis"></i>
                         <div class="fw-semibold text-light mb-1">No News Feeds Matching Your Search</div>
-                        <div class="small text-secondary mb-3">Enter your crime keywords above (e.g. <code>bank fraud</code>, <code>kyc</code>, <code>digital arrest</code>) and click <strong>Gather &amp; Search News</strong>.</div>
+                        <div class="small text-secondary mb-3">Enter crime keywords above (e.g. <code>bank fraud</code>, <code>kyc</code>, <code>digital arrest</code>) and click <strong>Search &amp; Monitor All</strong>. Or select <strong>All Gujarat Statewide</strong> to see all posts.</div>
                         <div class="d-flex justify-content-center gap-2">
                             <button class="btn btn-sm btn-soc-primary font-mono" onclick="InstagramApp.gatherNews()">
                                 <i class="bi bi-newspaper me-1"></i> Gather News Feeds
@@ -259,6 +304,7 @@ const InstagramApp = {
             return;
         }
 
+        const now = new Date();
         tbody.innerHTML = results.map(row => {
             const demoBadge = row.is_demo_data
                 ? `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-cpu me-1"></i>SANDBOX</span>`
@@ -271,7 +317,13 @@ const InstagramApp = {
                 reviewBadge = `<span class="badge bg-danger font-mono"><i class="bi bi-clock me-1"></i>PENDING REVIEW</span>`;
             }
 
-            const pubDate = row.published_at ? new Date(row.published_at).toLocaleString() : '--';
+            // Check if this post was collected very recently (last 10 min = possibly new)
+            const collectedAt = row.collected_at ? new Date(row.collected_at) : null;
+            const isNew = collectedAt && (now - collectedAt) < 10 * 60 * 1000;
+            const newBadge = isNew ? `<span class="badge bg-danger text-light font-mono ms-1 px-1" style="font-size:0.6rem;animation:pulse 1s infinite;">NEW</span>` : '';
+
+            const pubDate = row.published_at ? new Date(row.published_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '--';
+            const pubTime = row.published_at ? new Date(row.published_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
             const relTime = this.formatRelativeTime(row.published_at);
             const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 75) + '...' : 'News Report');
 
@@ -291,7 +343,7 @@ const InstagramApp = {
             return `
                 <tr>
                     <td>
-                        <div class="font-mono text-light fw-semibold">${platformIcon}${isFacebook ? '' : '@'}${this.escapeHtml(row.source_account || 'unknown')}</div>
+                        <div class="font-mono text-light fw-semibold">${platformIcon}${isFacebook ? '' : '@'}${this.escapeHtml(row.source_account || 'unknown')}${newBadge}</div>
                         <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
                             ${mediaTypeBadge}
                             ${row.city ? (row.city.includes("Gir Somnath") 
@@ -303,10 +355,11 @@ const InstagramApp = {
                         </div>
                     </td>
                     <td class="font-mono">
-                        <span class="badge bg-success-subtle text-success border border-success-subtle font-mono px-2 py-1" style="font-size: 0.72rem;">
-                            <i class="bi bi-clock-history me-1"></i>${relTime}
+                        <div class="fw-semibold text-light" style="font-size:0.82rem;">${pubDate}</div>
+                        <div class="text-secondary" style="font-size:0.72rem;">${pubTime}</div>
+                        <span class="badge bg-dark border border-secondary text-success font-mono px-1 mt-1" style="font-size: 0.68rem;">
+                            <i class="bi bi-clock me-1"></i>${relTime}
                         </span>
-                        <div class="text-secondary small mt-1 font-mono" style="font-size: 0.72rem;">${pubDate}</div>
                     </td>
                     <td>
                         <div class="text-light fw-semibold mb-1" style="font-size: 0.88rem;">
@@ -522,6 +575,52 @@ const InstagramApp = {
         }
     },
 
+    _renderPagination(page, totalPages, total) {
+        let container = document.getElementById("pagination-container");
+        if (!container) return;
+
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        const prevDisabled = page <= 1 ? 'disabled' : '';
+        const nextDisabled = page >= totalPages ? 'disabled' : '';
+
+        let pages = '';
+        const start = Math.max(1, page - 2);
+        const end = Math.min(totalPages, page + 2);
+        for (let p = start; p <= end; p++) {
+            pages += `<li class="page-item ${p === page ? 'active' : ''}">
+                <button class="page-link bg-dark text-light border-secondary font-mono" onclick="InstagramApp.goToPage(${p})">${p}</button>
+            </li>`;
+        }
+
+        container.innerHTML = `
+            <nav aria-label="Results pagination" class="d-flex align-items-center justify-content-between mt-2 px-3 pb-2">
+                <div class="small text-secondary font-mono">Page ${page} of ${totalPages} &bull; ${total} total results</div>
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item ${prevDisabled}">
+                        <button class="page-link bg-dark text-light border-secondary" onclick="InstagramApp.goToPage(${page - 1})" ${prevDisabled ? 'disabled' : ''}>
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
+                    </li>
+                    ${pages}
+                    <li class="page-item ${nextDisabled}">
+                        <button class="page-link bg-dark text-light border-secondary" onclick="InstagramApp.goToPage(${page + 1})" ${nextDisabled ? 'disabled' : ''}>
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        `;
+    },
+
+    goToPage(page) {
+        this.currentPage = page;
+        this.loadDashboardData(true);
+    },
+
     scrollToSection(sectionId) {
         const el = document.getElementById(sectionId);
         if (el) {
@@ -572,17 +671,19 @@ const InstagramApp = {
         this.filters.account = (document.getElementById("filter-account")?.value || "").trim();
         this.filters.dateFrom = document.getElementById("filter-date-from")?.value || "";
         this.filters.dateTo = document.getElementById("filter-date-to")?.value || "";
+        this.currentPage = 1;
         this.loadDashboardData(true);
     },
 
     resetFilters() {
         if (document.getElementById("filter-keyword")) document.getElementById("filter-keyword").value = "";
-        if (document.getElementById("filter-city")) document.getElementById("filter-city").value = "Gir Somnath";
+        if (document.getElementById("filter-city")) document.getElementById("filter-city").value = "";
         if (document.getElementById("filter-account")) document.getElementById("filter-account").value = "";
         if (document.getElementById("filter-date-from")) document.getElementById("filter-date-from").value = "";
         if (document.getElementById("filter-date-to")) document.getElementById("filter-date-to").value = "";
-        this.filters = { keyword: '', city: 'Gir Somnath', account: '', dateFrom: '', dateTo: '' };
-        this.selectTaluka("Gir Somnath");
+        this.filters = { keyword: '', city: '', account: '', dateFrom: '', dateTo: '', platform: this.filters.platform || 'ALL' };
+        this.currentPage = 1;
+        this.loadDashboardData(true);
     },
 
     async loadOfficialConfig() {
