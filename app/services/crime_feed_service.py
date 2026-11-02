@@ -1005,3 +1005,4 @@ class CrimeFeedService:
             "districts_covered": distinct_cities,
             "message": f"Crime Feed Engine synchronized. {total_items} total crime & police alerts available across {distinct_cities} Gujarat jurisdictions."
         }
+

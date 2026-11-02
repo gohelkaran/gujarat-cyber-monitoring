@@ -214,12 +214,18 @@
                     </button>
                 </div>
             </div>
-            <div class="d-flex align-items-center gap-2 font-mono small">
+            <div class="d-flex flex-wrap align-items-center gap-1 font-mono small">
+                <button class="btn btn-sm btn-outline-info font-mono" id="btn-sync-harvester" onclick="InstagramApp.triggerPublicHarvester()" title="Directly crawl public Instagram & Facebook handles without API tokens">
+                    <i class="bi bi-robot me-1"></i> Public Harvester
+                </button>
+                <button class="btn btn-sm btn-outline-warning font-mono" data-bs-toggle="modal" data-bs-target="#apifyModal" onclick="InstagramApp.loadScraperStatus()" title="High-volume scraper APIs (Apify / ScrapingBee for 1,000+ posts)">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> Apify / 1000+ API
+                </button>
                 <button class="btn btn-sm btn-outline-warning font-mono" id="btn-sync-crime-feeds" onclick="InstagramApp.syncCrimeFeeds()" title="Harvest live Gujarat media RSS feeds & 33 district crime bulletins">
-                    <i class="bi bi-newspaper me-1"></i> Sync Gujarat Crime Feeds
+                    <i class="bi bi-newspaper me-1"></i> Sync Gujarat Feeds
                 </button>
                 <button class="btn btn-sm btn-outline-primary font-mono" id="btn-sync-facebook" onclick="InstagramApp.gatherFacebookFeeds()" title="Harvest verified Facebook Page bulletins">
-                    <i class="bi bi-facebook me-1"></i> Sync Facebook Pages
+                    <i class="bi bi-facebook me-1"></i> Sync FB
                 </button>
                 <button class="btn btn-sm btn-soc-primary font-mono" id="btn-sync-all-streams" onclick="InstagramApp.syncAllStreams()" title="Harvest statewide Instagram, Facebook & Live Media streams">
                     <i class="bi bi-arrow-repeat me-1"></i> Sync All Streams
@@ -761,6 +767,94 @@
                 <button type="button" class="btn btn-sm btn-soc-primary" onclick="InstagramApp.addKeyword()">
                     <i class="bi bi-check2-circle me-1"></i> Register Keyword
                 </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================================================= -->
+<!-- Modal: Commercial Scraping Gateway (Apify, ScrapingBee, BrightData)       -->
+<!-- ========================================================================= -->
+<div class="modal fade" id="apifyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border-warning shadow-lg">
+            <div class="modal-header border-secondary py-2" style="background: rgba(255, 193, 7, 0.08);">
+                <h6 class="modal-title font-mono text-warning fw-bold">
+                    <i class="bi bi-lightning-charge-fill me-1"></i> HIGH-CAPACITY COMMERCIAL SCRAPING GATEWAY (1,000+ POSTS/DAY)
+                </h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <div class="alert alert-dark border-secondary p-2 mb-3 small text-secondary">
+                    <i class="bi bi-info-circle-fill text-info me-1"></i>
+                    <strong>How Law Enforcement Fetches 1,000+ Posts:</strong> Official Meta APIs restrict arbitrary public post search. Commercial distributed scrapers (<strong>Apify Instagram Scraper</strong>, <strong>ScrapingBee</strong>, and <strong>BrightData</strong>) bypass platform login barriers and harvest 1,000 to 2,000+ real public posts per run across target hashtags and public police handles.
+                </div>
+
+                <div class="row g-3">
+                    <!-- Option 1: Direct Public Profile Harvester -->
+                    <div class="col-md-6 border-end border-secondary">
+                        <div class="p-2 border border-info rounded bg-black">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold font-mono text-info small"><i class="bi bi-robot me-1"></i>DIRECT PUBLIC HARVESTER</span>
+                                <span class="badge bg-success font-mono">100% FREE / NO TOKEN</span>
+                            </div>
+                            <div class="text-secondary small mb-2" style="font-size: 0.78rem;">
+                                Directly crawls public Instagram reels &amp; Facebook posts from verified Gujarat Police handles (@girsomnathpolice, @gujaratpolice_, @suratcitypolice, @all_saurastra_news).
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-info font-mono w-100" id="btn-modal-public-crawl" onclick="InstagramApp.triggerPublicHarvester()">
+                                <i class="bi bi-play-circle-fill me-1"></i> Run Public Profile Crawler
+                            </button>
+                        </div>
+
+                        <div class="mt-3">
+                            <label class="form-label small text-secondary font-mono fw-semibold">Target Gujarat Police &amp; News Handles</label>
+                            <div class="small font-mono text-info p-2 rounded bg-black border border-secondary" style="font-size: 0.75rem;">
+                                @girsomnathpolice &bull; @all_saurastra_news &bull; @gujaratpolice_ &bull; @ahmedabadpolice &bull; @suratcitypolice &bull; @sandeshnews &bull; @tv9gujarati &bull; @gujaratfirst
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Option 2: Apify / Commercial Token Gateway -->
+                    <div class="col-md-6">
+                        <div class="p-2 border border-warning rounded bg-black mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold font-mono text-warning small"><i class="bi bi-lightning-charge me-1"></i>APIFY COMMERCIAL API</span>
+                                <span class="badge bg-warning text-dark font-mono">1,000 - 2,000 POSTS</span>
+                            </div>
+                            <div class="text-secondary small mb-2" style="font-size: 0.78rem;">
+                                Connect your Apify API Token to run distributed cloud proxies across Gujarat crime hashtags and public handles.
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Apify API Token (Optional / Saved in .env)</label>
+                                <input type="password" id="apify-token-input" class="form-control form-control-sm bg-dark text-light border-secondary font-mono" placeholder="apify_api_...">
+                            </div>
+                            <div class="mb-2">
+                                <label class="form-label small text-secondary fw-semibold">Target Hashtags (Comma-Separated)</label>
+                                <input type="text" id="apify-hashtags-input" class="form-control form-control-sm bg-dark text-light border-secondary font-mono" value="girsomnath, gujaratpolice, cybercrimegujarat, digitalarrest, veraval">
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-sm btn-outline-secondary font-mono flex-grow-1" onclick="InstagramApp.saveScrapingKeys()">
+                                    <i class="bi bi-save me-1"></i> Save Token
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-warning font-mono flex-grow-1" id="btn-run-apify-modal" onclick="InstagramApp.triggerApifySync()">
+                                    <i class="bi bi-cloud-arrow-down-fill me-1"></i> Ingest 1000+ Posts
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- ScrapingBee Key -->
+                        <div class="p-2 border border-secondary rounded bg-black">
+                            <div class="fw-bold font-mono text-secondary small mb-1">
+                                <i class="bi bi-key me-1"></i>ScrapingBee / BrightData Key (Optional)
+                            </div>
+                            <input type="password" id="scrapingbee-key-input" class="form-control form-control-sm bg-dark text-light border-secondary font-mono" placeholder="ScrapingBee API Key">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary py-1 justify-content-between">
+                <span class="small font-mono text-secondary" style="font-size: 0.72rem;">High-Volume Public Data Harvester Gateway &bull; Statutory Cyber Intelligence</span>
+                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

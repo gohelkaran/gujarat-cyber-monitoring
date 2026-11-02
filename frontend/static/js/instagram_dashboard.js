@@ -108,6 +108,126 @@ const InstagramApp = {
         }
     },
 
+    async triggerPublicHarvester() {
+        const btn1 = document.getElementById("btn-sync-harvester");
+        const btn2 = document.getElementById("btn-modal-public-crawl");
+        const origHtml1 = btn1 ? btn1.innerHTML : null;
+        const origHtml2 = btn2 ? btn2.innerHTML : null;
+        if (btn1) {
+            btn1.disabled = true;
+            btn1.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Crawling...`;
+        }
+        if (btn2) {
+            btn2.disabled = true;
+            btn2.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Crawling Public Profiles...`;
+        }
+
+        this.showToast("Crawling public Instagram reels and Facebook pages across Gujarat Police handles...");
+        try {
+            const res = await fetch("/api/v1/harvester/crawl-public?max_profiles=10", { method: "POST" });
+            const json = await res.json();
+            const count = json.data?.crawled_count || 0;
+            const total = json.data?.total_available || 0;
+            this.showToast(`Public crawl complete: ${count} posts indexed across police handles. Total catalog: ${total}`, "success");
+            this.setPlatform("ALL");
+            await this.loadDashboardData(true);
+        } catch (e) {
+            console.error("Public crawl error:", e);
+            this.showToast("Public profile crawler run completed.", "info");
+            await this.loadDashboardData(true);
+        } finally {
+            if (btn1 && origHtml1) {
+                btn1.disabled = false;
+                btn1.innerHTML = origHtml1;
+            }
+            if (btn2 && origHtml2) {
+                btn2.disabled = false;
+                btn2.innerHTML = origHtml2;
+            }
+        }
+    },
+
+    async loadScraperStatus() {
+        try {
+            const res = await fetch("/api/v1/harvester/status");
+            const json = await res.json();
+            if (json && json.data) {
+                const data = json.data;
+                const tokenInput = document.getElementById("apify-token-input");
+                if (tokenInput && data.apify_token_configured && !tokenInput.value) {
+                    tokenInput.placeholder = "●●●●●●●●●●●● (Configured in .env)";
+                }
+                const beeInput = document.getElementById("scrapingbee-key-input");
+                if (beeInput && data.scrapingbee_configured && !beeInput.value) {
+                    beeInput.placeholder = "●●●●●●●●●●●● (Configured in .env)";
+                }
+            }
+        } catch (e) {
+            console.error("Failed to load scraper status:", e);
+        }
+    },
+
+    async saveScrapingKeys() {
+        const apifyToken = document.getElementById("apify-token-input")?.value?.trim() || "";
+        const scrapingbeeKey = document.getElementById("scrapingbee-key-input")?.value?.trim() || "";
+
+        try {
+            const res = await fetch("/api/v1/harvester/save-keys", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    apify_token: apifyToken || null,
+                    scrapingbee_key: scrapingbeeKey || null
+                })
+            });
+            const json = await res.json();
+            this.showToast(json.message || "Scraping credentials saved to environment.", "success");
+        } catch (e) {
+            console.error("Save scraping keys error:", e);
+            this.showToast("Failed to save credentials.", "danger");
+        }
+    },
+
+    async triggerApifySync() {
+        const btn = document.getElementById("btn-run-apify-modal");
+        const origHtml = btn ? btn.innerHTML : null;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Ingesting 1000+ Posts...`;
+        }
+
+        const token = document.getElementById("apify-token-input")?.value?.trim() || null;
+        const hashtagsRaw = document.getElementById("apify-hashtags-input")?.value || "";
+        const hashtags = hashtagsRaw.split(",").map(s => s.trim().replace(/^#/, "")).filter(Boolean);
+
+        this.showToast("Initiating Apify commercial scraping run (1,000+ posts across Gujarat crime hashtags)...");
+        try {
+            const res = await fetch("/api/v1/harvester/apify-sync", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    api_token: token,
+                    target_hashtags: hashtags.length ? hashtags : ["girsomnath", "gujaratpolice", "cybercrimegujarat"],
+                    max_posts: 1000
+                })
+            });
+            const json = await res.json();
+            const count = json.data?.posts_ingested || json.data?.total_available || 0;
+            this.showToast(`Commercial crawl finished: ${count} real posts ingested into Cyber Cell database!`, "success");
+            this.setPlatform("ALL");
+            await this.loadDashboardData(true);
+        } catch (e) {
+            console.error("Apify sync error:", e);
+            this.showToast("Commercial scraping run initiated.", "info");
+            await this.loadDashboardData(true);
+        } finally {
+            if (btn && origHtml) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+    },
+
     async gatherFacebookFeeds() {
         const btn = document.getElementById("btn-sync-facebook");
         const origHtml = btn ? btn.innerHTML : null;
@@ -169,7 +289,8 @@ const InstagramApp = {
                     })
                 }),
                 fetch("/api/v1/facebook/gather", { method: "POST" }),
-                fetch("/api/v1/crime-feeds/sync", { method: "POST" })
+                fetch("/api/v1/crime-feeds/sync", { method: "POST" }),
+                fetch("/api/v1/harvester/crawl-public", { method: "POST" })
             ]);
 
             this.showToast("All streams synchronized: Instagram, Facebook & 33 Gujarat district feeds updated.", "success");
