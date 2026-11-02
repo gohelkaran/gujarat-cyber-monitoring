@@ -90,6 +90,22 @@ def create_application() -> FastAPI:
     app.add_middleware(RateLimitMiddleware)
 
     # 4. Exception Handlers
+    from starlette.exceptions import HTTPException as StarletteHTTPException
+    from starlette.responses import JSONResponse
+
+    @app.exception_handler(StarletteHTTPException)
+    async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={
+                "success": False,
+                "error": {
+                    "code": f"HTTP_{exc.status_code}",
+                    "message": exc.detail,
+                }
+            }
+        )
+
     app.add_exception_handler(BaseAppException, app_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, generic_exception_handler)
