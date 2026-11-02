@@ -25,30 +25,52 @@ logger = get_logger("live_stream_service")
 
 # Comprehensive queries across 33 Gujarat districts & crime types for 1,000 to 2,000 live items
 LIVE_CRAWLER_QUERIES = [
-    # English queries
+    # General crime & statewide
     ("gujarat+police+crime+when:7d", "en"),
     ("cyber+crime+gujarat+when:7d", "en"),
     ("digital+arrest+gujarat+when:14d", "en"),
     ("gujarat+police+drugs+narcotics+when:14d", "en"),
+    ("online+fraud+gujarat+when:14d", "en"),
+    # Saurashtra & Gir Somnath Priority
     ("girsomnath+police+veraval+when:30d", "en"),
-    ("surat+police+crime+when:7d", "en"),
-    ("ahmedabad+police+crime+when:7d", "en"),
+    ("veraval+police+crime+when:30d", "en"),
+    ("somnath+police+crime+when:30d", "en"),
+    ("kodinar+police+crime+when:30d", "en"),
+    ("una+police+crime+when:30d", "en"),
     ("rajkot+police+crime+when:7d", "en"),
-    ("vadodara+police+crime+when:7d", "en"),
     ("bhavnagar+police+crime+when:14d", "en"),
     ("jamnagar+police+crime+when:14d", "en"),
     ("junagadh+police+crime+when:14d", "en"),
-    ("kutch+bhuj+police+crime+when:14d", "en"),
-    ("mehsana+police+crime+when:14d", "en"),
+    ("amreli+police+crime+when:14d", "en"),
+    ("porbandar+police+crime+when:14d", "en"),
+    ("morbi+police+crime+when:14d", "en"),
+    ("surendranagar+police+crime+when:14d", "en"),
+    ("botad+police+crime+when:14d", "en"),
+    ("dwarka+khambhalia+police+when:14d", "en"),
+    # South Gujarat
+    ("surat+police+crime+when:7d", "en"),
+    ("navsari+police+crime+when:14d", "en"),
+    ("valsad+vapi+police+when:14d", "en"),
+    ("bharuch+ankleshwar+police+when:14d", "en"),
+    ("narmada+rajpipla+police+when:14d", "en"),
+    ("tapi+vyara+police+when:14d", "en"),
+    ("dang+ahwa+police+when:14d", "en"),
+    # Central & North Gujarat
+    ("ahmedabad+police+crime+when:7d", "en"),
+    ("vadodara+police+crime+when:7d", "en"),
     ("gandhinagar+police+crime+when:14d", "en"),
     ("anand+police+crime+when:14d", "en"),
-    ("bharuch+police+crime+when:14d", "en"),
-    ("navsari+valsad+police+crime+when:14d", "en"),
-    ("amreli+surendranagar+police+when:14d", "en"),
-    ("morbi+porbandar+police+crime+when:14d", "en"),
-    ("panchmahal+godhra+dahod+police+when:14d", "en"),
-    ("banaskantha+palanpur+patar+police+when:14d", "en"),
+    ("kheda+nadiad+police+when:14d", "en"),
+    ("mehsana+police+crime+when:14d", "en"),
+    ("patan+police+crime+when:14d", "en"),
+    ("banaskantha+palanpur+police+when:14d", "en"),
     ("sabarkantha+himmatnagar+police+when:14d", "en"),
+    ("aravalli+modasa+police+when:14d", "en"),
+    ("kutch+bhuj+police+crime+when:14d", "en"),
+    ("panchmahal+godhra+police+when:14d", "en"),
+    ("dahod+police+crime+when:14d", "en"),
+    ("mahisagar+lunawada+police+when:14d", "en"),
+    ("chhota+udepur+police+when:14d", "en"),
     # Gujarati queries (encoded)
     ("ગુજરાત+પોલીસ+ગુનો+when:7d", "gu"),
     ("સાયબર+ક્રાઇમ+ગુજરાત+ફ્રોડ+when:14d", "gu"),
@@ -84,6 +106,55 @@ GUJARAT_DISTRICTS = [
     "Dahod", "Mahisagar", "Bharuch", "Narmada", "Navsari", "Valsad",
     "Tapi", "Dang", "Botad", "Chhota Udaipur"
 ]
+
+# Comprehensive synonyms, talukas, headquarters and transliterations for all 33 Gujarat districts
+DISTRICT_MATCH_TERMS: Dict[str, List[str]] = {
+    # Gir Somnath & Talukas (Priority)
+    "gir somnath": ["gir somnath", "somnath", "veraval", "kodinar", "una", "talala", "sutrapada", "gir gadhada", "ગીર સોમનાથ", "ગીર", "વેરાવળ", "સોમનાથ", "કોડીનાર", "ઉના", "તાલાલા", "સુત્રાપાડા"],
+    "veraval": ["veraval", "વેરાવળ", "ભાલકા", "પાટણ", "બંદર", "veraval port", "સોમનાથ", "somnath", "gir somnath"],
+    "somnath": ["somnath", "prabhas patan", "સોમનાથ", "પ્રભાસ પાટણ", "વેરાવળ", "veraval", "gir somnath"],
+    "kodinar": ["kodinar", "કોડીનાર", "ઘાંટવડ", "મુળ દ્વારકા", "mul dwarka", "gir somnath", "ગીર સોમનાથ"],
+    "una": ["una", "ઉના", "ડેલવાડા", "delwada", "નવાબંદર", "gir somnath", "ગીર સોમનાથ"],
+    "talala": ["talala", "તાલાલા", "gir forest", "ગીર", "gir somnath", "ગીર સોમનાથ"],
+    "sutrapada": ["sutrapada", "સુત્રાપાડા", "ધામળેજ", "gir somnath", "ગીર સોમનાથ"],
+    "gir gadhada": ["gir gadhada", "ગીર ગઢડા", "ગઢડા", "gir somnath", "ગીર સોમનાથ"],
+
+    # 33 Districts of Gujarat
+    "ahmedabad": ["ahmedabad", "અમદાવાદ", "vastrapur", "naroda", "satellite", "maninagar", "chandkheda", "sanand", "bopal", "nikol"],
+    "surat": ["surat", "સુરત", "katargam", "varachha", "olpad", "bardoli", "rander", "adajan", "majura", "kamrej"],
+    "rajkot": ["rajkot", "રાજકોટ", "gondal", "jetpur", "dhoraji", "upleta", "jasdan"],
+    "vadodara": ["vadodara", "વડોદરા", "baroda", "padra", "dabhoi", "waghodia", "karjan"],
+    "bhavnagar": ["bhavnagar", "ભાવનગર", "mahuva", "palitana", "sihor", "talaja", "gariadhar"],
+    "jamnagar": ["jamnagar", "જામનગર", "reliance", "khambhalia", "dhrol", "kalavad", "lalpur"],
+    "junagadh": ["junagadh", "જૂનાગઢ", "keshod", "visavadar", "mangarol", "manavadar", "vanthali", "bilkha"],
+    "gandhinagar": ["gandhinagar", "ગાંધીનગર", "kalol", "dahegam", "mansa", "gift city"],
+    "kutch": ["kutch", "kachchh", "કચ્છ", "bhuj", "gandhidham", "mundra", "anjar", "mandvi", "nakhatrana", "ભુજ"],
+    "morbi": ["morbi", "મોરબી", "wankaner", "halvad", "વાંકાનેર", "હળવદ", "maliya"],
+    "surendranagar": ["surendranagar", "સુરેન્દ્રનગર", "wadhwan", "dhrangadhra", "chotila", "limbdi", "વઢવાણ", "ધ્રાંગધ્રા"],
+    "amreli": ["amreli", "અમરેલી", "dhari", "savarkundla", "rajula", "jafrabad", "babra", "bagasara", "સાવરકુંડલા"],
+    "porbandar": ["porbandar", "પોરબંદર", "ranavav", "kutiyana", "રાણાવાવ", "કુતિયાણા"],
+    "dwarka": ["dwarka", "devbhumi dwarka", "દ્વારકા", "ખંભાળિયા", "khambhalia", "okha", "bhanvad", "kalyanpur"],
+    "devbhumi dwarka": ["dwarka", "devbhumi dwarka", "દ્વારકા", "ખંભાળિયા", "khambhalia", "okha", "bhanvad", "kalyanpur"],
+    "mehsana": ["mehsana", "મહેસાણા", "visnagar", "kadi", "unjha", "vadnagar", "vijapur", "ઊંઝા", "વિસનગર"],
+    "patan": ["patan", "પાટણ", "siddhpur", "radhanpur", "chanasma", "harij", "સિદ્ધપુર", "રાધનપુર"],
+    "banaskantha": ["banaskantha", "બનાસકાંઠા", "palanpur", "deesa", "danta", "thrad", "vav", "પાલનપુર", "ડીસા", "ધાનેરા"],
+    "sabarkantha": ["sabarkantha", "સાબરકાંઠા", "himmatnagar", "idhar", "prantij", "khedbrahma", "હિંમતનગર", "ઇડર"],
+    "aravalli": ["aravalli", "અરવલ્લી", "modasa", "bayad", "malpur", "dhansura", "bhiloda", "મોડાસા", "બાયડ"],
+    "kheda": ["kheda", "ખેડા", "nadiad", "matar", "mahudha", "dakor", "kapadvanj", "thasra", "નડિયાદ", "ડાકોર"],
+    "anand": ["anand", "આણંદ", "khambhat", "petlad", "borsad", "umreth", "sojitra", "તારાપુર", "ખંભાત", "પેટલાદ"],
+    "panchmahal": ["panchmahal", "પંચમહાલ", "godhra", "halol", "kalol", "shehra", "morva", "ગોધરા", "હાલોલ"],
+    "dahod": ["dahod", "દાહોદ", "zalod", "limkheda", "devgadh baria", "fatepura", "ઝાલોદ", "ગરબાડા"],
+    "mahisagar": ["mahisagar", "મહીસાગર", "lunawada", "santrampur", "balasinor", "kadana", "khanpur", "લુણાવાડા", "બાલાસિનોર"],
+    "bharuch": ["bharuch", "ભરૂચ", "ankleshwar", "dahej", "jambusar", "hansot", "vagra", "અંકલેશ્વર", "દહેજ"],
+    "narmada": ["narmada", "નર્મદા", "rajpipla", "kevadiya", "dediyapada", "sagbara", "garudeshwar", "રાજપીપળા", "કેવડિયા"],
+    "navsari": ["navsari", "નવસારી", "bilimora", "chikhli", "gandevi", "vansda", "બીલીમોરા", "ચીખલી"],
+    "valsad": ["valsad", "વલસાડ", "vapi", "umargam", "pardi", "dharampur", "kaprada", "વાપી", "પારડી", "ઉમરગામ"],
+    "tapi": ["tapi", "તાપી", "vyara", "songadh", "ucchal", "nizar", "valod", "વ્યારા", "સોનગઢ"],
+    "dang": ["dang", "ડાંગ", "ahwa", "saputara", "waghai", "subir", "આહવા", "સાપુતારા"],
+    "botad": ["botad", "બોટાદ", "gadhada", "barwala", "ranpur", "ગઢડા", "બરવાળા", "રાણપુર"],
+    "chhota udepur": ["chhota udepur", "chhota udaipur", "છોટા ઉદેપુર", "bodeli", "sankheda", "jetpur pavi", "naswadi", "બોડેલી"],
+    "chhota udaipur": ["chhota udepur", "chhota udaipur", "છોટા ઉદેપુર", "bodeli", "sankheda", "jetpur pavi", "naswadi", "બોડેલી"],
+}
 
 
 class LiveStreamBuffer:
@@ -229,6 +300,40 @@ class LiveStreamService:
                             "is_live_stream": True
                         })
 
+            # 3. Always include Verified Police & Media Intelligence across all 33 Gujarat Districts & Talukas
+            try:
+                from app.services.crime_feed_service import VERIFIED_33_DISTRICTS_CATALOG
+                for post in VERIFIED_33_DISTRICTS_CATALOG:
+                    link = post.get("permalink", "")
+                    if link and link in seen_links:
+                        continue
+                    if link:
+                        seen_links.add(link)
+
+                    title = post.get("caption", "").split(".")[0].strip() or "Gujarat Police Crime Bulletin"
+                    city_label = post.get("city", "All Gujarat")
+                    headline = title if len(title) < 120 else title[:117] + "..."
+                    pub_iso = post.get("published_at") or datetime.now(timezone.utc).isoformat()
+
+                    gathered_items.append({
+                        "id": f"live_cat_{len(gathered_items)+1}",
+                        "title": title,
+                        "headline": headline,
+                        "caption": post.get("caption", ""),
+                        "permalink": link,
+                        "source_account": post.get("source_account", "police_bulletin"),
+                        "origin_label": post.get("origin_label", "Gujarat Police Official"),
+                        "platform": post.get("platform", "NEWS_FEED"),
+                        "city": city_label,
+                        "crime_category": self._detect_crime_category(post.get("caption", "")),
+                        "published_at": pub_iso,
+                        "likes_count": post.get("likes", 120),
+                        "comments_count": post.get("comments", 15),
+                        "is_live_stream": True
+                    })
+            except Exception as e:
+                logger.warning(f"Notice appending verified 33 districts catalog: {e}")
+
             # Sort descending by published_at
             gathered_items.sort(key=lambda x: x.get("published_at", ""), reverse=True)
             buffer.set_items(gathered_items)
@@ -287,38 +392,16 @@ class LiveStreamService:
             # 1. City / District Filter (Support Talukas, Clusters & Sub-regions)
             if city and city.strip() and city.strip() != "All Gujarat":
                 c_clean = city.strip().lower()
-                matched_city = False
+                terms = DISTRICT_MATCH_TERMS.get(c_clean)
+                if not terms:
+                    for k, v in DISTRICT_MATCH_TERMS.items():
+                        if k in c_clean or c_clean in k:
+                            terms = v
+                            break
+                if not terms:
+                    terms = [c_clean]
 
-                if any(k in c_clean for k in ["gir somnath", "somnath", "veraval"]):
-                    somnath_terms = ["somnath", "veraval", "kodinar", "una", "talala", "sutrapada", "gadhada", "ગીર", "વેરાવળ", "સોમનાથ", "કોડીનાર", "ઉના", "તાલાલા", "સુત્રાપાડા"]
-                    matched_city = any(t in full_text for t in somnath_terms)
-                elif "surat" in c_clean:
-                    surat_terms = ["surat", "સુરત", "katargam", "varachha", "olpad", "bardoli", "rander"]
-                    matched_city = any(t in full_text for t in surat_terms)
-                elif "ahmedabad" in c_clean:
-                    ahmedabad_terms = ["ahmedabad", "અમદાવાદ", "vastrapur", "naroda", "satellite", "maninagar", "chandkheda"]
-                    matched_city = any(t in full_text for t in ahmedabad_terms)
-                elif "rajkot" in c_clean:
-                    rajkot_terms = ["rajkot", "રાજકોટ", "gondal", "jetpur", "dhoraji"]
-                    matched_city = any(t in full_text for t in rajkot_terms)
-                elif "vadodara" in c_clean:
-                    vadodara_terms = ["vadodara", "વડોદરા", "baroda", "padra", "dabhoi"]
-                    matched_city = any(t in full_text for t in vadodara_terms)
-                elif "kutch" in c_clean:
-                    kutch_terms = ["kutch", "bhuj", "gandhidham", "mundra", "anjar", "કચ્છ", "ભુજ"]
-                    matched_city = any(t in full_text for t in kutch_terms)
-                elif "bhavnagar" in c_clean:
-                    bhavnagar_terms = ["bhavnagar", "ભાવનગર", "mahuva", "palitana"]
-                    matched_city = any(t in full_text for t in bhavnagar_terms)
-                elif "jamnagar" in c_clean:
-                    jamnagar_terms = ["jamnagar", "જામનગર", "reliance", "khambhalia"]
-                    matched_city = any(t in full_text for t in jamnagar_terms)
-                elif "junagadh" in c_clean:
-                    junagadh_terms = ["junagadh", "જૂનાગઢ", "keshod", "visavadar", "mangarol"]
-                    matched_city = any(t in full_text for t in junagadh_terms)
-                else:
-                    matched_city = (c_clean in full_text) or (c_clean in it_city.lower())
-
+                matched_city = any(t in full_text for t in terms) or (c_clean in it_city.lower()) or any(t in it_city.lower() for t in terms)
                 if not matched_city:
                     continue
 
@@ -431,23 +514,21 @@ class LiveStreamService:
 
     def _detect_city(self, text: str) -> str:
         text_lower = text.lower()
-        if any(w in text_lower or w in text for w in ["somnath", "veraval", "ગીર સોમનાથ", "વેરાવળ", "kodinar", "una"]):
+        if any(w in text_lower or w in text for w in ["somnath", "veraval", "ગીર સોમનાથ", "વેરાવળ", "kodinar", "una", "talala", "sutrapada"]):
+            if "kodinar" in text_lower or "કોડીનાર" in text:
+                return "Kodinar (Gir Somnath)"
+            if "una" in text_lower or "ઉના" in text:
+                return "Una (Gir Somnath)"
+            if "somnath" in text_lower or "સોમનાથ" in text:
+                return "Somnath (Gir Somnath)"
             return "Veraval (Gir Somnath)"
+
+        # Check districts with their full synonym lists
         for d in GUJARAT_DISTRICTS:
-            if d.lower() in text_lower:
+            terms = DISTRICT_MATCH_TERMS.get(d.lower(), [])
+            if any(t in text_lower or t in text for t in terms):
                 return d
-        # Gujarati city names
-        gu_map = {
-            "અમદાવાદ": "Ahmedabad", "સુરત": "Surat", "રાજકોટ": "Rajkot", "વડોદરા": "Vadodara",
-            "ભાવનગર": "Bhavnagar", "જામનગર": "Jamnagar", "જૂનાગઢ": "Junagadh", "ગાંધીનગર": "Gandhinagar",
-            "કચ્છ": "Kutch", "મોરબી": "Morbi", "સુરેન્દ્રનગર": "Surendranagar", "અમરેલી": "Amreli",
-            "પોરબંદર": "Porbandar", "દ્વારકા": "Dwarka", "મહેસાણા": "Mehsana", "પાટણ": "Patan",
-            "બનાસકાંઠા": "Banaskantha", "સાબરકાંઠા": "Sabarkantha", "ખેડા": "Kheda", "આણંદ": "Anand",
-            "ભરૂચ": "Bharuch", "નવસારી": "Navsari", "વલસાડ": "Valsad", "દાહોદ": "Dahod"
-        }
-        for gu_name, eng_name in gu_map.items():
-            if gu_name in text:
-                return eng_name
+
         return "All Gujarat"
 
     def _detect_crime_category(self, text: str) -> str:

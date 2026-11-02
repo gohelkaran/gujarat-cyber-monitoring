@@ -1653,18 +1653,21 @@ class InstagramService:
                 )
 
         if city and city.strip() and city.strip() != "All Gujarat":
-            city_term = city.strip()
-            if "somnath" in city_term.lower() or "gir" in city_term.lower():
-                # Comprehensive match across Gir Somnath District and its talukas
-                gir_somnath_keywords = [
-                    "%somnath%", "%veraval%", "%kodinar%", "%una%", "%talala%",
-                    "%sutrapada%", "%gadhada%", "%girsomnath%"
-                ]
-                somnath_filters = [CollectedItem.city.ilike(kw) for kw in gir_somnath_keywords] + \
-                                  [CollectedItem.caption.ilike(kw) for kw in gir_somnath_keywords] + \
-                                  [CollectedItem.source_account.ilike("%girsomnath%")]
-                items_q = items_q.filter(or_(*somnath_filters))
-            else:
+            city_term = city.strip().lower()
+            try:
+                from app.services.live_stream_service import DISTRICT_MATCH_TERMS
+                terms = DISTRICT_MATCH_TERMS.get(city_term)
+                if not terms:
+                    for k, v in DISTRICT_MATCH_TERMS.items():
+                        if k in city_term or city_term in k:
+                            terms = v
+                            break
+                if not terms:
+                    terms = [city_term]
+                city_filters = [CollectedItem.city.ilike(f"%{t}%") for t in terms[:10]] + \
+                               [CollectedItem.caption.ilike(f"%{t}%") for t in terms[:10]]
+                items_q = items_q.filter(or_(*city_filters))
+            except Exception:
                 items_q = items_q.filter(
                     or_(
                         CollectedItem.city.ilike(f"%{city_term}%"),

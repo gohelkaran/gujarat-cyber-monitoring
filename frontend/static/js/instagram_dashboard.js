@@ -1047,16 +1047,20 @@ const InstagramApp = {
 
         // 1. Instant (0ms) live client filter on active memory dataset
         const pool = (this._rawDataset && this._rawDataset.length > 0) ? this._rawDataset : (this._currentResults || []);
-        if (kw.length >= 1 && pool.length > 0) {
+        const cityFilter = (document.getElementById("filter-city")?.value || this.filters.city || "").trim().toLowerCase();
+
+        if ((kw.length >= 1 || cityFilter.length >= 1) && pool.length > 0) {
             const matched = pool.filter(r => {
                 const text = `${r.headline || ''} ${r.full_caption || r.caption || ''} ${r.city || ''} ${r.origin_label || ''} ${r.crime_category || ''} ${r.source_account || ''}`.toLowerCase();
-                return text.includes(kw);
+                const cityMatch = !cityFilter || text.includes(cityFilter) || (r.city && r.city.toLowerCase().includes(cityFilter));
+                const kwMatch = !kw || text.includes(kw);
+                return cityMatch && kwMatch;
             });
             if (matched.length > 0) {
                 this.renderResultsTable(matched, { total_count: matched.length, page: 1, total_pages: 1 });
                 const countLabel = document.getElementById("results-count-label");
                 if (countLabel) {
-                    countLabel.innerHTML = `<span class="badge bg-success font-mono me-1"><i class="bi bi-lightning-fill"></i>LIVE MATCH</span> Showing <strong>${matched.length}</strong> real news articles for "<em>${this.escapeHtml(val)}</em>"`;
+                    countLabel.innerHTML = `<span class="badge bg-success font-mono me-1"><i class="bi bi-lightning-fill"></i>LIVE MATCH</span> Showing <strong>${matched.length}</strong> real news articles for "<em>${this.escapeHtml(val || cityFilter)}</em>"`;
                 }
             }
         } else if (kw.length === 0 && pool.length > 0) {
@@ -1077,6 +1081,35 @@ const InstagramApp = {
         this.loadDashboardData(true);
     },
 
+    _syncQuickPills(cityVal) {
+        const pills = [
+            { id: "pill-all-gir-somnath", val: "Gir Somnath" },
+            { id: "pill-veraval", val: "Veraval" },
+            { id: "pill-somnath", val: "Somnath" },
+            { id: "pill-kodinar", val: "Kodinar" },
+            { id: "pill-una", val: "Una" },
+            { id: "pill-talala", val: "Talala" },
+            { id: "pill-sutrapada", val: "Sutrapada" },
+            { id: "pill-gir-gadhada", val: "Gir Gadhada" },
+            { id: "pill-all-gujarat", val: "" }
+        ];
+
+        pills.forEach(p => {
+            const btn = document.getElementById(p.id);
+            if (btn) {
+                if (p.val === cityVal || (!p.val && !cityVal)) {
+                    btn.classList.add("btn-outline-info", "active");
+                    btn.classList.remove("btn-outline-secondary");
+                } else {
+                    btn.classList.remove("btn-outline-info", "active");
+                    if (p.id !== "pill-all-gujarat") {
+                        btn.classList.add("btn-outline-secondary");
+                    }
+                }
+            }
+        });
+    },
+
     applyFilters() {
         this.filters.keyword = (document.getElementById("filter-keyword")?.value || "").trim();
         this.filters.city = (document.getElementById("filter-city")?.value || "").trim();
@@ -1085,6 +1118,7 @@ const InstagramApp = {
         this.filters.dateFrom = document.getElementById("filter-date-from")?.value || "";
         this.filters.dateTo = document.getElementById("filter-date-to")?.value || "";
         this.currentPage = 1;
+        this._syncQuickPills(this.filters.city);
         this.loadDashboardData(true);
     },
 
@@ -1547,35 +1581,7 @@ const InstagramApp = {
             select.value = talukaName;
         }
         this.filters.city = talukaName;
-
-        // Update active class on pill buttons
-        const pills = [
-            { id: "pill-all-gir-somnath", val: "Gir Somnath" },
-            { id: "pill-veraval", val: "Veraval" },
-            { id: "pill-somnath", val: "Somnath" },
-            { id: "pill-kodinar", val: "Kodinar" },
-            { id: "pill-una", val: "Una" },
-            { id: "pill-talala", val: "Talala" },
-            { id: "pill-sutrapada", val: "Sutrapada" },
-            { id: "pill-gir-gadhada", val: "Gir Gadhada" },
-            { id: "pill-all-gujarat", val: "" }
-        ];
-
-        pills.forEach(p => {
-            const btn = document.getElementById(p.id);
-            if (btn) {
-                if (p.val === talukaName) {
-                    btn.classList.add("btn-outline-info", "active");
-                    btn.classList.remove("btn-outline-secondary");
-                } else {
-                    btn.classList.remove("btn-outline-info", "active");
-                    if (p.id !== "pill-all-gujarat") {
-                        btn.classList.add("btn-outline-secondary");
-                    }
-                }
-            }
-        });
-
+        this._syncQuickPills(talukaName);
         this.applyFilters();
     },
 
