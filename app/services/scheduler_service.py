@@ -167,50 +167,16 @@ class BackgroundSchedulerService:
             from app.services.crime_feed_service import CrimeFeedService
             db = SessionLocal()
             try:
-                # 1. Instagram Ingestion
-                ig_svc = InstagramService(db)
-                ig_res = ig_svc.gather_keyword_news(
-                    city=None,
-                    keyword=None,
-                    officer_badge="AUTOMATED-SCHEDULER",
-                    officer_role="SYSTEM_DAEMON",
-                    actor_ip="127.0.0.1"
-                )
+                # Refresh real-time live stream buffer without storing to database
+                from app.services.live_stream_service import LiveStreamService
+                live_svc = LiveStreamService(db)
+                live_res = live_svc.refresh_live_stream()
+                total_avail = live_res.get("total_live_items", 0)
 
-                # 2. Facebook Ingestion
-                fb_svc = FacebookService(db)
-                fb_res = fb_svc.gather_facebook_posts(
-                    city=None,
-                    keyword=None,
-                    officer_badge="AUTOMATED-SCHEDULER",
-                    officer_role="SYSTEM_DAEMON",
-                    actor_ip="127.0.0.1"
-                )
-
-                # 3. Live Gujarat Crime Feeds & Police Press Releases Crawler
-                crime_svc = CrimeFeedService(db)
-                crime_res = crime_svc.sync_all_crime_intelligence()
-
-                # 4. Public Profile Social Harvester (Instagram & Facebook)
-                from app.services.social_harvester_service import SocialHarvesterService
-                harvester_svc = SocialHarvesterService(db)
-                harvester_res = harvester_svc.crawl_public_profiles(max_profiles=8)
-
-                total_gathered = (
-                    ig_res.get("items_gathered", 0) +
-                    fb_res.get("items_gathered", 0) +
-                    crime_res.get("live_ingested", 0) +
-                    crime_res.get("seed_ingested", 0) +
-                    harvester_res.get("items_ingested", 0)
-                )
-                total_avail = crime_res.get("total_available", 0) or (ig_res.get("total_available", 0) + fb_res.get("total_available", 0))
                 return {
-                    "items_gathered": total_gathered,
+                    "items_gathered": total_avail,
                     "total_available": total_avail,
-                    "instagram": ig_res,
-                    "facebook": fb_res,
-                    "crime_feeds": crime_res,
-                    "social_harvester": harvester_res
+                    "live_stream": live_res
                 }
             finally:
                 db.close()

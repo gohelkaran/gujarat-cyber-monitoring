@@ -48,6 +48,8 @@ from app.core.logging_config import get_logger
 
 from app.config.settings import get_settings
 
+from app.services.live_stream_service import LiveStreamService
+
 from app.integrations.adapters.instagram import InstagramAdapter, PERMITTED_SCOPES_INSTAGRAM_MONITORING
 
 from app.security.encryption import encrypt_secret, decrypt_secret, mask_token
@@ -1456,10 +1458,119 @@ class InstagramService:
 
         }
 
+    def save_record_to_db(
+        self,
+        item_data: Dict[str, Any],
+        officer_badge: str = "GJ-CYBER-8921",
+        officer_role: str = "LEAD_INVESTIGATOR",
+        actor_ip: str = "127.0.0.1",
+        officer_notes: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Explicitly persists a live stream news or social post to the permanent SQLite database.
+        Strictly triggered when an officer clicks 'Save Record'.
+        """
+        permalink = item_data.get("permalink") or ""
+        caption = item_data.get("caption") or item_data.get("title") or ""
+        headline = item_data.get("headline") or caption[:90]
+        ext_id = item_data.get("external_id") or item_data.get("id") or f"saved_{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        platform = item_data.get("platform") or "NEWS_FEED"
+        source_account = item_data.get("source_account") or "gujarat_police_source"
+        city = item_data.get("city") or "All Gujarat"
+
+        # Check existing record by permalink or external_id
+        existing = self.db.query(CollectedItem).filter(
+            or_(
+                CollectedItem.permalink == permalink,
+                CollectedItem.external_id == ext_id
+            )
+        ).first()
+
+        now = datetime.now(timezone.utc)
+        pub_dt = now
+        if item_data.get("published_at"):
+            try:
+                pub_dt = datetime.fromisoformat(item_data["published_at"].replace("Z", "+00:00"))
+            except Exception:
+                pass
+
+        raw_meta = item_data.get("raw_metadata") or {}
+        raw_meta.update({
+            "saved_by_officer": officer_badge,
+            "saved_at": now.isoformat(),
+            "officer_notes": officer_notes,
+            "origin_label": item_data.get("origin_label") or source_account,
+            "crime_category": item_data.get("crime_category") or "Cyber Crime & Public Safety"
+        })
+
+        if existing:
+            existing.caption = caption
+            existing.city = city
+            existing.raw_metadata = raw_meta
+            existing.is_demo_data = False
+            self.db.commit()
+            item_id = existing.id
+        else:
+            new_item = CollectedItem(
+                source_id=None,
+                external_id=ext_id,
+                platform=platform,
+                source_account=source_account,
+                city=city,
+                caption=caption,
+                media_type=item_data.get("media_type") or "ARTICLE",
+                permalink=permalink,
+                published_at=pub_dt,
+                collected_at=now,
+                like_count=item_data.get("likes_count") or item_data.get("like_count") or 0,
+                comments_count=item_data.get("comments_count") or 0,
+                is_demo_data=False,
+                raw_metadata=raw_meta
+            )
+            self.db.add(new_item)
+            self.db.commit()
+            self.db.refresh(new_item)
+            item_id = new_item.id
+
+        self.audit.log_security_event(
+            actor_id=officer_badge,
+            actor_role=officer_role,
+            actor_ip=actor_ip,
+            action=AuditAction.SOURCE_UPDATE,
+            resource_type="collected_items",
+            resource_id=item_id,
+            status="SUCCESS",
+            details={"action": "SAVED_TO_DATABASE", "headline": headline, "city": city}
+        )
+
+        return {
+            "status": "SUCCESS",
+            "item_id": item_id,
+            "message": f"Record saved permanently to Police Case Database (ID: {item_id[:8]}...)."
+        }
+
+    def unsave_record_from_db(
+        self,
+        item_id: str,
+        officer_badge: str = "GJ-CYBER-8921"
+    ) -> Dict[str, Any]:
+        """Removes a record from the database table."""
+        record = self.db.query(CollectedItem).filter(
+            or_(
+                CollectedItem.id == item_id,
+                CollectedItem.external_id == item_id,
+                CollectedItem.permalink == item_id
+            )
+        ).first()
+
+        if record:
+            self.db.delete(record)
+            self.db.commit()
+            return {"status": "SUCCESS", "message": "Record removed from Police Database."}
+        return {"status": "NOT_FOUND", "message": "Record not found in database."}
+
     # =========================================================================
-
     # 6. Dashboard Telemetry & Search Query
-
     # =========================================================================
 
     def get_monitoring_dashboard_data(
@@ -1472,16 +1583,37 @@ class InstagramService:
         account: Optional[str] = None,
         platform: Optional[str] = None,
         source_origin: Optional[str] = None,
+        view_mode: str = "live",
         page: int = 1,
         page_size: int = 20
     ) -> Dict[str, Any]:
-
         """
         Retrieves real Instagram news reels, Facebook posts, and Gujarat Crime Feeds.
-        Investigator can freely search any topic, crime type, news account, or district.
+        Supports view_mode='live' (unpersisted live stream) and view_mode='saved' (database records).
         """
-
         conn_status = self.get_connection_status()
+        saved_db_count = self.db.query(CollectedItem).count()
+
+        # VIEW MODE 1: LIVE STREAM (Unpersisted Real-Time Buffer - 1,000+ Real Articles)
+        if view_mode.lower() == "live":
+            live_svc = LiveStreamService(self.db)
+            stream_res = live_svc.get_live_stream(
+                keyword=keyword,
+                city=city,
+                account=account,
+                platform=platform,
+                source_origin=source_origin,
+                date_from=date_from,
+                date_to=date_to,
+                page=page,
+                page_size=page_size
+            )
+            stream_res["connection_status"] = conn_status
+            stream_res["view_mode"] = "live"
+            stream_res["metrics"]["saved_db_count"] = saved_db_count
+            return stream_res
+
+        # VIEW MODE 2: SAVED RECORDS (In Database Table)
 
         # Telemetry counts
         total_items = self.db.query(CollectedItem).count()

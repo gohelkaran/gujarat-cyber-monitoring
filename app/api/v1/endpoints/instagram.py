@@ -515,12 +515,14 @@ def get_dashboard_telemetry(
     account: Optional[str] = Query(None),
     platform: Optional[str] = Query(None),
     source_origin: Optional[str] = Query(None),
+    view_mode: str = Query("live", description="Either 'live' for real-time unpersisted stream, or 'saved' for database case records"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
     """
     Returns consolidated Instagram, Facebook, and Gujarat Crime Feeds telemetry:
+    - Supports view_mode='live' (1,000+ real-time stream articles) and view_mode='saved' (stored in database)
     - Connection & permission status
     - Collection status & error messages
     - Items retrieved and keyword matches count
@@ -537,12 +539,79 @@ def get_dashboard_telemetry(
         account=account,
         platform=platform,
         source_origin=source_origin,
+        view_mode=view_mode,
         page=page,
         page_size=page_size
     )
     return ApiResponse.success_response(
         data=data,
         message="Monitoring dashboard telemetry retrieved."
+    )
+
+
+class SaveRecordPayload(BaseModel):
+    item: Dict[str, Any] = Field(..., description="The live stream item payload to persist to DB")
+    notes: Optional[str] = Field(None, description="Optional officer investigation remarks")
+
+
+@router.post("/save-record", response_model=ApiResponse[dict])
+def save_record_to_database(
+    payload: SaveRecordPayload,
+    request: Request = None,
+    current_user: Optional[User] = Depends(get_current_active_user_optional),
+    db: Session = Depends(get_db)
+):
+    """
+    Explicitly saves a live stream news or social post into the permanent database.
+    Only triggered when an officer clicks 'Save Record'.
+    """
+    officer_badge = current_user.badge_number if current_user and hasattr(current_user, "badge_number") else "GJ-CYBER-8921"
+    officer_role = current_user.role.value if current_user and hasattr(current_user, "role") else "LEAD_INVESTIGATOR"
+    actor_ip = request.client.host if request and hasattr(request, "client") and request.client else "127.0.0.1"
+
+    service = InstagramService(db)
+    res = service.save_record_to_db(
+        item_data=payload.item,
+        officer_badge=officer_badge,
+        officer_role=officer_role,
+        actor_ip=actor_ip,
+        officer_notes=payload.notes
+    )
+    return ApiResponse.success_response(
+        data=res,
+        message=res.get("message", "Record saved to Police Database.")
+    )
+
+
+class UnsaveRecordPayload(BaseModel):
+    item_id: str = Field(..., description="ID or permalink of the item to remove from DB")
+
+
+@router.post("/unsave-record", response_model=ApiResponse[dict])
+def unsave_record_from_database(
+    payload: UnsaveRecordPayload,
+    current_user: Optional[User] = Depends(get_current_active_user_optional),
+    db: Session = Depends(get_db)
+):
+    """Removes a saved record from the database table."""
+    officer_badge = current_user.badge_number if current_user and hasattr(current_user, "badge_number") else "GJ-CYBER-8921"
+    service = InstagramService(db)
+    res = service.unsave_record_from_db(item_id=payload.item_id, officer_badge=officer_badge)
+    return ApiResponse.success_response(
+        data=res,
+        message=res.get("message", "Record removed from database.")
+    )
+
+
+@router.post("/refresh-live-stream", response_model=ApiResponse[dict])
+def refresh_live_stream_cache(db: Session = Depends(get_db)):
+    """Triggers refresh of the 1,000+ real-time news articles in the live buffer without DB writes."""
+    from app.services.live_stream_service import LiveStreamService
+    svc = LiveStreamService(db)
+    res = svc.refresh_live_stream()
+    return ApiResponse.success_response(
+        data=res,
+        message=res.get("message", "Live Stream refreshed.")
     )
 
 

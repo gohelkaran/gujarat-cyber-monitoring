@@ -11,13 +11,126 @@ const InstagramApp = {
         platform: 'ALL',
         sourceOrigin: '',
         dateFrom: '',
-        dateTo: ''
+        dateTo: '',
+        viewMode: 'live'
     },
     currentMatchId: null,
     currentPage: 1,
     pageSize: 20,
     _lastKnownCount: 0,
     _newPostAlertShown: false,
+    _currentResults: [],
+    _currentModalItem: null,
+
+    setViewMode(mode) {
+        this.filters.viewMode = mode;
+        const btnLive = document.getElementById("btn-mode-live");
+        const btnSaved = document.getElementById("btn-mode-saved");
+        if (mode === "live") {
+            btnLive?.classList.add("btn-info", "active");
+            btnLive?.classList.remove("btn-outline-info");
+            btnSaved?.classList.remove("btn-warning", "active");
+            btnSaved?.classList.add("btn-outline-warning");
+        } else {
+            btnSaved?.classList.add("btn-warning", "active");
+            btnSaved?.classList.remove("btn-outline-warning");
+            btnLive?.classList.remove("btn-info", "active");
+            btnLive?.classList.add("btn-outline-info");
+        }
+        this.currentPage = 1;
+        this.loadDashboardData(true);
+    },
+
+    async saveRecord(itemId, btnElem) {
+        let item = this._currentResults?.find(r => r.id === itemId);
+        if (!item && this._currentModalItem && this._currentModalItem.id === itemId) {
+            item = this._currentModalItem;
+        }
+        if (!item) return;
+
+        if (btnElem) {
+            btnElem.disabled = true;
+            btnElem.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Saving...`;
+        }
+
+        try {
+            const res = await fetch("/api/v1/instagram/save-record", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ item: item })
+            });
+            const json = await res.json();
+            this.showToast(json.message || "Record saved permanently to Police Case Database!", "success");
+            item.is_saved_in_db = true;
+            item.review_status = "SAVED_IN_DB";
+            if (btnElem) {
+                btnElem.disabled = false;
+                btnElem.className = "btn btn-xs btn-success font-mono";
+                btnElem.innerHTML = `<i class="bi bi-bookmark-check-fill me-1"></i> Saved`;
+                btnElem.onclick = (e) => { e.stopPropagation(); this.unsaveRecord(itemId, btnElem); };
+            }
+            const savedBadge = document.getElementById("saved-count-badge");
+            if (savedBadge) {
+                savedBadge.textContent = parseInt(savedBadge.textContent || "0") + 1;
+            }
+        } catch (err) {
+            console.error("Save record error:", err);
+            this.showToast("Failed to save record to database.", "danger");
+            if (btnElem) {
+                btnElem.disabled = false;
+                btnElem.innerHTML = `<i class="bi bi-bookmark-plus me-1"></i> Save Record`;
+            }
+        }
+    },
+
+    async unsaveRecord(itemId, btnElem) {
+        if (btnElem) {
+            btnElem.disabled = true;
+            btnElem.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span>`;
+        }
+        try {
+            const res = await fetch("/api/v1/instagram/unsave-record", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ item_id: itemId })
+            });
+            const json = await res.json();
+            this.showToast(json.message || "Record removed from database.", "info");
+            if (this.filters.viewMode === "saved") {
+                await this.loadDashboardData(true);
+            } else {
+                let item = this._currentResults?.find(r => r.id === itemId);
+                if (item) {
+                    item.is_saved_in_db = false;
+                    item.review_status = "LIVE_UNSAVED";
+                }
+                if (btnElem) {
+                    btnElem.disabled = false;
+                    btnElem.className = "btn btn-xs btn-outline-success font-mono";
+                    btnElem.innerHTML = `<i class="bi bi-bookmark-plus me-1"></i> Save Record`;
+                    btnElem.onclick = (e) => { e.stopPropagation(); this.saveRecord(itemId, btnElem); };
+                }
+                const savedBadge = document.getElementById("saved-count-badge");
+                if (savedBadge) {
+                    const cur = parseInt(savedBadge.textContent || "1");
+                    savedBadge.textContent = Math.max(0, cur - 1);
+                }
+            }
+        } catch (err) {
+            console.error("Unsave record error:", err);
+            this.showToast("Failed to remove record.", "danger");
+            if (btnElem) {
+                btnElem.disabled = false;
+                btnElem.innerHTML = `<i class="bi bi-bookmark-check-fill me-1"></i> Saved`;
+            }
+        }
+    },
+
+    saveModalRecord() {
+        if (!this._currentModalItem) return;
+        const btn = document.getElementById("modal-btn-save-record");
+        this.saveRecord(this._currentModalItem.id, btn);
+    },
 
     init() {
         console.log("Initializing Social Media Intelligence Dashboard Controller...");
@@ -319,6 +432,7 @@ const InstagramApp = {
             // Send date filters as full ISO datetime strings (start of day / end of day)
             if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom + "T00:00:00");
             if (this.filters.dateTo) params.append("date_to", this.filters.dateTo + "T23:59:59");
+            params.append("view_mode", this.filters.viewMode || "live");
             params.append("page", this.currentPage || 1);
             params.append("page_size", this.pageSize || 20);
 
@@ -393,6 +507,15 @@ const InstagramApp = {
         document.getElementById("kpi-pending-review-count").textContent = metrics.pending_review_matches || 0;
         document.getElementById("kpi-keywords-count").textContent = metrics.active_keywords_count || 0;
 
+        const liveBadge = document.getElementById("live-count-badge");
+        if (liveBadge && metrics.total_items_retrieved !== undefined) {
+            liveBadge.textContent = `${metrics.total_items_retrieved} Real Articles`;
+        }
+        const savedBadge = document.getElementById("saved-count-badge");
+        if (savedBadge && metrics.saved_db_count !== undefined) {
+            savedBadge.textContent = metrics.saved_db_count;
+        }
+
         const lastSync = conn.last_successful_sync_at;
         if (lastSync) {
             document.getElementById("kpi-last-collection-time").textContent = `Last sync: ${new Date(lastSync).toLocaleTimeString()}`;
@@ -423,6 +546,7 @@ const InstagramApp = {
     },
 
     renderResultsTable(results, pagination) {
+        this._currentResults = results || [];
         const tbody = document.getElementById("monitoring-results-tbody");
         const countLabel = document.getElementById("results-count-label");
         const total = pagination.total_count || 0;
@@ -461,9 +585,18 @@ const InstagramApp = {
 
         const now = new Date();
         tbody.innerHTML = results.map(row => {
-            const demoBadge = row.is_demo_data
-                ? `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-cpu me-1"></i>SANDBOX</span>`
-                : `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-broadcast me-1"></i>REAL INTEL</span>`;
+            const isSaved = row.is_saved_in_db || row.review_status === "SAVED_IN_DB" || row.review_status === "SAVED_CASE_RECORD";
+            const dbStatusBadge = isSaved
+                ? `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-bookmark-check-fill me-1"></i>SAVED</span>`
+                : `<span class="badge bg-secondary font-mono px-2 py-1 text-light"><i class="bi bi-broadcast me-1"></i>LIVE STREAM</span>`;
+
+            const saveBtn = isSaved
+                ? `<button class="btn btn-xs btn-success font-mono" onclick="event.stopPropagation(); InstagramApp.unsaveRecord('${row.id}', this)" title="Remove from Police Database">
+                     <i class="bi bi-bookmark-check-fill me-1"></i> Saved
+                   </button>`
+                : `<button class="btn btn-xs btn-outline-success font-mono" onclick="event.stopPropagation(); InstagramApp.saveRecord('${row.id}', this)" title="Save this evidence record to SQLite database">
+                     <i class="bi bi-bookmark-plus me-1"></i> Save Record
+                   </button>`;
 
             // Check if this post was collected very recently (last 10 min = possibly new)
             const collectedAt = row.collected_at ? new Date(row.collected_at) : null;
@@ -554,9 +687,10 @@ const InstagramApp = {
                             <i class="bi bi-shield-exclamation me-1"></i>${this.escapeHtml(crimeCategory)}
                         </span>
                     </td>
-                    <td>${demoBadge}</td>
+                    <td>${dbStatusBadge}</td>
                     <td class="text-end">
-                        <div class="d-flex justify-content-end gap-1">
+                        <div class="d-flex justify-content-end align-items-center gap-1">
+                            ${saveBtn}
                             ${row.permalink ? `
                                 <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs ${linkBtnClass} font-mono" title="Open direct link: ${this.escapeHtml(row.permalink)}">
                                     <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel} <i class="bi bi-box-arrow-up-right ms-1"></i>
@@ -600,18 +734,29 @@ const InstagramApp = {
         document.getElementById("modal-current-match-id").value = matchId;
 
         try {
-            const res = await fetch(`/api/v1/instagram/items/${itemId}`);
-            const json = await res.json();
-            if (json && json.status === "SUCCESS") {
-                const item = json.data;
+            let item = this._currentResults?.find(r => r.id === itemId || r.item_id === itemId);
+            if (!item) {
+                try {
+                    const res = await fetch(`/api/v1/instagram/items/${itemId}`);
+                    const json = await res.json();
+                    if (json && json.status === "SUCCESS") {
+                        item = json.data;
+                    }
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+
+            if (item) {
                 this.currentItemMetadata = item;
+                this._currentModalItem = item;
 
                 const rawMeta = item.raw_metadata || {};
-                const originLabel = rawMeta.origin_label || `@${item.source_account}`;
+                const originLabel = rawMeta.origin_label || item.origin_label || `@${item.source_account}`;
                 const originEl = document.getElementById("modal-origin-label");
                 if (originEl) originEl.textContent = originLabel;
 
-                const crimeCat = rawMeta.crime_category || "Cyber Crime & Public Safety";
+                const crimeCat = rawMeta.crime_category || item.crime_category || "Cyber Crime & Public Safety";
                 const catEl = document.getElementById("modal-crime-category");
                 if (catEl) catEl.textContent = crimeCat;
 
@@ -645,7 +790,7 @@ const InstagramApp = {
                 document.getElementById("modal-media-type").textContent = `${plat} ${item.media_type || 'POST'}`;
                 
                 const sharesCount = item.shares_count || (item.raw_metadata?.distribution?.shares_count) || (item.raw_metadata?.engagement?.shares) || 0;
-                document.getElementById("modal-engagement-metrics").textContent = `Likes: ${item.like_count || 0} • Comments: ${item.comments_count || 0}`;
+                document.getElementById("modal-engagement-metrics").textContent = `Likes: ${item.like_count || item.likes_count || 0} • Comments: ${item.comments_count || 0}`;
                 
                 const sharesEl = document.getElementById("modal-shares-count");
                 if (sharesEl) sharesEl.innerHTML = `<i class="bi bi-share me-1"></i>${sharesCount} Viral Shares`;
@@ -679,7 +824,20 @@ const InstagramApp = {
                     permalinkEl.textContent = 'None provided by source';
                 }
 
-                document.getElementById("modal-full-caption").textContent = item.caption || '(Empty caption)';
+                document.getElementById("modal-full-caption").textContent = item.caption || item.title || '(Empty caption)';
+
+                // Configure Modal Save Record Button
+                const modalSaveBtn = document.getElementById("modal-btn-save-record");
+                if (modalSaveBtn) {
+                    const isSaved = item.is_saved_in_db || item.review_status === "SAVED_IN_DB" || item.review_status === "SAVED_CASE_RECORD";
+                    if (isSaved) {
+                        modalSaveBtn.className = "btn btn-sm btn-success font-mono";
+                        modalSaveBtn.innerHTML = `<i class="bi bi-bookmark-check-fill me-1"></i> Saved in Database`;
+                    } else {
+                        modalSaveBtn.className = "btn btn-sm btn-outline-success font-mono";
+                        modalSaveBtn.innerHTML = `<i class="bi bi-bookmark-plus me-1"></i> Save Record to Database`;
+                    }
+                }
 
                 // Render Extracted Hashtags
                 const hashtagsEl = document.getElementById("modal-hashtags-list");

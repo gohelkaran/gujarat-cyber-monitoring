@@ -194,6 +194,24 @@
         </div>
     </div>
 
+    <!-- View Mode Switcher: Live Monitoring vs Case Records in Database -->
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2 p-2 rounded" style="background: rgba(0,0,0,0.4); border: 1px solid var(--soc-border);">
+        <div class="d-flex align-items-center gap-2">
+            <span class="text-secondary small font-mono fw-bold">DATA VIEW MODE:</span>
+            <div class="btn-group" role="group" aria-label="View Mode">
+                <button type="button" class="btn btn-sm btn-info active font-mono fw-bold px-3" id="btn-mode-live" onclick="InstagramApp.setViewMode('live')">
+                    <i class="bi bi-broadcast me-1 text-danger"></i> 🔴 LIVE STREAM (<span id="live-count-badge">1,000+ Real Articles</span>)
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-warning font-mono fw-bold px-3" id="btn-mode-saved" onclick="InstagramApp.setViewMode('saved')">
+                    <i class="bi bi-bookmark-check-fill me-1 text-warning"></i> SAVED CASE RECORDS (<span id="saved-count-badge">0</span> In Database)
+                </button>
+            </div>
+        </div>
+        <div class="small font-mono text-secondary d-none d-md-block">
+            <i class="bi bi-shield-check text-success me-1"></i> <span class="text-info">Zero Automatic DB Writes:</span> Live items stay in real-time stream. Click <strong>[Save Record]</strong> to persist evidence to database.
+        </div>
+    </div>
+
     <!-- Unified Multi-Platform Stream Selector (All Gujarat Social Media & News Intelligence) -->
     <div class="card mb-3 text-light" style="background: var(--soc-surface); border: 1px solid var(--soc-border);">
         <div class="card-body py-2 px-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
@@ -353,8 +371,8 @@
                         <th style="width: 135px;">PUBLISHED</th>
                         <th>CRIME INTELLIGENCE &amp; REPORT CONTENT</th>
                         <th style="width: 140px;">THREAT CATEGORY</th>
-                        <th style="width: 110px;">DATA MODE</th>
-                        <th style="width: 130px;" class="text-end">ACTION</th>
+                        <th style="width: 125px;">DB STATUS</th>
+                        <th style="width: 180px;" class="text-end">ACTION</th>
                     </tr>
                 </thead>
                 <tbody id="monitoring-results-tbody">
@@ -489,12 +507,19 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-2">
-                <input type="hidden" id="modal-current-match-id">
-                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-sm btn-soc-primary" onclick="InstagramApp.submitReview()">
-                    <i class="bi bi-check-circle me-1"></i> Save Review Record
-                </button>
+            <div class="modal-footer border-secondary py-2 justify-content-between">
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-success font-mono" id="modal-btn-save-record" onclick="InstagramApp.saveModalRecord()">
+                        <i class="bi bi-bookmark-plus me-1"></i> Save Record to Database
+                    </button>
+                </div>
+                <div class="d-flex gap-2">
+                    <input type="hidden" id="modal-current-match-id">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-soc-primary" onclick="InstagramApp.submitReview()">
+                        <i class="bi bi-check-circle me-1"></i> Save Assessment Notes
+                    </button>
+                </div>
             </div>
         </div>
     </div>
