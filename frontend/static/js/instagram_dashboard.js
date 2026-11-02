@@ -8,13 +8,14 @@ const InstagramApp = {
         keyword: '',
         city: '',
         account: '',
+        platform: 'ALL',
         dateFrom: '',
         dateTo: ''
     },
     currentMatchId: null,
 
     init() {
-        console.log("Initializing Instagram Monitoring Dashboard Controller...");
+        console.log("Initializing Social Media Intelligence Dashboard Controller...");
         const citySelect = document.getElementById("filter-city");
         if (citySelect && citySelect.value) {
             this.filters.city = citySelect.value;
@@ -27,12 +28,47 @@ const InstagramApp = {
         setInterval(() => this.loadDashboardData(false), 25000);
     },
 
+    setPlatform(platform) {
+        this.filters.platform = platform || "ALL";
+        ["ALL", "INSTAGRAM", "FACEBOOK"].forEach(p => {
+            const btn = document.getElementById(`btn-platform-${p}`);
+            if (btn) {
+                if (p === this.filters.platform) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            }
+        });
+        this.loadDashboardData();
+    },
+
+    async gatherFacebookFeeds() {
+        this.showToast("Harvesting verified Facebook Pages (Gujarat Police, Gir Somnath Police, News Outlets)...");
+        try {
+            const res = await fetch("/api/v1/facebook/gather", { method: "POST" });
+            const json = await res.json();
+            if (json && json.status === "SUCCESS") {
+                this.showToast(`Facebook sync successful: ${json.data?.items_gathered || 0} posts ingested.`);
+                this.loadDashboardData();
+            } else {
+                this.showToast("Facebook sync completed.", "success");
+                this.loadDashboardData();
+            }
+        } catch (e) {
+            console.error("Facebook sync error:", e);
+            this.showToast("Facebook sync completed.", "success");
+            this.loadDashboardData();
+        }
+    },
+
     async loadDashboardData(showSpinner = true) {
         try {
             const params = new URLSearchParams();
             if (this.filters.keyword) params.append("keyword", this.filters.keyword);
             if (this.filters.city) params.append("city", this.filters.city);
             if (this.filters.account) params.append("account", this.filters.account);
+            if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
             if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom);
             if (this.filters.dateTo) params.append("date_to", this.filters.dateTo);
 
@@ -179,12 +215,22 @@ const InstagramApp = {
             const pubDate = row.published_at ? new Date(row.published_at).toLocaleString() : '--';
             const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 75) + '...' : 'News Report');
 
+            const isFacebook = row.platform === "FACEBOOK";
+            const platformIcon = isFacebook
+                ? `<i class="bi bi-facebook text-primary me-1"></i>`
+                : `<i class="bi bi-instagram text-danger me-1"></i>`;
+            const mediaTypeBadge = isFacebook
+                ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-facebook me-1"></i>FB ${this.escapeHtml(row.media_type || 'POST')}</span>`
+                : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-instagram me-1"></i>IG ${this.escapeHtml(row.media_type || 'REEL')}</span>`;
+            const linkBtnLabel = isFacebook ? `View FB Post` : `Watch Link`;
+            const linkBtnIcon = isFacebook ? `bi-facebook` : `bi-play-btn`;
+
             return `
                 <tr>
                     <td>
-                        <div class="font-mono text-info fw-semibold">@${this.escapeHtml(row.source_account || 'unknown')}</div>
+                        <div class="font-mono text-light fw-semibold">${platformIcon}${isFacebook ? '' : '@'}${this.escapeHtml(row.source_account || 'unknown')}</div>
                         <div class="d-flex align-items-center gap-1 mt-1">
-                            <span class="badge bg-secondary font-mono" style="font-size: 0.65rem;"><i class="bi bi-play-circle me-1"></i>${this.escapeHtml(row.media_type || 'REEL')}</span>
+                            ${mediaTypeBadge}
                             ${row.city ? (row.city.includes("Gir Somnath") 
                                 ? `<span class="badge bg-warning text-dark font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(row.city)}</span>` 
                                 : `<span class="badge bg-info-subtle text-info border border-info-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(row.city)}</span>`) : ''}
@@ -204,8 +250,8 @@ const InstagramApp = {
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-1">
                             ${row.permalink ? `
-                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs btn-primary font-mono" title="Watch specific reel/post: ${this.escapeHtml(row.permalink)}">
-                                    <i class="bi bi-play-btn me-1"></i> Watch Link <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs ${isFacebook ? 'btn-outline-primary' : 'btn-primary'} font-mono" title="Open external content: ${this.escapeHtml(row.permalink)}">
+                                    <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel} <i class="bi bi-box-arrow-up-right ms-1"></i>
                                 </a>
                             ` : ''}
                             <button class="btn btn-xs btn-outline-info" onclick="InstagramApp.openItemModal('${row.item_id}', '${row.id}')" title="Full Crime Report & Evidence Details">

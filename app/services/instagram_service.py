@@ -1463,25 +1463,16 @@ class InstagramService:
     # =========================================================================
 
     def get_monitoring_dashboard_data(
-
         self,
-
         date_from: Optional[datetime] = None,
-
         date_to: Optional[datetime] = None,
-
         source_id: Optional[str] = None,
-
         keyword: Optional[str] = None,
-
         city: Optional[str] = None,
-
         account: Optional[str] = None,
-
+        platform: Optional[str] = None,
         page: int = 1,
-
         page_size: int = 20
-
     ) -> Dict[str, Any]:
 
         """
@@ -1507,6 +1498,9 @@ class InstagramService:
         # Build investigation query
 
         items_q = self.db.query(CollectedItem)
+
+        if platform and platform.strip() and platform.strip().upper() != "ALL":
+            items_q = items_q.filter(CollectedItem.platform == platform.strip().upper())
 
         if city and city.strip() and city.strip() != "All Gujarat":
             city_term = city.strip()
@@ -1587,9 +1581,8 @@ class InstagramService:
             results_rows.append({
 
                 "id": it.id,
-
                 "item_id": it.id,
-
+                "platform": it.platform or "INSTAGRAM",
                 "source_account": it.source_account or "sandeshnews",
 
                 "city": it.city or "All Gujarat",

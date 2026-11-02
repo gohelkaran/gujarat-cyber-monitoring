@@ -163,18 +163,37 @@ class BackgroundSchedulerService:
         # Ingest in database using a fresh thread-safe session
         def _db_ingest():
             from app.services.instagram_service import InstagramService
+            from app.services.facebook_service import FacebookService
             db = SessionLocal()
             try:
-                svc = InstagramService(db)
-                # Ingest verified news with priority for Gir Somnath
-                res = svc.gather_keyword_news(
+                # 1. Instagram Ingestion
+                ig_svc = InstagramService(db)
+                ig_res = ig_svc.gather_keyword_news(
                     city=None,
                     keyword=None,
                     officer_badge="AUTOMATED-SCHEDULER",
                     officer_role="SYSTEM_DAEMON",
                     actor_ip="127.0.0.1"
                 )
-                return res
+
+                # 2. Facebook Ingestion
+                fb_svc = FacebookService(db)
+                fb_res = fb_svc.gather_facebook_posts(
+                    city=None,
+                    keyword=None,
+                    officer_badge="AUTOMATED-SCHEDULER",
+                    officer_role="SYSTEM_DAEMON",
+                    actor_ip="127.0.0.1"
+                )
+
+                total_gathered = ig_res.get("items_gathered", 0) + fb_res.get("items_gathered", 0)
+                total_avail = ig_res.get("total_available", 0) + fb_res.get("total_available", 0)
+                return {
+                    "items_gathered": total_gathered,
+                    "total_available": total_avail,
+                    "instagram": ig_res,
+                    "facebook": fb_res
+                }
             finally:
                 db.close()
 

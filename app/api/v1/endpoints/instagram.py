@@ -512,17 +512,18 @@ def get_dashboard_telemetry(
     keyword: Optional[str] = Query(None),
     city: Optional[str] = Query(None),
     account: Optional[str] = Query(None),
+    platform: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
     """
-    Returns consolidated Instagram monitoring telemetry:
+    Returns consolidated Instagram & Facebook monitoring telemetry:
     - Connection & permission status
     - Collection status & error messages
     - Items retrieved and keyword matches count
     - Configured keywords
-    - Filterable monitoring results table by city, keyword, account, and date range
+    - Filterable monitoring results table by platform, city, keyword, account, and date range
     """
     service = InstagramService(db)
     data = service.get_monitoring_dashboard_data(
@@ -532,6 +533,7 @@ def get_dashboard_telemetry(
         keyword=keyword,
         city=city,
         account=account,
+        platform=platform,
         page=page,
         page_size=page_size
     )
