@@ -44,22 +44,13 @@
                 <span id="soc-utc-clock">{{ current_time_utc }}</span>
             </div>
 
-            <!-- Role Simulator / Active Identity Dropdown -->
-            <div class="dropdown">
-                <button class="btn btn-sm btn-soc-outline dropdown-toggle" type="button" id="roleSelectorBtn" data-bs-toggle="dropdown" aria-expanded="false" title="Active Officer Role">
-                    <i class="bi bi-person-badge me-1 text-info"></i>
-                    <span id="active-officer-label">Insp. R. K. Vala</span>
-                    <span class="badge bg-secondary ms-1 font-mono" id="active-role-badge">LEAD_INVESTIGATOR</span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="roleSelectorBtn">
-                    <li><h6 class="dropdown-header">Active Security Clearance</h6></li>
-                    <li><button class="dropdown-item active" type="button" onclick="SocDashboard.setRole('LEAD_INVESTIGATOR', 'Insp. R. K. Vala [GJ-CYBER-8921]')"><i class="bi bi-check2 me-2"></i>Lead Investigator (Default)</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="SocDashboard.setRole('CYBER_ANALYST', 'Analyst P. M. Dave [GJ-CYBER-7410]')"><i class="bi bi-shield me-2"></i>Cyber Analyst</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="SocDashboard.setRole('NODAL_OFFICER', 'SP Cyber CID [GJ-CYBER-0012]')"><i class="bi bi-award me-2"></i>Nodal Officer (SP/DySP)</button></li>
-                    <li><button class="dropdown-item" type="button" onclick="SocDashboard.setRole('AUDITOR', 'Auditor V. G. Patel [GJ-AUDIT-004]')"><i class="bi bi-journal-check me-2"></i>Compliance Auditor</button></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><button class="dropdown-item text-danger" type="button" onclick="SocDashboard.setRole('UNAUTHORIZED', 'Public / Unauthorized User')"><i class="bi bi-shield-x me-2"></i>Simulate 403 Forbidden State</button></li>
-                </ul>
+            <!-- Official Live Status & Control Room Badge -->
+            <div class="d-flex align-items-center gap-2">
+                <div class="d-flex align-items-center gap-2 px-3 py-1 rounded-pill" style="background: rgba(13, 110, 253, 0.12); border: 1px solid rgba(13, 110, 253, 0.35);">
+                    <i class="bi bi-shield-lock-fill text-info" style="font-size: 0.85rem;"></i>
+                    <span class="text-light fw-semibold" style="font-size: 0.8rem; letter-spacing: 0.3px;">CYBER COMMAND CONSOLE</span>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill font-mono" style="font-size: 0.68rem; letter-spacing: 0.5px;">ACTIVE</span>
+                </div>
             </div>
 
             <!-- Dark / Light Theme Toggle -->
