@@ -350,13 +350,15 @@ def get_oauth_authorize_url(
     )
 
 
-@router.get("/oauth/callback", response_model=ApiResponse[dict])
-@router.post("/oauth/callback", response_model=ApiResponse[dict])
+@router.get("/oauth/callback")
+@router.post("/oauth/callback")
 def handle_oauth_callback(
-    code: str = Query(..., description="Authorization code returned by Meta dialog"),
-    redirect_uri: str = Query("http://localhost:8080/api/v1/instagram/oauth/callback"),
+    request: Request,
+    code: Optional[str] = Query(None, description="Authorization code returned by Meta dialog"),
+    error: Optional[str] = Query(None),
+    error_description: Optional[str] = Query(None),
+    redirect_uri: Optional[str] = Query(None),
     mandate_ref: str = Query("COMM-SURAT-CYBER-2026-012"),
-    request: Request = None,
     current_user: Optional[User] = Depends(get_current_active_user_optional),
     db: Session = Depends(get_db)
 ):
@@ -364,19 +366,35 @@ def handle_oauth_callback(
     Handles OAuth code exchange, requests long-lived token, discovers accessible
     Instagram Business/Creator accounts, and creates/updates the monitored source.
     """
+    from starlette.responses import RedirectResponse
+
+    # If opened in browser without code or on cancellation
+    if not code:
+        if error:
+            logger.warning(f"Meta OAuth error received: {error} - {error_description}")
+        return RedirectResponse(url="/?oauth_status=cancelled", status_code=302)
+
     officer_badge = current_user.badge_number if current_user and hasattr(current_user, "badge_number") else "GJ-CYBER-8921"
     officer_role = current_user.role.value if current_user and hasattr(current_user, "role") else "LEAD_INVESTIGATOR"
     actor_ip = request.client.host if request and hasattr(request, "client") and request.client else "127.0.0.1"
 
+    effective_redirect_uri = redirect_uri or str(request.url).split("?")[0]
+
     service = InstagramService(db)
     res = service.exchange_oauth_code(
         code=code,
-        redirect_uri=redirect_uri,
+        redirect_uri=effective_redirect_uri,
         mandate_ref=mandate_ref,
         officer_badge=officer_badge,
         officer_role=officer_role,
         actor_ip=actor_ip
     )
+
+    # If browser GET request, redirect smoothly to dashboard with success query param
+    accept_header = request.headers.get("accept", "")
+    if "text/html" in accept_header:
+        return RedirectResponse(url="/?oauth_status=success", status_code=302)
+
     if not res.get("success"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
