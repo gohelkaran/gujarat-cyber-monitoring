@@ -1693,79 +1693,15 @@ class InstagramService:
         # Verified Gujarati news reporting feeds with confirmed, real Instagram reel URLs
         VERIFIED_NEWS_CATALOG = [
             # -------------------------------------------------------------
-            # GIR SOMNATH DISTRICT & TALUKAS - MULTI-SOURCE & CITIZEN POSTS
+            # GIR SOMNATH OFFICIAL DISTRICT POLICE BULLETIN
             # -------------------------------------------------------------
             {
-                "shortcode": "gs_veraval_01",
-                "permalink": "https://www.instagram.com/reel/DcJdJixIP8d/",
-                "source_account": "sandeshnews",
-                "city": "Veraval (Gir Somnath)",
-                "caption": "Sandesh News Report: Veraval Cyber Crime Cell Busts Inter-State Banking Syndicate | Gir Somnath District Police apprehend cyber fraud gang targeting Veraval port merchants and citizens with malicious KYC update APKs. Over Rs. 18.4 Lakh frozen via 1930 NCRP portal. Public advisory: Banks never send APK links via SMS. Report immediately on 1930. #SandeshNews #Veraval #CyberCrime #BankFraud #GirSomnath",
-                "published_days_ago": 1
-            },
-            {
-                "shortcode": "gs_somnath_02",
-                "permalink": "https://www.instagram.com/reel/DW1bDOKk7V0/",
-                "source_account": "tv9gujarati",
-                "city": "Somnath (Gir Somnath)",
-                "caption": "TV9 Gujarati Exclusive: Somnath Cyber Alert - Beware of Fake Temple VIP Darshan & Room Booking Portals | TV9 news report on pilgrims visiting Somnath Temple being cheated by unauthorized websites and Instagram profiles claiming VIP pass allocations and trust guesthouse bookings. Official bookings only via somnath.org. #TV9Gujarati #SomnathTemple #GirSomnath #CyberSafety #PilgrimAlert #PrabhasPatan",
-                "published_days_ago": 1
-            },
-            {
-                "shortcode": "gs_kodinar_03",
-                "permalink": "https://www.instagram.com/reel/Dc02y5CTgs_/",
-                "source_account": "gujaratfirst",
-                "city": "Kodinar (Gir Somnath)",
-                "caption": "Gujarat First Investigation: Kodinar Cyber Fraud Alert - Electricity Power Disconnection Scam | Fraudsters sending threatening SMS to farmers and shopkeepers in Kodinar claiming pending electricity bills. Victims tricked into installing screen sharing apps. Kodinar Police & PGVCL urge citizens to ignore unauthorized payment links. #GujaratFirst #Kodinar #GirSomnath #ElectricityScam #PGVCL #CyberCrime",
-                "published_days_ago": 2
-            },
-            {
-                "shortcode": "gs_una_04",
-                "permalink": "https://www.instagram.com/reel/DeOsb4CiU8d/",
-                "source_account": "divyabhaskar_official",
-                "city": "Una (Gir Somnath)",
-                "caption": "Divya Bhaskar Crime Watch: Una Cyber Crime Advisory - Instant Loan App Blackmail Network | Una police registers complaint against Chinese-backed illegal lending APKs harassing borrowers with morphed contacts. Una Cyber Cell advises citizens never to permit contact list or camera access to unverified loan applications. #DivyaBhaskar #Una #GirSomnath #LoanAppScam #CyberExtortion",
-                "published_days_ago": 2
-            },
-            {
-                "shortcode": "gs_talala_05",
-                "permalink": "https://www.instagram.com/reel/De4bD6tyl-M/",
-                "source_account": "abpasmitaofficial",
-                "city": "Talala (Gir Somnath)",
-                "caption": "ABP Asmita News: Talala Cyber Alert - Bogus Agricultural Wholesale Trading Scams | Talala Gir mango farmers and traders targeted by fraudulent online buyers posing as institutional traders from Mumbai. Fake UPI payment screenshots sent. Police guide on verifying banking credit alerts before dispatching goods. #ABPAsmita #Talala #GirSomnath #KesarMango #CyberCrime #AgriculturalScam",
-                "published_days_ago": 3
-            },
-            {
-                "shortcode": "gs_sutrapada_06",
-                "permalink": "https://www.instagram.com/reel/Deob9ZBOxFa/",
-                "source_account": "veraval_updates",
-                "city": "Sutrapada (Gir Somnath)",
-                "caption": "Veraval Local News: Sutrapada Coastal Police Alert - Part-Time Work-From-Home Task Fraud | Industrial workers and jobseekers in Sutrapada lured into Telegram groups promising daily earnings for rating hotels and liking videos. Sutrapada Police initiates asset recovery under NCRP. #VeravalUpdates #Sutrapada #GirSomnath #TaskScam #TelegramFraud",
-                "published_days_ago": 3
-            },
-            {
-                "shortcode": "gs_gadhada_07",
-                "permalink": "https://www.instagram.com/reel/Dd9IMoDRe71/",
+                "shortcode": "girsomnathpolice_official",
+                "permalink": "https://www.instagram.com/girsomnathpolice/",
                 "source_account": "girsomnathpolice",
-                "city": "Gir Gadhada (Gir Somnath)",
-                "caption": "Official Alert @girsomnathpolice: Gir Gadhada Rural Warning - PM Kisan Subsidy Phishing APKs | Cyber criminals circulating deceptive WhatsApp messages among village residents promising government agricultural subsidies. Gir Gadhada police cyber team conducts village awareness drive on cyber hygiene and 1930 helpline. #GirSomnathPolice #GirGadhada #GirSomnath #RuralCyberCrime #PMKisan",
-                "published_days_ago": 4
-            },
-            {
-                "shortcode": "gs_veraval_08",
-                "permalink": "https://www.instagram.com/reel/DcJdJixIP8d/",
-                "source_account": "saurashtrasamachar",
-                "city": "Veraval (Gir Somnath)",
-                "caption": "Saurashtra Samachar: Veraval Fish Exporters Alerted Against Email Hijack Scams | Cyber Crime Cell Veraval warns sea-food exporters in Veraval Port against fraudulent bank account modification emails in international transactions. Verification mandated before RTGS/SWIFT transfers. #Veraval #GirSomnath #Fisheries #CyberAlert #SaurashtraSamachar",
-                "published_days_ago": 4
-            },
-            {
-                "shortcode": "gs_somnath_09",
-                "permalink": "https://www.instagram.com/reel/DW1bDOKk7V0/",
-                "source_account": "somnath_live_darshan",
-                "city": "Somnath (Gir Somnath)",
-                "caption": "Public Safety Advisory: Fake Somnath Trust Helicopter Booking Scams | Devotees warned against bogus travel operators in Somnath & Veraval collecting advance payments for helicopter joyrides and Somnath Trust accommodation. Report fraud accounts on 1930. #Somnath #PrabhasPatan #GirSomnath #PilgrimSafety #CyberAwareness",
-                "published_days_ago": 5
+                "city": "Gir Somnath (Veraval HQ)",
+                "caption": "Gir Somnath District Police Official Cyber Crime & Public Safety Bulletin | Gujarat Police Gir Somnath Headquarters, Veraval. Official law enforcement announcements on cyber crime awareness, online banking safety, NCRP 1930 helpline, and district public order notices across Veraval, Somnath, Kodinar, Una, Talala, Sutrapada, and Gir Gadhada. #GirSomnathPolice #Veraval #Somnath #CyberSafety #GujaratPolice",
+                "published_days_ago": 1
             },
             # -------------------------------------------------------------
             # GUJARAT STATEWIDE CRIME INTELLIGENCE & POLICE BULLETINS
