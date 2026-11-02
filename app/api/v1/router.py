@@ -11,6 +11,7 @@ from app.api.v1.endpoints import (
     auth,
     instagram,
     facebook,
+    crime_feeds,
     sources,
     keywords,
 )
@@ -21,5 +22,6 @@ api_v1_router.include_router(system.router)
 api_v1_router.include_router(auth.router)
 api_v1_router.include_router(instagram.router)
 api_v1_router.include_router(facebook.router)
+api_v1_router.include_router(crime_feeds.router)
 api_v1_router.include_router(sources.router)
 api_v1_router.include_router(keywords.router)

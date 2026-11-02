@@ -1471,36 +1471,54 @@ class InstagramService:
         city: Optional[str] = None,
         account: Optional[str] = None,
         platform: Optional[str] = None,
+        source_origin: Optional[str] = None,
         page: int = 1,
         page_size: int = 20
     ) -> Dict[str, Any]:
 
         """
-
-        Retrieves real Instagram news reels and posts without predefined keywords.
-
-        Investigator can freely search any topic, crime type, or news account.
-
+        Retrieves real Instagram news reels, Facebook posts, and Gujarat Crime Feeds.
+        Investigator can freely search any topic, crime type, news account, or district.
         """
 
         conn_status = self.get_connection_status()
 
         # Telemetry counts
-
         total_items = self.db.query(CollectedItem).count()
-
         distinct_outlets = len(set(r[0] for r in self.db.query(CollectedItem.source_account).all() if r[0]))
-
         pending_review_count = self.db.query(CollectedItem).filter_by(is_demo_data=True).count()
-
         distinct_cities = len(set(r[0] for r in self.db.query(CollectedItem.city).all() if r[0] and r[0] != "All Gujarat"))
 
         # Build investigation query
-
         items_q = self.db.query(CollectedItem)
 
         if platform and platform.strip() and platform.strip().upper() != "ALL":
-            items_q = items_q.filter(CollectedItem.platform == platform.strip().upper())
+            plat_upper = platform.strip().upper()
+            if plat_upper in ["NEWS_FEED", "CRIME_NEWS"]:
+                items_q = items_q.filter(CollectedItem.platform.in_(["NEWS_FEED", "POLICE_BULLETIN"]))
+            else:
+                items_q = items_q.filter(CollectedItem.platform == plat_upper)
+
+        if source_origin and source_origin.strip() and source_origin.strip().lower() != "all":
+            so_clean = source_origin.strip().lower()
+            if so_clean == "police":
+                items_q = items_q.filter(
+                    or_(
+                        CollectedItem.source_account.ilike("%police%"),
+                        CollectedItem.platform == "POLICE_BULLETIN"
+                    )
+                )
+            elif so_clean == "media":
+                items_q = items_q.filter(
+                    CollectedItem.platform.in_(["NEWS_FEED", "ARTICLE"])
+                )
+            else:
+                items_q = items_q.filter(
+                    or_(
+                        CollectedItem.source_account.ilike(f"%{so_clean}%"),
+                        CollectedItem.platform.ilike(f"%{so_clean}%")
+                    )
+                )
 
         if city and city.strip() and city.strip() != "All Gujarat":
             city_term = city.strip()
@@ -1523,37 +1541,23 @@ class InstagramService:
                 )
 
         if account and account.strip():
-
             acct_clean = account.strip().lstrip("@")
-
             items_q = items_q.filter(CollectedItem.source_account.ilike(f"%{acct_clean}%"))
 
         if keyword and keyword.strip():
-
             kw_clean = keyword.strip()
-
             kw_no_space = kw_clean.replace(" ", "")
-
             terms = [t for t in kw_clean.split() if t]
 
             from sqlalchemy import and_
-
             conds = [
-
                 CollectedItem.caption.ilike(f"%{kw_clean}%"),
-
                 CollectedItem.caption.ilike(f"%{kw_no_space}%"),
-
                 CollectedItem.source_account.ilike(f"%{kw_clean}%"),
-
                 CollectedItem.city.ilike(f"%{kw_clean}%"),
-
             ]
-
             if len(terms) > 1:
-
                 conds.append(and_(*[CollectedItem.caption.ilike(f"%{t}%") for t in terms]))
-
             items_q = items_q.filter(or_(*conds))
 
         if date_from:
@@ -1564,17 +1568,14 @@ class InstagramService:
         if date_to:
             # Include full day up to 23:59:59
             dt = date_to.replace(tzinfo=None) if date_to.tzinfo else date_to
-            from datetime import time as dt_time
             if dt.hour == 0 and dt.minute == 0 and dt.second == 0:
                 dt = dt.replace(hour=23, minute=59, second=59)
             items_q = items_q.filter(CollectedItem.published_at <= dt)
 
         total_filtered_items = items_q.count()
-
         paged_items = items_q.order_by(CollectedItem.published_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
 
         results_rows = []
-
         for it in paged_items:
             # Extract clean headline from caption if available
             caption_clean = it.caption or ""
@@ -1587,15 +1588,46 @@ class InstagramService:
             raw_meta = it.raw_metadata or {}
             shares_cnt = raw_meta.get("shares") or raw_meta.get("distribution", {}).get("shares_count") or raw_meta.get("engagement", {}).get("shares", 0)
 
+            # Determine human-readable origin label & source branding
+            plat = it.platform or "INSTAGRAM"
+            acct = (it.source_account or "").lower()
+            origin_label = raw_meta.get("origin_label")
+            if not origin_label:
+                if "girsomnath" in acct:
+                    origin_label = "Gir Somnath Police Official"
+                elif "gujaratpolice" in acct:
+                    origin_label = "Gujarat Police Official / CID"
+                elif "sandesh" in acct:
+                    origin_label = "Sandesh News (Gujarat)"
+                elif "tv9" in acct:
+                    origin_label = "TV9 Gujarati"
+                elif "divyabhaskar" in acct:
+                    origin_label = "Divya Bhaskar"
+                elif "deshgujarat" in acct:
+                    origin_label = "DeshGujarat"
+                elif "gujaratfirst" in acct:
+                    origin_label = "Gujarat First News"
+                elif plat == "INSTAGRAM":
+                    origin_label = f"Instagram @{it.source_account}"
+                elif plat == "FACEBOOK":
+                    origin_label = f"Facebook @{it.source_account}"
+                else:
+                    origin_label = it.source_account or "Gujarat News Feed"
+
+            crime_cat = raw_meta.get("crime_category") or "Cyber Crime & Public Safety"
+
             results_rows.append({
                 "id": it.id,
                 "item_id": it.id,
                 "external_id": it.external_id,
                 "platform": it.platform or "INSTAGRAM",
                 "source_account": it.source_account or "sandeshnews",
+                "origin_label": origin_label,
+                "crime_category": crime_cat,
                 "city": it.city or "All Gujarat",
                 "published_at": it.published_at.isoformat() if it.published_at else None,
-                "collected_at": it.collected_at.isoformat() if it.collected_at else None,                "media_type": it.media_type or "REEL",
+                "collected_at": it.collected_at.isoformat() if it.collected_at else None,
+                "media_type": it.media_type or "REEL",
                 "headline": headline,
                 "caption_snippet": caption_clean[:180] + ("..." if len(caption_clean) > 180 else ""),
                 "full_caption": caption_clean,
@@ -1611,39 +1643,22 @@ class InstagramService:
             })
 
         return {
-
             "connection_status": conn_status,
-
             "metrics": {
-
                 "total_items_retrieved": total_items,
-
                 "total_keyword_matches": total_filtered_items,
-
                 "pending_review_matches": pending_review_count,
-
                 "active_keywords_count": distinct_cities,
-
                 "active_sources_count": distinct_outlets,
-
             },
-
             "configured_keywords": [],
-
             "results": results_rows,
-
             "pagination": {
-
                 "page": page,
-
                 "page_size": page_size,
-
                 "total_count": total_filtered_items,
-
                 "total_pages": (total_filtered_items + page_size - 1) // page_size if total_filtered_items > 0 else 1
-
             }
-
         }
 
     def _ensure_real_news_feed(self):

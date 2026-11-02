@@ -164,6 +164,7 @@ class BackgroundSchedulerService:
         def _db_ingest():
             from app.services.instagram_service import InstagramService
             from app.services.facebook_service import FacebookService
+            from app.services.crime_feed_service import CrimeFeedService
             db = SessionLocal()
             try:
                 # 1. Instagram Ingestion
@@ -186,13 +187,18 @@ class BackgroundSchedulerService:
                     actor_ip="127.0.0.1"
                 )
 
-                total_gathered = ig_res.get("items_gathered", 0) + fb_res.get("items_gathered", 0)
-                total_avail = ig_res.get("total_available", 0) + fb_res.get("total_available", 0)
+                # 3. Live Gujarat Crime Feeds & Police Press Releases Crawler
+                crime_svc = CrimeFeedService(db)
+                crime_res = crime_svc.sync_all_crime_intelligence()
+
+                total_gathered = ig_res.get("items_gathered", 0) + fb_res.get("items_gathered", 0) + crime_res.get("live_ingested", 0) + crime_res.get("seed_ingested", 0)
+                total_avail = crime_res.get("total_available", 0) or (ig_res.get("total_available", 0) + fb_res.get("total_available", 0))
                 return {
                     "items_gathered": total_gathered,
                     "total_available": total_avail,
                     "instagram": ig_res,
-                    "facebook": fb_res
+                    "facebook": fb_res,
+                    "crime_feeds": crime_res
                 }
             finally:
                 db.close()

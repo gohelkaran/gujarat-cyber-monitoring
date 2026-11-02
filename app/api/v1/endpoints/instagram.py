@@ -514,17 +514,18 @@ def get_dashboard_telemetry(
     city: Optional[str] = Query(None),
     account: Optional[str] = Query(None),
     platform: Optional[str] = Query(None),
+    source_origin: Optional[str] = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db)
 ):
     """
-    Returns consolidated Instagram & Facebook monitoring telemetry:
+    Returns consolidated Instagram, Facebook, and Gujarat Crime Feeds telemetry:
     - Connection & permission status
     - Collection status & error messages
     - Items retrieved and keyword matches count
     - Configured keywords
-    - Filterable monitoring results table by platform, city, keyword, account, and date range
+    - Filterable monitoring results table by platform, source origin, city, keyword, account, and date range
     """
     service = InstagramService(db)
     data = service.get_monitoring_dashboard_data(
@@ -535,12 +536,13 @@ def get_dashboard_telemetry(
         city=city,
         account=account,
         platform=platform,
+        source_origin=source_origin,
         page=page,
         page_size=page_size
     )
     return ApiResponse.success_response(
         data=data,
-        message="Instagram monitoring dashboard telemetry retrieved."
+        message="Monitoring dashboard telemetry retrieved."
     )
 
 

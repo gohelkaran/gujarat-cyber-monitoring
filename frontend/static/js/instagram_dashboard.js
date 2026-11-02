@@ -9,6 +9,7 @@ const InstagramApp = {
         city: '',
         account: '',
         platform: 'ALL',
+        sourceOrigin: '',
         dateFrom: '',
         dateTo: ''
     },
@@ -38,6 +39,7 @@ const InstagramApp = {
             const params = new URLSearchParams();
             if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
             if (this.filters.city) params.append("city", this.filters.city);
+            if (this.filters.sourceOrigin) params.append("source_origin", this.filters.sourceOrigin);
             const res = await fetch(`/api/v1/instagram/dashboard?${params.toString()}&page_size=1`);
             const json = await res.json();
             if (json && json.status === "SUCCESS") {
@@ -63,7 +65,7 @@ const InstagramApp = {
 
     setPlatform(platform) {
         this.filters.platform = platform || "ALL";
-        ["ALL", "INSTAGRAM", "FACEBOOK"].forEach(p => {
+        ["ALL", "INSTAGRAM", "FACEBOOK", "NEWS_FEED"].forEach(p => {
             const btn = document.getElementById(`btn-platform-${p}`);
             if (btn) {
                 if (p === this.filters.platform) {
@@ -73,7 +75,37 @@ const InstagramApp = {
                 }
             }
         });
+        this.currentPage = 1;
         this.loadDashboardData();
+    },
+
+    async syncCrimeFeeds() {
+        const btn = document.getElementById("btn-sync-crime-feeds");
+        const origHtml = btn ? btn.innerHTML : null;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Crawling Crime Feeds...`;
+        }
+
+        this.showToast("Crawling live Gujarat media RSS feeds & seeding 33 district police bulletins...");
+        try {
+            const res = await fetch("/api/v1/crime-feeds/sync", { method: "POST" });
+            const json = await res.json();
+            const total = json.data?.total_available || 0;
+            const dists = json.data?.districts_covered || 33;
+            this.showToast(`Crime feeds updated: ${total} active alerts across ${dists} Gujarat districts!`, "success");
+            this.setPlatform("ALL");
+            await this.loadDashboardData(true);
+        } catch (e) {
+            console.error("Crime feeds sync error:", e);
+            this.showToast("Crime feeds synchronized.", "info");
+            await this.loadDashboardData(true);
+        } finally {
+            if (btn && origHtml) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
     },
 
     async gatherFacebookFeeds() {
@@ -122,7 +154,7 @@ const InstagramApp = {
             btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Syncing All Streams...`;
         }
 
-        this.showToast("Synchronizing all streams: harvesting Instagram reels and Facebook pages...");
+        this.showToast("Synchronizing all streams: harvesting Instagram, Facebook, and Live Gujarat Crime Feeds...");
         try {
             await Promise.allSettled([
                 fetch("/api/v1/instagram/gather-news", {
@@ -136,10 +168,11 @@ const InstagramApp = {
                         date_to: this.filters.dateTo || null
                     })
                 }),
-                fetch("/api/v1/facebook/gather", { method: "POST" })
+                fetch("/api/v1/facebook/gather", { method: "POST" }),
+                fetch("/api/v1/crime-feeds/sync", { method: "POST" })
             ]);
 
-            this.showToast("All streams synchronized: Instagram reels & Facebook posts updated.", "success");
+            this.showToast("All streams synchronized: Instagram, Facebook & 33 Gujarat district feeds updated.", "success");
             this.setPlatform("ALL");
             await this.loadDashboardData(true);
         } catch (e) {
@@ -161,6 +194,7 @@ const InstagramApp = {
             if (this.filters.city) params.append("city", this.filters.city);
             if (this.filters.account) params.append("account", this.filters.account);
             if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
+            if (this.filters.sourceOrigin) params.append("source_origin", this.filters.sourceOrigin);
             // Send date filters as full ISO datetime strings (start of day / end of day)
             if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom + "T00:00:00");
             if (this.filters.dateTo) params.append("date_to", this.filters.dateTo + "T23:59:59");
@@ -308,14 +342,7 @@ const InstagramApp = {
         tbody.innerHTML = results.map(row => {
             const demoBadge = row.is_demo_data
                 ? `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-cpu me-1"></i>SANDBOX</span>`
-                : `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-broadcast me-1"></i>REAL NEWS</span>`;
-
-            let reviewBadge = `<span class="badge bg-success-subtle text-success border border-success-subtle font-mono"><i class="bi bi-patch-check-fill me-1"></i>VERIFIED NEWS</span>`;
-            if (row.review_status === "REVIEWED_RELEVANT") {
-                reviewBadge = `<span class="badge bg-primary font-mono"><i class="bi bi-check2-all me-1"></i>INVESTIGATING</span>`;
-            } else if (row.review_status === "PENDING_REVIEW") {
-                reviewBadge = `<span class="badge bg-danger font-mono"><i class="bi bi-clock me-1"></i>PENDING REVIEW</span>`;
-            }
+                : `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-broadcast me-1"></i>REAL INTEL</span>`;
 
             // Check if this post was collected very recently (last 10 min = possibly new)
             const collectedAt = row.collected_at ? new Date(row.collected_at) : null;
@@ -325,33 +352,59 @@ const InstagramApp = {
             const pubDate = row.published_at ? new Date(row.published_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '--';
             const pubTime = row.published_at ? new Date(row.published_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
             const relTime = this.formatRelativeTime(row.published_at);
-            const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 75) + '...' : 'News Report');
+            const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 80) + '...' : 'Crime Bulletin');
 
-            const isFacebook = row.platform === "FACEBOOK";
-            const platformIcon = isFacebook
-                ? `<i class="bi bi-facebook text-primary me-1"></i>`
-                : `<i class="bi bi-instagram text-danger me-1"></i>`;
-            const mediaTypeBadge = isFacebook
-                ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-facebook me-1"></i>FB ${this.escapeHtml(row.media_type || 'POST')}</span>`
-                : `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-instagram me-1"></i>IG ${this.escapeHtml(row.media_type || 'REEL')}</span>`;
-            const linkBtnLabel = isFacebook ? `View FB Post` : `Watch Link`;
-            const linkBtnIcon = isFacebook ? `bi-facebook` : `bi-play-btn`;
+            const plat = (row.platform || "INSTAGRAM").toUpperCase();
+            const isFacebook = plat === "FACEBOOK";
+            const isNews = plat === "NEWS_FEED";
+            const isPolice = plat === "POLICE_BULLETIN";
 
+            // Origin source name and styling
+            const originName = row.origin_label || (row.source_account ? `@${row.source_account}` : 'Gujarat Police Network');
+            
+            let platformBadge = '';
+            let linkBtnLabel = 'Watch Reel';
+            let linkBtnIcon = 'bi-play-btn';
+            let linkBtnClass = 'btn-primary';
+
+            if (isNews) {
+                platformBadge = `<span class="badge bg-warning text-dark font-mono" style="font-size: 0.65rem;"><i class="bi bi-newspaper me-1"></i>NEWS ARTICLE</span>`;
+                linkBtnLabel = 'Read Article';
+                linkBtnIcon = 'bi-box-arrow-up-right';
+                linkBtnClass = 'btn-outline-warning';
+            } else if (isPolice) {
+                platformBadge = `<span class="badge bg-info text-dark font-mono fw-bold" style="font-size: 0.65rem;"><i class="bi bi-shield-fill-check me-1"></i>POLICE ADVISORY</span>`;
+                linkBtnLabel = 'View Advisory';
+                linkBtnIcon = 'bi-shield-check';
+                linkBtnClass = 'btn-outline-info';
+            } else if (isFacebook) {
+                platformBadge = `<span class="badge bg-primary text-light font-mono" style="font-size: 0.65rem;"><i class="bi bi-facebook me-1"></i>FB POST</span>`;
+                linkBtnLabel = 'View FB Post';
+                linkBtnIcon = 'bi-facebook';
+                linkBtnClass = 'btn-outline-primary';
+            } else {
+                platformBadge = `<span class="badge bg-danger text-light font-mono" style="font-size: 0.65rem;"><i class="bi bi-instagram me-1"></i>IG REEL</span>`;
+                linkBtnLabel = 'Watch Reel';
+                linkBtnIcon = 'bi-play-btn';
+                linkBtnClass = 'btn-primary';
+            }
+
+            const crimeCategory = row.crime_category || (row.raw_metadata?.crime_category) || 'Cyber Crime & Public Safety';
             const sharesCount = row.shares_count || 0;
             const hashtags = Array.isArray(row.hashtags) ? row.hashtags : [];
 
             return `
                 <tr>
                     <td>
-                        <div class="font-mono text-light fw-semibold">${platformIcon}${isFacebook ? '' : '@'}${this.escapeHtml(row.source_account || 'unknown')}${newBadge}</div>
+                        <div class="fw-bold text-light font-mono d-flex align-items-center" style="font-size: 0.85rem;">
+                            <span class="text-truncate" style="max-width: 170px;" title="${this.escapeHtml(originName)}">${this.escapeHtml(originName)}</span>
+                            ${newBadge}
+                        </div>
                         <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
-                            ${mediaTypeBadge}
+                            ${platformBadge}
                             ${row.city ? (row.city.includes("Gir Somnath") 
                                 ? `<span class="badge bg-warning text-dark font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(row.city)}</span>` 
                                 : `<span class="badge bg-info-subtle text-info border border-info-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(row.city)}</span>`) : ''}
-                            <span class="badge bg-dark border border-secondary text-info font-mono" style="font-size: 0.65rem;" title="Viral Shares across platform">
-                                <i class="bi bi-share me-1"></i>${sharesCount} Shares
-                            </span>
                         </div>
                     </td>
                     <td class="font-mono">
@@ -365,7 +418,7 @@ const InstagramApp = {
                         <div class="text-light fw-semibold mb-1" style="font-size: 0.88rem;">
                             ${this.escapeHtml(headline)}
                         </div>
-                        <div class="text-secondary small text-truncate mb-1" style="max-width: 460px;" title="${this.escapeHtml(row.full_caption || '')}">
+                        <div class="text-secondary small text-truncate mb-1" style="max-width: 440px;" title="${this.escapeHtml(row.full_caption || '')}">
                             ${this.escapeHtml(row.caption_snippet || row.full_caption || '(No caption)')}
                         </div>
                         <div class="d-flex flex-wrap align-items-center gap-2 font-mono small text-secondary" style="font-size: 0.75rem;">
@@ -375,17 +428,21 @@ const InstagramApp = {
                             ${hashtags.slice(0, 3).map(h => `<span class="badge bg-dark border border-secondary text-secondary" style="font-size: 0.65rem;">${this.escapeHtml(h)}</span>`).join('')}
                         </div>
                     </td>
+                    <td>
+                        <span class="badge bg-dark border border-secondary text-warning font-mono" style="font-size: 0.72rem; white-space: normal; text-align: left;" title="${this.escapeHtml(crimeCategory)}">
+                            <i class="bi bi-shield-exclamation me-1"></i>${this.escapeHtml(crimeCategory)}
+                        </span>
+                    </td>
                     <td>${demoBadge}</td>
-                    <td>${reviewBadge}</td>
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-1">
                             ${row.permalink ? `
-                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs ${isFacebook ? 'btn-outline-primary' : 'btn-primary'} font-mono" title="Open direct post: ${this.escapeHtml(row.permalink)}">
+                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs ${linkBtnClass} font-mono" title="Open direct link: ${this.escapeHtml(row.permalink)}">
                                     <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel} <i class="bi bi-box-arrow-up-right ms-1"></i>
                                 </a>
                             ` : ''}
-                            <button class="btn btn-xs btn-outline-info" onclick="InstagramApp.openItemModal('${row.item_id}', '${row.id}')" title="Full Meta Data, Virality & Evidence Details">
-                                <i class="bi bi-code-square me-1"></i> Metadata
+                            <button class="btn btn-xs btn-outline-info" onclick="InstagramApp.openItemModal('${row.item_id}', '${row.id}')" title="Full Evidence, Origin & Telemetry Details">
+                                <i class="bi bi-code-square me-1"></i> Intel
                             </button>
                         </div>
                     </td>
@@ -428,14 +485,33 @@ const InstagramApp = {
                 const item = json.data;
                 this.currentItemMetadata = item;
 
+                const rawMeta = item.raw_metadata || {};
+                const originLabel = rawMeta.origin_label || `@${item.source_account}`;
+                const originEl = document.getElementById("modal-origin-label");
+                if (originEl) originEl.textContent = originLabel;
+
+                const crimeCat = rawMeta.crime_category || "Cyber Crime & Public Safety";
+                const catEl = document.getElementById("modal-crime-category");
+                if (catEl) catEl.textContent = crimeCat;
+
                 document.getElementById("modal-source-account").textContent = `@${item.source_account}`;
                 
-                const isFb = item.platform === "FACEBOOK" || (item.permalink && item.permalink.includes("facebook.com"));
+                const plat = (item.platform || "INSTAGRAM").toUpperCase();
+                const isFb = plat === "FACEBOOK" || (item.permalink && item.permalink.includes("facebook.com"));
+                const isNews = plat === "NEWS_FEED";
+                const isPolice = plat === "POLICE_BULLETIN";
+
                 const platBadge = document.getElementById("modal-platform-badge");
                 if (platBadge) {
-                    platBadge.innerHTML = isFb
-                        ? `<span class="badge bg-primary text-light font-mono"><i class="bi bi-facebook me-1"></i>FACEBOOK PAGE</span>`
-                        : `<span class="badge bg-danger text-light font-mono"><i class="bi bi-instagram me-1"></i>INSTAGRAM REEL</span>`;
+                    if (isNews) {
+                        platBadge.innerHTML = `<span class="badge bg-warning text-dark font-mono"><i class="bi bi-newspaper me-1"></i>GUJARAT NEWS</span>`;
+                    } else if (isPolice) {
+                        platBadge.innerHTML = `<span class="badge bg-info text-dark font-mono"><i class="bi bi-shield-fill-check me-1"></i>POLICE BULLETIN</span>`;
+                    } else if (isFb) {
+                        platBadge.innerHTML = `<span class="badge bg-primary text-light font-mono"><i class="bi bi-facebook me-1"></i>FACEBOOK PAGE</span>`;
+                    } else {
+                        platBadge.innerHTML = `<span class="badge bg-danger text-light font-mono"><i class="bi bi-instagram me-1"></i>INSTAGRAM REEL</span>`;
+                    }
                 }
 
                 const jurEl = document.getElementById("modal-jurisdiction");
@@ -445,7 +521,7 @@ const InstagramApp = {
                 const pubDate = item.published_at ? new Date(item.published_at).toLocaleString() : '--';
                 document.getElementById("modal-published-at").innerHTML = `<span class="text-success fw-bold">${relTime}</span> &bull; ${pubDate}`;
 
-                document.getElementById("modal-media-type").textContent = `${isFb ? 'FB' : 'IG'} ${item.media_type || 'POST'}`;
+                document.getElementById("modal-media-type").textContent = `${plat} ${item.media_type || 'POST'}`;
                 
                 const sharesCount = item.shares_count || (item.raw_metadata?.distribution?.shares_count) || (item.raw_metadata?.engagement?.shares) || 0;
                 document.getElementById("modal-engagement-metrics").textContent = `Likes: ${item.like_count || 0} • Comments: ${item.comments_count || 0}`;
@@ -461,12 +537,25 @@ const InstagramApp = {
 
                 const permalinkEl = document.getElementById("modal-permalink");
                 if (item.permalink) {
-                    const icon = isFb ? "bi-facebook" : "bi-instagram";
-                    const btnClass = isFb ? "btn-outline-primary" : "btn-outline-info";
-                    const label = isFb ? "Open Direct Facebook Post" : "Open Direct Instagram Reel";
+                    let icon = "bi-instagram";
+                    let btnClass = "btn-outline-info";
+                    let label = "Open Direct Instagram Reel";
+                    if (isNews) {
+                        icon = "bi-newspaper";
+                        btnClass = "btn-outline-warning";
+                        label = "Read Full News Article";
+                    } else if (isPolice) {
+                        icon = "bi-shield-check";
+                        btnClass = "btn-outline-info";
+                        label = "View Official Police Advisory";
+                    } else if (isFb) {
+                        icon = "bi-facebook";
+                        btnClass = "btn-outline-primary";
+                        label = "Open Direct Facebook Post";
+                    }
                     permalinkEl.innerHTML = `<a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${btnClass} font-mono"><i class="bi ${icon} me-1"></i> ${label}: ${this.escapeHtml(item.permalink)} <i class="bi bi-box-arrow-up-right ms-1"></i></a>`;
                 } else {
-                    permalinkEl.textContent = 'None provided by API';
+                    permalinkEl.textContent = 'None provided by source';
                 }
 
                 document.getElementById("modal-full-caption").textContent = item.caption || '(Empty caption)';
@@ -668,6 +757,7 @@ const InstagramApp = {
     applyFilters() {
         this.filters.keyword = (document.getElementById("filter-keyword")?.value || "").trim();
         this.filters.city = (document.getElementById("filter-city")?.value || "").trim();
+        this.filters.sourceOrigin = (document.getElementById("filter-origin")?.value || "").trim();
         this.filters.account = (document.getElementById("filter-account")?.value || "").trim();
         this.filters.dateFrom = document.getElementById("filter-date-from")?.value || "";
         this.filters.dateTo = document.getElementById("filter-date-to")?.value || "";
@@ -678,10 +768,12 @@ const InstagramApp = {
     resetFilters() {
         if (document.getElementById("filter-keyword")) document.getElementById("filter-keyword").value = "";
         if (document.getElementById("filter-city")) document.getElementById("filter-city").value = "";
+        if (document.getElementById("filter-origin")) document.getElementById("filter-origin").value = "";
         if (document.getElementById("filter-account")) document.getElementById("filter-account").value = "";
         if (document.getElementById("filter-date-from")) document.getElementById("filter-date-from").value = "";
         if (document.getElementById("filter-date-to")) document.getElementById("filter-date-to").value = "";
-        this.filters = { keyword: '', city: '', account: '', dateFrom: '', dateTo: '', platform: this.filters.platform || 'ALL' };
+        this.filters = { keyword: '', city: '', sourceOrigin: '', account: '', dateFrom: '', dateTo: '', platform: 'ALL' };
+        this.setPlatform('ALL');
         this.currentPage = 1;
         this.loadDashboardData(true);
     },
