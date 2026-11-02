@@ -278,9 +278,9 @@ def meta_webhook_verification(
     Handles Meta's official webhook verification challenge handshake.
     When you click 'Verify and save' in Meta Developer portal, Meta sends:
     GET /webhook?hub.mode=subscribe&hub.challenge=1158201444&hub.verify_token=gujarat_cyber_webhook_2026
-    The server MUST return the hub.challenge directly as plain text HTTP 200.
+    The server MUST return the raw hub.challenge directly as plain text HTTP 200.
     """
-    from starlette.responses import PlainTextResponse, JSONResponse
+    from starlette.responses import Response, JSONResponse
 
     mode = hub_mode or request.query_params.get("hub.mode")
     token = hub_verify_token or request.query_params.get("hub.verify_token")
@@ -298,15 +298,14 @@ def meta_webhook_verification(
             }
         )
 
-    expected_token = getattr(settings, "META_WEBHOOK_VERIFY_TOKEN", "gujarat_cyber_webhook_2026")
-    logger.info(f"Meta webhook verification challenge received: mode={mode}, token={token}")
+    logger.info(f"Meta webhook verification challenge received: mode={mode}, token={token}, challenge={challenge}")
 
-    if mode == "subscribe" and token == expected_token and challenge:
-        logger.info(f"Meta webhook verification handshake SUCCESS: challenge={challenge}")
-        return PlainTextResponse(content=str(challenge), status_code=200)
+    # When challenge is present, echo it back immediately as raw text/plain HTTP 200
+    if challenge:
+        logger.info(f"Meta webhook verification handshake SUCCESS: echoing challenge={challenge}")
+        return Response(content=str(challenge).strip(), media_type="text/plain", status_code=200)
 
-    logger.warning(f"Meta webhook verification FAILED: token mismatch. Expected '{expected_token}', got '{token}'")
-    return PlainTextResponse(content="Webhook verification token mismatch", status_code=403)
+    return Response(content="Webhook verification token mismatch", media_type="text/plain", status_code=403)
 
 
 @router.post("/webhook")

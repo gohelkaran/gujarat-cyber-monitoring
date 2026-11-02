@@ -60,7 +60,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     Middleware applying rate limits per IP address.
     Static files and docs are exempted to prevent UI prototype breakage.
     """
-    EXEMPT_PREFIXES = ("/static", "/favicon.ico", "/docs", "/redoc", "/openapi.json")
+    EXEMPT_PREFIXES = ("/static", "/favicon.ico", "/docs", "/redoc", "/openapi.json", "/api/v1/instagram/webhook")
 
     async def dispatch(self, request: Request, call_next) -> Response:
         settings = get_settings()

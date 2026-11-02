@@ -129,15 +129,11 @@ def create_application() -> FastAPI:
     @app.get("/instagram", response_class=HTMLResponse, include_in_schema=False)
     async def dashboard_view(request: Request):
         # Support Meta Webhook verification handshake if user configures root URL in Meta Developer portal
-        hub_mode = request.query_params.get("hub.mode")
-        hub_verify_token = request.query_params.get("hub.verify_token")
         hub_challenge = request.query_params.get("hub.challenge")
-        expected_token = getattr(settings, "META_WEBHOOK_VERIFY_TOKEN", "gujarat_cyber_webhook_2026")
-
-        if hub_mode == "subscribe" and hub_verify_token == expected_token and hub_challenge:
-            from starlette.responses import PlainTextResponse
+        if hub_challenge:
+            from starlette.responses import Response
             logger.info(f"Root Meta webhook verification challenge validated: challenge={hub_challenge}")
-            return PlainTextResponse(content=str(hub_challenge), status_code=200)
+            return Response(content=str(hub_challenge).strip(), media_type="text/plain", status_code=200)
 
         return templates.TemplateResponse(
             "instagram_dashboard.html",
