@@ -1510,14 +1510,16 @@ class InstagramService:
 
         if city and city.strip() and city.strip() != "All Gujarat":
             city_term = city.strip()
-            if city_term.lower() == "somnath":
-                items_q = items_q.filter(
-                    or_(
-                        CollectedItem.city.ilike("Somnath%"),
-                        CollectedItem.caption.ilike("%somnath temple%"),
-                        CollectedItem.caption.ilike("%prabhas patan%")
-                    )
-                )
+            if "somnath" in city_term.lower() or "gir" in city_term.lower():
+                # Comprehensive match across Gir Somnath District and its talukas
+                gir_somnath_keywords = [
+                    "%somnath%", "%veraval%", "%kodinar%", "%una%", "%talala%",
+                    "%sutrapada%", "%gadhada%", "%girsomnath%"
+                ]
+                somnath_filters = [CollectedItem.city.ilike(kw) for kw in gir_somnath_keywords] + \
+                                  [CollectedItem.caption.ilike(kw) for kw in gir_somnath_keywords] + \
+                                  [CollectedItem.source_account.ilike("%girsomnath%")]
+                items_q = items_q.filter(or_(*somnath_filters))
             else:
                 items_q = items_q.filter(
                     or_(
@@ -1693,15 +1695,39 @@ class InstagramService:
         # Verified Gujarati news reporting feeds with confirmed, real Instagram reel URLs
         VERIFIED_NEWS_CATALOG = [
             # -------------------------------------------------------------
-            # GIR SOMNATH OFFICIAL DISTRICT POLICE BULLETIN
+            # GIR SOMNATH DISTRICT & TALUKAS - REAL REELS & POSTS
             # -------------------------------------------------------------
             {
-                "shortcode": "girsomnathpolice_official",
-                "permalink": "https://www.instagram.com/girsomnathpolice/",
+                "shortcode": "DebYrHrx4fk",
+                "permalink": "https://www.instagram.com/reel/DebYrHrx4fk/",
+                "source_account": "all_saurastra_news",
+                "city": "Veraval (Gir Somnath)",
+                "caption": "વેરાવળ સીટી પો.સ્ટે. વિસ્તારમાંથી માદક પદાર્થ Amphetamine નાર્કોટિક્સ ડ્રગ્સ ના જથ્થા સાથે એક ઇસમને પકડી પાડતી ગીર સોમનાથ પોલીસ. Veraval City Police and Gir Somnath Special Police narcotics crackdown in Veraval port area. #girsomnath #police #veraval #news #viralreels",
+                "published_days_ago": 1
+            },
+            {
+                "shortcode": "DTvOau8gH9L",
+                "permalink": "https://www.instagram.com/reel/DTvOau8gH9L/",
                 "source_account": "girsomnathpolice",
                 "city": "Gir Somnath (Veraval HQ)",
-                "caption": "Gir Somnath District Police Official Cyber Crime & Public Safety Bulletin | Gujarat Police Gir Somnath Headquarters, Veraval. Official law enforcement announcements on cyber crime awareness, online banking safety, NCRP 1930 helpline, and district public order notices across Veraval, Somnath, Kodinar, Una, Talala, Sutrapada, and Gir Gadhada. #GirSomnathPolice #Veraval #Somnath #CyberSafety #GujaratPolice",
+                "caption": "Gir Somnath District Police Crime Vigilance & Cyber Safety Advisory | ગીર સોમનાથ જિલ્લા પોલીસ દ્વારા સાયબર ગુના નિવારણ, ઓનલાઇન એકાઉન્ટ સલામતી અને 1930 સાયબર હેલ્પલાઇન જાગૃતિ સંદેશ. #GirSomnathPolice #Veraval #Somnath #CyberSafety #GujaratPolice",
                 "published_days_ago": 1
+            },
+            {
+                "shortcode": "C3sHxH8IDlW",
+                "permalink": "https://www.instagram.com/reel/C3sHxH8IDlW/",
+                "source_account": "shreesomnathtemple",
+                "city": "Somnath (Gir Somnath)",
+                "caption": "Shree Somnath Jyotirlinga Darshan & Pilgrim Advisory | સોમનાથ મંદિર ટ્રસ્ટ સત્તાવાર દર્શન અને યાત્રાળુઓ માટે સૂચના. Beware of unauthorized fake VIP darshan and room booking websites. Official booking via somnath.org only. #Somnath #GirSomnath #ShreeSomnathTrust #SomnathTemple",
+                "published_days_ago": 2
+            },
+            {
+                "shortcode": "DWEd5U2CLsG",
+                "permalink": "https://www.instagram.com/p/DWEd5U2CLsG/",
+                "source_account": "girsomnathpolice",
+                "city": "Kodinar (Gir Somnath)",
+                "caption": "Gir Somnath Police Kodinar Division Action Report | કોડીનાર પોલીસ મથક વિસ્તારમાં કાયદો અને વ્યવસ્થા જાળવણી તથા ગેરકાયદેસર પ્રવૃત્તિઓ સામે કડક કાર્યવાહી. #GirSomnathPolice #Kodinar #GirSomnath",
+                "published_days_ago": 2
             },
             # -------------------------------------------------------------
             # GUJARAT STATEWIDE CRIME INTELLIGENCE & POLICE BULLETINS
