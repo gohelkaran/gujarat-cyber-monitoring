@@ -539,6 +539,9 @@ const InstagramApp = {
         }
 
         // 4. Monitoring Results Table
+        if (!this.filters.keyword && data.results && data.results.length > 0) {
+            this._rawDataset = [...data.results];
+        }
         this.renderResultsTable(data.results || [], data.pagination || {});
 
         // Track total count for new-post detection
@@ -1031,6 +1034,47 @@ const InstagramApp = {
             if (btn) btn.disabled = false;
             if (icon) icon.classList.remove("spin-clockwise");
         }
+    },
+
+    _searchDebounceTimer: null,
+    _rawDataset: [],
+
+    handleLiveSearch(val) {
+        clearTimeout(this._searchDebounceTimer);
+        const kw = (val || "").trim().toLowerCase();
+        this.filters.keyword = (val || "").trim();
+        this.currentPage = 1;
+
+        // 1. Instant (0ms) live client filter on active memory dataset
+        const pool = (this._rawDataset && this._rawDataset.length > 0) ? this._rawDataset : (this._currentResults || []);
+        if (kw.length >= 1 && pool.length > 0) {
+            const matched = pool.filter(r => {
+                const text = `${r.headline || ''} ${r.full_caption || r.caption || ''} ${r.city || ''} ${r.origin_label || ''} ${r.crime_category || ''} ${r.source_account || ''}`.toLowerCase();
+                return text.includes(kw);
+            });
+            if (matched.length > 0) {
+                this.renderResultsTable(matched, { total_count: matched.length, page: 1, total_pages: 1 });
+                const countLabel = document.getElementById("results-count-label");
+                if (countLabel) {
+                    countLabel.innerHTML = `<span class="badge bg-success font-mono me-1"><i class="bi bi-lightning-fill"></i>LIVE MATCH</span> Showing <strong>${matched.length}</strong> real news articles for "<em>${this.escapeHtml(val)}</em>"`;
+                }
+            }
+        } else if (kw.length === 0 && pool.length > 0) {
+            this.renderResultsTable(pool, { total_count: pool.length, page: 1, total_pages: 1 });
+        }
+
+        // 2. Debounced (130ms) query to server buffer across all 1000+ statewide news articles
+        this._searchDebounceTimer = setTimeout(() => {
+            this.loadDashboardData(false);
+        }, 130);
+    },
+
+    clearSearch() {
+        const input = document.getElementById("filter-keyword");
+        if (input) input.value = "";
+        this.filters.keyword = "";
+        this.currentPage = 1;
+        this.loadDashboardData(true);
     },
 
     applyFilters() {

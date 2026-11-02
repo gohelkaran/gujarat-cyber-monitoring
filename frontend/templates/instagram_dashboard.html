@@ -332,8 +332,18 @@
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label small text-info fw-bold"><i class="bi bi-key-fill me-1"></i>Search Any Crime Keyword / Topic / Hashtag *</label>
-                    <input type="text" id="filter-keyword" class="form-control form-control-sm bg-dark text-light border-info font-mono" placeholder="e.g. digital arrest, share trading, loan app, kyc scam, extortion, task fraud, 1930...">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label small text-info fw-bold mb-0">
+                            <i class="bi bi-search me-1"></i>Search Keyword / Topic / Location
+                        </label>
+                        <span class="badge bg-success font-mono" style="font-size: 0.6rem;"><i class="bi bi-lightning-fill me-1"></i>LIVE AUTO-SEARCH</span>
+                    </div>
+                    <div class="input-group input-group-sm">
+                        <input type="text" id="filter-keyword" class="form-control bg-dark text-light border-info font-mono" placeholder="Type letters to search live (e.g. digital arrest, kyc, surat)..." oninput="InstagramApp.handleLiveSearch(this.value)">
+                        <button class="btn btn-outline-secondary" type="button" onclick="InstagramApp.clearSearch()" title="Clear search">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="col-md-1">
                     <label class="form-label small text-secondary fw-semibold">Date From</label>
