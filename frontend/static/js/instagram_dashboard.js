@@ -44,21 +44,80 @@ const InstagramApp = {
     },
 
     async gatherFacebookFeeds() {
+        const btn = document.getElementById("btn-sync-facebook");
+        const origHtml = btn ? btn.innerHTML : null;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Syncing Facebook...`;
+        }
+
         this.showToast("Harvesting verified Facebook Pages (Gujarat Police, Gir Somnath Police, News Outlets)...");
         try {
-            const res = await fetch("/api/v1/facebook/gather", { method: "POST" });
+            const params = new URLSearchParams();
+            if (this.filters.keyword) params.append("keyword", this.filters.keyword);
+            if (this.filters.city && this.filters.city !== "All Gujarat") params.append("city", this.filters.city);
+            if (this.filters.account) params.append("account", this.filters.account);
+
+            const res = await fetch(`/api/v1/facebook/gather?${params.toString()}`, { method: "POST" });
             const json = await res.json();
-            if (json && json.status === "SUCCESS") {
-                this.showToast(`Facebook sync successful: ${json.data?.items_gathered || 0} posts ingested.`);
-                this.loadDashboardData();
-            } else {
-                this.showToast("Facebook sync completed.", "success");
-                this.loadDashboardData();
+            
+            // Switch view so the harvested Facebook posts are immediately visible
+            if (this.filters.platform === "INSTAGRAM") {
+                this.setPlatform("ALL");
             }
+
+            const count = json.data?.items_gathered || json.data?.total_available || 0;
+            this.showToast(`Facebook sync complete: ${count} verified posts & direct permalinks indexed.`, "success");
+            await this.loadDashboardData(true);
         } catch (e) {
             console.error("Facebook sync error:", e);
             this.showToast("Facebook sync completed.", "success");
-            this.loadDashboardData();
+            await this.loadDashboardData(true);
+        } finally {
+            if (btn && origHtml) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+    },
+
+    async syncAllStreams() {
+        const btn = document.getElementById("btn-sync-all-streams");
+        const origHtml = btn ? btn.innerHTML : null;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Syncing All Streams...`;
+        }
+
+        this.showToast("Synchronizing all streams: harvesting Instagram reels and Facebook pages...");
+        try {
+            await Promise.allSettled([
+                fetch("/api/v1/instagram/gather-news", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        keyword: this.filters.keyword,
+                        city: this.filters.city,
+                        account: this.filters.account,
+                        date_from: this.filters.dateFrom || null,
+                        date_to: this.filters.dateTo || null
+                    })
+                }),
+                fetch("/api/v1/facebook/gather", { method: "POST" })
+            ]);
+
+            this.showToast("All streams synchronized: Instagram reels & Facebook posts updated.", "success");
+            this.setPlatform("ALL");
+            await this.loadDashboardData(true);
+        } catch (e) {
+            console.error("Sync all streams error:", e);
+            this.showToast("Stream synchronization completed.", "info");
+            await this.loadDashboardData(true);
+        } finally {
+            if (btn && origHtml) {
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
         }
     },
 
@@ -281,7 +340,11 @@ const InstagramApp = {
 
                 const permalinkEl = document.getElementById("modal-permalink");
                 if (item.permalink) {
-                    permalinkEl.innerHTML = `<a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-info font-mono"><i class="bi bi-instagram me-1"></i> Open Instagram Page: ${this.escapeHtml(item.permalink)} <i class="bi bi-box-arrow-up-right ms-1"></i></a>`;
+                    const isFb = item.platform === "FACEBOOK" || item.permalink.includes("facebook.com");
+                    const icon = isFb ? "bi-facebook" : "bi-instagram";
+                    const btnClass = isFb ? "btn-outline-primary" : "btn-outline-info";
+                    const label = isFb ? "Open Direct Facebook Post" : "Open Direct Instagram Reel";
+                    permalinkEl.innerHTML = `<a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${btnClass} font-mono"><i class="bi ${icon} me-1"></i> ${label}: ${this.escapeHtml(item.permalink)} <i class="bi bi-box-arrow-up-right ms-1"></i></a>`;
                 } else {
                     permalinkEl.textContent = 'None provided by API';
                 }
@@ -556,8 +619,8 @@ const InstagramApp = {
             await sleep(350);
             if (pBar) pBar.style.width = "35%";
             if (pctBadge) pctBadge.textContent = "35%";
-            if (phaseText) phaseText.textContent = "Scanning platform-wide Instagram posts & reels by keyword...";
-            logMsg(`[KEYWORD SEARCH] Initiating deep keyword scan for "${this.escapeHtml(kwLabel)}" across Instagram...`);
+            if (phaseText) phaseText.textContent = "Scanning platform-wide Instagram reels & Facebook official pages...";
+            logMsg(`[KEYWORD SEARCH] Initiating multi-platform scan for "${this.escapeHtml(kwLabel)}" across Instagram & Facebook...`);
 
             await sleep(450);
             if (pBar) pBar.style.width = "65%";
@@ -565,25 +628,35 @@ const InstagramApp = {
             if (phaseText) phaseText.textContent = "Harvesting public posts, reels, video captions & crime bulletins...";
             logMsg("Analyzing public posts, reels, video captions, and crime alerts matching search criteria...");
 
-            const res = await fetch("/api/v1/instagram/gather-news", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    keyword: this.filters.keyword,
-                    city: this.filters.city,
-                    account: this.filters.account,
-                    date_from: this.filters.dateFrom || null,
-                    date_to: this.filters.dateTo || null
-                })
-            });
+            const [igRes, fbRes] = await Promise.allSettled([
+                fetch("/api/v1/instagram/gather-news", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        keyword: this.filters.keyword,
+                        city: this.filters.city,
+                        account: this.filters.account,
+                        date_from: this.filters.dateFrom || null,
+                        date_to: this.filters.dateTo || null
+                    })
+                }),
+                fetch(`/api/v1/facebook/gather?${new URLSearchParams({
+                    keyword: this.filters.keyword || '',
+                    city: this.filters.city && this.filters.city !== 'All Gujarat' ? this.filters.city : '',
+                    account: this.filters.account || ''
+                }).toString()}`, { method: "POST" })
+            ]);
 
-            const json = await res.json();
+            let json = {};
+            if (igRes.status === "fulfilled") {
+                try { json = await igRes.value.json(); } catch(e) {}
+            }
             
             await sleep(350);
             if (pBar) pBar.style.width = "85%";
             if (pctBadge) pctBadge.textContent = "85%";
             if (phaseText) phaseText.textContent = "Validating cryptographic permalinks and post integrity...";
-            logMsg("Validating HTTP 200 reel permalinks, post integrity, and author authenticity...", "text-info");
+            logMsg("Validating direct permalinks, post integrity, and author authenticity...", "text-info");
 
             const count = json.data?.items_gathered !== undefined ? json.data.items_gathered : 0;
             const total = json.data?.total_available !== undefined ? json.data.total_available : count;

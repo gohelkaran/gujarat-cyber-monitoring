@@ -110,3 +110,4 @@ def get_monitored_facebook_pages(db: Session = Depends(get_db)):
     service = FacebookService(db)
     pages = service.get_monitored_pages()
     return ApiResponse.success_response(data=pages, message="Monitored Facebook Pages retrieved.")
+

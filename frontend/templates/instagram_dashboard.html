@@ -212,10 +212,10 @@
                 </div>
             </div>
             <div class="d-flex align-items-center gap-2 font-mono small">
-                <button class="btn btn-sm btn-outline-primary font-mono" onclick="InstagramApp.gatherFacebookFeeds()" title="Harvest verified Facebook Page bulletins">
+                <button class="btn btn-sm btn-outline-primary font-mono" id="btn-sync-facebook" onclick="InstagramApp.gatherFacebookFeeds()" title="Harvest verified Facebook Page bulletins">
                     <i class="bi bi-facebook me-1"></i> Sync Facebook Pages
                 </button>
-                <button class="btn btn-sm btn-soc-primary font-mono" onclick="InstagramApp.gatherNews()" title="Harvest statewide feeds & reels">
+                <button class="btn btn-sm btn-soc-primary font-mono" id="btn-sync-all-streams" onclick="InstagramApp.syncAllStreams()" title="Harvest statewide Instagram &amp; Facebook streams">
                     <i class="bi bi-arrow-repeat me-1"></i> Sync All Streams
                 </button>
             </div>
