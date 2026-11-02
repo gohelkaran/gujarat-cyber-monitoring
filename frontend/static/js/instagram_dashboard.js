@@ -1550,11 +1550,11 @@ const InstagramApp = {
 document.addEventListener("DOMContentLoaded", () => {
     InstagramApp.init();
 
-    // Enable pressing Enter in keyword filter to search and gather news instantly
+    // Enable pressing Enter in keyword filter to search and filter news instantly
     const kwInput = document.getElementById("filter-keyword");
     if (kwInput) {
         kwInput.addEventListener("keyup", (e) => {
-            if (e.key === "Enter") InstagramApp.gatherNews();
+            if (e.key === "Enter") InstagramApp.applyFilters();
         });
     }
 

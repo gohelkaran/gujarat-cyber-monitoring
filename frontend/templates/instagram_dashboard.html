@@ -265,9 +265,9 @@
                 <div class="col-md-2">
                     <label class="form-label small text-secondary fw-semibold">City / District (33 Dists)</label>
                     <select id="filter-city" class="form-select form-select-sm bg-dark text-light border-secondary font-mono" onchange="InstagramApp.applyFilters()">
-                        <option value="">All Gujarat Statewide (33 Districts)</option>
+                        <option value="" selected>All Gujarat Statewide (33 Districts)</option>
                         <optgroup label="📍 Gir Somnath District (Priority)">
-                            <option value="Gir Somnath" selected>★ All Gir Somnath District</option>
+                            <option value="Gir Somnath">★ All Gir Somnath District</option>
                             <option value="Veraval">Veraval (District HQ &amp; Port)</option>
                             <option value="Somnath">Somnath / Prabhas Patan</option>
                             <option value="Kodinar">Kodinar</option>
@@ -321,12 +321,12 @@
                     <select id="filter-origin" class="form-select form-select-sm bg-dark text-light border-secondary font-mono" onchange="InstagramApp.applyFilters()">
                         <option value="" selected>All Sources &amp; Origins</option>
                         <option value="police">🛡️ Official Police Bulletins (CID &amp; SP)</option>
-                        <option value="media">📰 Verified Media Outlets Only</option>
-                        <option value="sandesh">📰 Sandesh News (Gujarat)</option>
-                        <option value="tv9">📺 TV9 Gujarati</option>
+                        <option value="sandesh">📰 Sandesh News (Crime &amp; Gujarat)</option>
+                        <option value="tv9">📺 TV9 Gujarati (Crime &amp; State)</option>
+                        <option value="abp">📺 ABP Asmita (Gujarat Crime)</option>
+                        <option value="express">📰 The Indian Express (Gujarat)</option>
+                        <option value="times">📰 The Times of India (Gujarat Cities)</option>
                         <option value="deshgujarat">🌐 DeshGujarat</option>
-                        <option value="girsomnath">👮 Gir Somnath Police Official</option>
-                        <option value="gujaratpolice">👮 Gujarat Police State Cyber Cell</option>
                         <option value="instagram">📸 Instagram Verified Reels</option>
                         <option value="facebook">📘 Facebook Official Pages</option>
                     </select>
@@ -344,8 +344,8 @@
                     <input type="date" id="filter-date-to" class="form-control form-control-sm bg-dark text-light border-secondary">
                 </div>
                 <div class="col-md-3 d-flex gap-1">
-                    <button class="btn btn-sm btn-soc-primary flex-grow-1" onclick="InstagramApp.gatherNews()">
-                        <i class="bi bi-search me-1"></i> Search &amp; Monitor All
+                    <button class="btn btn-sm btn-soc-primary flex-grow-1" onclick="InstagramApp.applyFilters()">
+                        <i class="bi bi-search me-1"></i> Search &amp; Filter Live
                     </button>
                     <button class="btn btn-sm btn-outline-secondary" onclick="InstagramApp.resetFilters()">
                         <i class="bi bi-x-circle me-1"></i> Reset

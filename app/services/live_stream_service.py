@@ -63,8 +63,16 @@ LIVE_CRAWLER_QUERIES = [
 ]
 
 DIRECT_RSS_FEEDS = [
+    {"url": "https://sandesh.com/rss/crime.xml", "source": "Sandesh News (Crime)", "lang": "gu"},
     {"url": "https://sandesh.com/rss/gujarat.xml", "source": "Sandesh News (Gujarat)", "lang": "gu"},
+    {"url": "https://tv9gujarati.com/crime/feed", "source": "TV9 Gujarati (Crime)", "lang": "gu"},
     {"url": "https://tv9gujarati.com/feed", "source": "TV9 Gujarati", "lang": "gu"},
+    {"url": "https://gujarati.abplive.com/crime/feed", "source": "ABP Asmita (Crime)", "lang": "gu"},
+    {"url": "https://gujarati.abplive.com/home/feed", "source": "ABP Asmita", "lang": "gu"},
+    {"url": "https://indianexpress.com/section/cities/ahmedabad/feed/", "source": "The Indian Express", "lang": "en"},
+    {"url": "https://timesofindia.indiatimes.com/rssfeeds/2950623.cms", "source": "Times of India (Ahmedabad)", "lang": "en"},
+    {"url": "https://timesofindia.indiatimes.com/rssfeeds/3012544.cms", "source": "Times of India (Surat)", "lang": "en"},
+    {"url": "https://timesofindia.indiatimes.com/rssfeeds/3012535.cms", "source": "Times of India (Rajkot)", "lang": "en"},
     {"url": "https://deshgujarat.com/feed", "source": "DeshGujarat", "lang": "en"},
 ]
 
@@ -269,38 +277,109 @@ class LiveStreamService:
 
         filtered = []
         for it in items:
-            # City filter
+            title = it.get("title", "")
+            caption = it.get("caption", "")
+            it_city = it.get("city", "")
+            origin = it.get("origin_label", "")
+            category = it.get("crime_category", "")
+            full_text = f"{title} {caption} {it_city} {origin} {category}".lower()
+
+            # 1. City / District Filter (Support Talukas, Clusters & Sub-regions)
             if city and city.strip() and city.strip() != "All Gujarat":
-                c_term = city.strip().lower()
-                it_city = (it.get("city") or "").lower()
-                it_text = (it.get("title") or "").lower()
-                if c_term not in it_city and c_term not in it_text:
+                c_clean = city.strip().lower()
+                matched_city = False
+
+                if any(k in c_clean for k in ["gir somnath", "somnath", "veraval"]):
+                    somnath_terms = ["somnath", "veraval", "kodinar", "una", "talala", "sutrapada", "gadhada", "ગીર", "વેરાવળ", "સોમનાથ", "કોડીનાર", "ઉના", "તાલાલા", "સુત્રાપાડા"]
+                    matched_city = any(t in full_text for t in somnath_terms)
+                elif "surat" in c_clean:
+                    surat_terms = ["surat", "સુરત", "katargam", "varachha", "olpad", "bardoli", "rander"]
+                    matched_city = any(t in full_text for t in surat_terms)
+                elif "ahmedabad" in c_clean:
+                    ahmedabad_terms = ["ahmedabad", "અમદાવાદ", "vastrapur", "naroda", "satellite", "maninagar", "chandkheda"]
+                    matched_city = any(t in full_text for t in ahmedabad_terms)
+                elif "rajkot" in c_clean:
+                    rajkot_terms = ["rajkot", "રાજકોટ", "gondal", "jetpur", "dhoraji"]
+                    matched_city = any(t in full_text for t in rajkot_terms)
+                elif "vadodara" in c_clean:
+                    vadodara_terms = ["vadodara", "વડોદરા", "baroda", "padra", "dabhoi"]
+                    matched_city = any(t in full_text for t in vadodara_terms)
+                elif "kutch" in c_clean:
+                    kutch_terms = ["kutch", "bhuj", "gandhidham", "mundra", "anjar", "કચ્છ", "ભુજ"]
+                    matched_city = any(t in full_text for t in kutch_terms)
+                elif "bhavnagar" in c_clean:
+                    bhavnagar_terms = ["bhavnagar", "ભાવનગર", "mahuva", "palitana"]
+                    matched_city = any(t in full_text for t in bhavnagar_terms)
+                elif "jamnagar" in c_clean:
+                    jamnagar_terms = ["jamnagar", "જામનગર", "reliance", "khambhalia"]
+                    matched_city = any(t in full_text for t in jamnagar_terms)
+                elif "junagadh" in c_clean:
+                    junagadh_terms = ["junagadh", "જૂનાગઢ", "keshod", "visavadar", "mangarol"]
+                    matched_city = any(t in full_text for t in junagadh_terms)
+                else:
+                    matched_city = (c_clean in full_text) or (c_clean in it_city.lower())
+
+                if not matched_city:
                     continue
 
-            # Keyword filter
+            # 2. Keyword Filter (Flexible Multi-word, Substring & Transliterated Matching)
             if keyword and keyword.strip():
-                kw = keyword.strip().lower()
-                text = (it.get("title", "") + " " + it.get("caption", "")).lower()
-                if kw not in text:
+                kw_clean = keyword.strip().lower()
+                kw_words = [w for w in re.split(r'[\s,+]+', kw_clean) if len(w) > 1]
+
+                phrase_match = kw_clean in full_text
+                all_words_match = kw_words and all(w in full_text for w in kw_words)
+                any_word_match = kw_words and any(w in full_text for w in kw_words)
+
+                if not (phrase_match or all_words_match or any_word_match):
                     continue
 
-            # Account filter
-            if account and account.strip():
-                ac = account.strip().lstrip("@").lower()
-                if ac not in it.get("source_account", "").lower() and ac not in it.get("origin_label", "").lower():
-                    continue
+            # 3. Source Origin Filter
+            if source_origin and source_origin.strip() and source_origin.strip().lower() != "all":
+                so_clean = source_origin.strip().lower()
+                origin_lower = origin.lower()
+                platform_lower = it.get("platform", "").lower()
 
-            # Platform filter
-            if platform and platform.strip() and platform.strip() != "ALL":
+                if so_clean == "police":
+                    if not ("police" in origin_lower or "police" in full_text or "advisory" in category.lower() or platform_lower == "police_bulletin"):
+                        continue
+                elif so_clean == "sandesh":
+                    if "sandesh" not in origin_lower:
+                        continue
+                elif so_clean == "tv9":
+                    if "tv9" not in origin_lower:
+                        continue
+                elif so_clean in ["abp", "asmita"]:
+                    if "abp" not in origin_lower:
+                        continue
+                elif so_clean in ["express", "indianexpress"]:
+                    if "express" not in origin_lower:
+                        continue
+                elif so_clean in ["toi", "times"]:
+                    if "times" not in origin_lower:
+                        continue
+                elif so_clean == "instagram":
+                    if platform_lower != "instagram":
+                        continue
+                elif so_clean == "facebook":
+                    if platform_lower != "facebook":
+                        continue
+                else:
+                    if so_clean not in origin_lower and so_clean not in it.get("source_account", "").lower():
+                        continue
+
+            # 4. Stream Platform Filter
+            if platform and platform.strip() and platform.strip().upper() != "ALL":
                 p_term = platform.strip().upper()
-                if p_term == "INSTAGRAM" and it.get("platform") != "INSTAGRAM":
+                it_plat = it.get("platform", "NEWS_FEED").upper()
+                if p_term == "INSTAGRAM" and it_plat != "INSTAGRAM":
                     continue
-                if p_term == "FACEBOOK" and it.get("platform") != "FACEBOOK":
+                if p_term == "FACEBOOK" and it_plat != "FACEBOOK":
                     continue
-                if p_term in ["NEWS_FEED", "CRIME_NEWS"] and it.get("platform") not in ["NEWS_FEED", "POLICE_BULLETIN"]:
+                if p_term in ["NEWS_FEED", "CRIME_NEWS"] and it_plat not in ["NEWS_FEED", "POLICE_BULLETIN", "ARTICLE"]:
                     continue
 
-            # Date filter
+            # 5. Date Filter
             if date_from or date_to:
                 try:
                     dt = datetime.fromisoformat(it.get("published_at", "").replace("Z", "+00:00"))
