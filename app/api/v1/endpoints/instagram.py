@@ -21,9 +21,11 @@ from app.services.instagram_service import InstagramService
 from app.services.notification_service import NotificationService
 from app.services.audit_service import AuditService
 from app.config.settings import get_settings
+from app.core.logging_config import get_logger
 from app.models.instagram import CollectedItem
 from app.utils.time_utils import utc_now
 
+logger = get_logger("instagram_api")
 router = APIRouter(prefix="/instagram", tags=["Instagram Monitoring V1"])
 settings = get_settings()
 
