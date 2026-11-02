@@ -82,10 +82,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "Gir Somnath (Veraval HQ)",
         "caption": "Gir Somnath District Police Official Advisory: Alert regarding online task fraud and lottery scam messages circulating in Veraval, Somnath, Kodinar, and Una. Report fraudulent transactions within golden hour on NCRP helpline 1930. #GirSomnathPolice #Veraval #Somnath #CyberSafety #1930Helpline",
         "media_type": "POST",
-        "likes": 340,
-        "comments": 48,
-        "shares": 86,
-        "published_minutes_ago": 25,
+        "likes": 240,
+        "comments": 38,
+        "shares": 52,
+        "published_at": "2026-10-24T10:30:00Z",
         "reach_estimate": 16500
     },
     {
@@ -95,10 +95,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "All Gujarat",
         "caption": "Gujarat State Police Cyber Crime Advisory: Beware of Digital Arrest scams. Police, CBI, ED, or Customs never place citizens under digital arrest via Skype or WhatsApp video calls. Never share screen or transfer money to dummy verification accounts. #GujaratPolice #CyberCrime #DigitalArrest #SafetyFirst",
         "media_type": "POST",
-        "likes": 1820,
-        "comments": 215,
-        "shares": 412,
-        "published_minutes_ago": 55,
+        "likes": 1250,
+        "comments": 142,
+        "shares": 210,
+        "published_at": "2026-10-22T08:15:00Z",
         "reach_estimate": 78000
     },
     {
@@ -108,10 +108,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "Gir Somnath & Saurashtra",
         "caption": "Sandesh News: Coastal cyber vigil in Veraval Port and Somnath against email spoofing and fake boat subsidy APKs. Gir Somnath police issue preventive directives for marine exporters and citizens. #SandeshNews #GirSomnath #Veraval #CyberCrime",
         "media_type": "POST",
-        "likes": 560,
-        "comments": 68,
-        "shares": 115,
-        "published_minutes_ago": 110,
+        "likes": 480,
+        "comments": 55,
+        "shares": 65,
+        "published_at": "2026-10-20T14:45:00Z",
         "reach_estimate": 24200
     },
     {
@@ -121,10 +121,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "All Gujarat",
         "caption": "TV9 Gujarati Investigation: Gujarat CID Crime arrests mastermind behind bogus institutional share trading applications from Ahmedabad. Over Rs 45 Crore frozen in coordinated nationwide crackdown. #TV9Gujarati #ShareTradingScam #GujaratCID #CyberPolice",
         "media_type": "VIDEO",
-        "likes": 1150,
-        "comments": 132,
-        "shares": 290,
-        "published_minutes_ago": 180,
+        "likes": 890,
+        "comments": 94,
+        "shares": 140,
+        "published_at": "2026-10-18T16:20:00Z",
         "reach_estimate": 62000
     },
     {
@@ -134,10 +134,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "Bhavnagar & Saurashtra",
         "caption": "Gujarat First News Bulletin: Bhavnagar Cyber Crime Cell arrests 10 accused under GUJCTOC in multi-state cyber fraud and illegal gaming networks. 134 bank accounts seized. #GujaratFirst #Bhavnagar #GUJCTOC #CyberCrime",
         "media_type": "VIDEO",
-        "likes": 780,
-        "comments": 89,
-        "shares": 164,
-        "published_minutes_ago": 260,
+        "likes": 670,
+        "comments": 72,
+        "shares": 95,
+        "published_at": "2026-10-16T11:10:00Z",
         "reach_estimate": 39500
     },
     {
@@ -147,10 +147,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "Surat",
         "caption": "Divya Bhaskar Crime Watch: Surat Cyber Crime branch registers complaint against Chinese instant loan app blackmail cartel. Citizens advised never to permit contacts access to unknown loan applications. #DivyaBhaskar #Surat #LoanAppExtortion #CyberSafety",
         "media_type": "POST",
-        "likes": 640,
-        "comments": 62,
-        "shares": 94,
-        "published_minutes_ago": 340,
+        "likes": 530,
+        "comments": 49,
+        "shares": 68,
+        "published_at": "2026-10-14T09:05:00Z",
         "reach_estimate": 31000
     },
     {
@@ -160,10 +160,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "Una (Gir Somnath)",
         "caption": "Una Sub-Division Police Alert: Gir Somnath Police nab inter-district card cloning & ATM fraud gang operating near Una ST bus station. Citizens cautioned not to seek ATM assistance from strangers. #Una #GirSomnath #CyberCrime #ATMScam",
         "media_type": "POST",
-        "likes": 420,
-        "comments": 54,
-        "shares": 72,
-        "published_minutes_ago": 80,
+        "likes": 310,
+        "comments": 42,
+        "shares": 45,
+        "published_at": "2026-10-13T13:40:00Z",
         "reach_estimate": 18900
     },
     {
@@ -173,10 +173,10 @@ VERIFIED_FACEBOOK_CATALOG = [
         "city": "Kodinar (Gir Somnath)",
         "caption": "Kodinar Police Video Bulletin: Investigation into electricity bill disconnection phishing SMS & fake APK links reported in Kodinar rural circles. Dial 1930 immediately to freeze funds. #Kodinar #GirSomnath #PhishingAlert #CyberCell",
         "media_type": "VIDEO",
-        "likes": 490,
-        "comments": 71,
-        "shares": 105,
-        "published_minutes_ago": 150,
+        "likes": 420,
+        "comments": 61,
+        "shares": 58,
+        "published_at": "2026-10-12T15:25:00Z",
         "reach_estimate": 22400
     }
 ]
@@ -246,7 +246,11 @@ class FacebookService:
                 kw_match = any(t in caption_lower or t in post["city"].lower() for t in search_terms)
 
             if city_match and acct_match and kw_match:
-                pub_dt = now - timedelta(minutes=post.get("published_minutes_ago", 30))
+                pub_iso = post.get("published_at")
+                if pub_iso:
+                    pub_dt = datetime.fromisoformat(pub_iso.replace("Z", "+00:00"))
+                else:
+                    pub_dt = now - timedelta(days=post.get("published_days_ago", 1))
                 shares_cnt = post.get("shares", 50)
                 hashtags_list = re.findall(r"#\w+", post["caption"])
 

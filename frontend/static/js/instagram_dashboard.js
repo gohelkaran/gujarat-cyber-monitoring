@@ -348,13 +348,16 @@ const InstagramApp = {
             const now = new Date();
             const diffMs = now - dt;
             const diffSec = Math.floor(diffMs / 1000);
-            if (diffSec < 60) return "Just now (Live)";
+            if (diffSec < 0) return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            if (diffSec < 60) return "Just now";
             const diffMin = Math.floor(diffSec / 60);
             if (diffMin < 60) return `${diffMin}m ago`;
             const diffHr = Math.floor(diffMin / 60);
-            if (diffHr < 24) return `${diffHr}h ago (Today)`;
+            if (diffHr < 24) return `${diffHr}h ago`;
             const diffDays = Math.floor(diffHr / 24);
-            return `${diffDays}d ago`;
+            if (diffDays < 7) return `${diffDays}d ago`;
+            if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
+            return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
         } catch (e) {
             return '--';
         }
