@@ -573,11 +573,18 @@ def get_item_detail(item_id: str, db: Session = Depends(get_db)):
         for m in item.matches
     ]
 
+    import re
+    raw_meta = item.raw_metadata or {}
+    shares_cnt = raw_meta.get("shares") or raw_meta.get("distribution", {}).get("shares_count") or raw_meta.get("engagement", {}).get("shares", 0)
+    hashtags_list = re.findall(r"#\w+", item.caption or "")
+
     return ApiResponse.success_response(
         data={
             "id": item.id,
             "external_id": item.external_id,
+            "platform": item.platform or "INSTAGRAM",
             "source_account": item.source_account,
+            "city": item.city or "All Gujarat",
             "caption": item.caption,
             "media_type": item.media_type,
             "permalink": item.permalink,
@@ -586,6 +593,9 @@ def get_item_detail(item_id: str, db: Session = Depends(get_db)):
             "collected_at": item.collected_at.isoformat() if item.collected_at else None,
             "like_count": item.like_count,
             "comments_count": item.comments_count,
+            "shares_count": shares_cnt,
+            "hashtags": hashtags_list,
+            "raw_metadata": raw_meta,
             "is_demo_data": item.is_demo_data,
             "matches": matches_data,
             "compliance_notice": "Permitted public media only. PII minimized. Links must not be executed automatically."
