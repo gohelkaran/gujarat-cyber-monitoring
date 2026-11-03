@@ -740,8 +740,8 @@ const InstagramApp = {
                 if (row.published_at) {
                     const dt = new Date(row.published_at);
                     if (!isNaN(dt.getTime())) {
-                        pubDate = dt.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-                        pubTime = dt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                        pubDate = dt.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", month: 'short', day: 'numeric', year: 'numeric' });
+                        pubTime = dt.toLocaleTimeString("en-IN", { timeZone: "Asia/Kolkata", hour: '2-digit', minute: '2-digit', hour12: true });
                     }
                 }
             } catch (e) {
@@ -864,7 +864,8 @@ const InstagramApp = {
             const now = new Date();
             const diffMs = now - dt;
             const diffSec = Math.floor(diffMs / 1000);
-            if (diffSec < 0) return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            if (diffSec < 0 && diffSec > -180) return "Just now";
+            if (diffSec < 0) return dt.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", month: 'short', day: 'numeric', year: 'numeric' });
             if (diffSec < 60) return "Just now";
             const diffMin = Math.floor(diffSec / 60);
             if (diffMin < 60) return `${diffMin}m ago`;
@@ -873,7 +874,7 @@ const InstagramApp = {
             const diffDays = Math.floor(diffHr / 24);
             if (diffDays < 7) return `${diffDays}d ago`;
             if (diffDays < 30) return `${Math.floor(diffDays / 7)}w ago`;
-            return dt.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            return dt.toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", month: 'short', day: 'numeric', year: 'numeric' });
         } catch (e) {
             return '--';
         }
@@ -935,7 +936,7 @@ const InstagramApp = {
                 if (jurEl) jurEl.textContent = item.city || "All Gujarat";
 
                 const relTime = this.formatRelativeTime(item.published_at);
-                const pubDate = item.published_at ? new Date(item.published_at).toLocaleString() : '--';
+                const pubDate = item.published_at ? new Date(item.published_at).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : '--';
                 document.getElementById("modal-published-at").innerHTML = `<span class="text-success fw-bold">${relTime}</span> &bull; ${pubDate}`;
 
                 document.getElementById("modal-media-type").textContent = `${plat} ${item.media_type || 'POST'}`;

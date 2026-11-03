@@ -12,7 +12,9 @@ Handles:
 import re
 import hashlib
 from datetime import datetime, timezone, timedelta
+from zoneinfo import ZoneInfo
 from email.utils import parsedate_to_datetime
+import dateutil.parser
 from typing import Dict, Any, List, Optional
 import xml.etree.ElementTree as ET
 import httpx
@@ -805,15 +807,23 @@ class CrimeFeedService:
                         # Detect district
                         district = self.detect_district(full_text)
 
-                        # Parse published datetime
+                        # Parse published datetime with accurate timezone handling (Gujarat feeds are in IST)
                         pub_dt = now
                         if pub_date_str:
                             try:
-                                pub_dt = parsedate_to_datetime(pub_date_str)
-                                if pub_dt.tzinfo:
-                                    pub_dt = pub_dt.astimezone(timezone.utc).replace(tzinfo=None)
+                                dt = dateutil.parser.parse(pub_date_str)
+                                if dt.tzinfo is None:
+                                    dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
+                                pub_dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
                             except Exception:
-                                pub_dt = now
+                                try:
+                                    cleaned = re.sub(r"([+-]\d{2}):(\d{2})$", r"\1\2", pub_date_str.strip())
+                                    dt = parsedate_to_datetime(cleaned)
+                                    if dt.tzinfo is None:
+                                        dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
+                                    pub_dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+                                except Exception:
+                                    pub_dt = now
 
                         # Unique external ID from link hash
                         link_hash = hashlib.md5((link or title).encode("utf-8")).hexdigest()[:14]
