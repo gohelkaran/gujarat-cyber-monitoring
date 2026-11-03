@@ -23,7 +23,7 @@ Handles:
 """
 
 import re
-
+import time
 import urllib.parse
 
 from datetime import datetime, timedelta, timezone
@@ -81,6 +81,9 @@ PLATFORM_ACCESS_LIMITATIONS = [
     "Keyword matches represent operational search hits only; they do not establish criminal intent.",
 
 ]
+
+_last_status_cache = {"data": None, "timestamp": 0.0}
+
 
 class InstagramService:
 
@@ -742,15 +745,16 @@ class InstagramService:
 
     # =========================================================================
 
-    def get_connection_status(self) -> Dict[str, Any]:
-
+    def get_connection_status(self, force_refresh: bool = False) -> Dict[str, Any]:
         """
-
         Probes connected Instagram source, validates API tokens, checks granted scopes,
-
         and provides transparent disclosure of access limitations.
-
+        Caches telemetry for 60 seconds to prevent blocking live feed rendering.
         """
+        global _last_status_cache
+        now_ts = time.time()
+        if not force_refresh and _last_status_cache["data"] and (now_ts - _last_status_cache["timestamp"]) < 60.0:
+            return dict(_last_status_cache["data"])
 
         source = self.db.query(SocialSource).filter(
             SocialSource.source_type == SourceType.INSTAGRAM,
@@ -821,41 +825,27 @@ class InstagramService:
 
             token_status = "REVOKED_OR_EXPIRED"
 
-        return {
-
+        res = {
             "is_connected": status_obj.is_connected,
-
             "source_id": source.id,
-
             "target_identifier": source.target_identifier,
-
             "account_name": source.name,
-
             "health": status_obj.health,
-
             "message": status_obj.message,
-
             "latency_ms": status_obj.latency_ms,
-
             "granted_permissions": status_obj.granted_permissions or list(PERMITTED_SCOPES_INSTAGRAM_MONITORING),
-
             "missing_permissions": [s for s in PERMITTED_SCOPES_INSTAGRAM_MONITORING if s not in (status_obj.granted_permissions or [])],
-
             "access_limitations": PLATFORM_ACCESS_LIMITATIONS,
-
             "is_mock_mode": status_obj.is_mock_mode,
-
             "rate_limit_remaining": status_obj.rate_limit_remaining,
-
             "rate_limit_limit": status_obj.rate_limit_limit,
-
             "token_status": token_status,
-
             "last_successful_sync_at": sync_obj.last_successful_sync_at if sync_obj else None,
-
             "total_items_fetched": sync_obj.total_items_fetched if sync_obj else 0
-
         }
+        _last_status_cache["data"] = res
+        _last_status_cache["timestamp"] = time.time()
+        return res
 
     # =========================================================================
 

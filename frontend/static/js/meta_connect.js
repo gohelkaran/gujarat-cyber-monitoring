@@ -6,11 +6,12 @@
 const MetaConnectApp = {
     isTokenVisible: false,
 
-    init() {
+    async init() {
         console.log("Initializing Meta Connect Gateway Controller...");
         this.initTheme();
-        this.loadExistingConfig();
-        this.loadConnectionStatus();
+        await this.loadExistingConfig();
+        await this.loadConnectionStatus();
+        await this.runProbe();
     },
 
     initTheme() {
@@ -50,7 +51,10 @@ const MetaConnectApp = {
                     targetEl.value = data.target_identifier;
                     if (badgeTarget) badgeTarget.textContent = `@${data.target_identifier.replace(/^@/, '')}`;
                 }
-                if (tokenEl && data.has_token && data.token_masked) {
+                if (tokenEl && data.token) {
+                    tokenEl.value = data.token;
+                    if (badgeToken) badgeToken.textContent = data.token_masked || (data.token.substring(0, 6) + "..." + data.token.slice(-4));
+                } else if (tokenEl && data.has_token && data.token_masked) {
                     tokenEl.placeholder = `Current Token: ${data.token_masked} (Paste new token to overwrite)`;
                     if (badgeToken) badgeToken.textContent = data.token_masked;
                 }
@@ -377,3 +381,4 @@ const MetaConnectApp = {
 document.addEventListener("DOMContentLoaded", () => {
     MetaConnectApp.init();
 });
+

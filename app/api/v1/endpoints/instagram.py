@@ -98,6 +98,7 @@ def get_official_meta_config():
             "app_secret_masked": masked_secret,
             "target_identifier": target_acct,
             "has_token": bool(token),
+            "token": token,
             "token_masked": masked_token,
             "is_configured": bool(token and len(token) > 20)
         },
@@ -130,7 +131,10 @@ def connect_official_meta_api(
     officer_role = current_user.role.value if current_user and hasattr(current_user, "role") else "LEAD_INVESTIGATOR"
     actor_ip = request.client.host if request and hasattr(request, "client") and request.client else "127.0.0.1"
 
+    env_data = _read_env_dict()
     token_clean = payload.access_token.strip()
+    if not token_clean:
+        token_clean = os.environ.get("INSTAGRAM_DEFAULT_ACCESS_TOKEN") or env_data.get("INSTAGRAM_DEFAULT_ACCESS_TOKEN") or ""
     target_clean = payload.target_identifier.strip().lstrip("@")
 
     # Update runtime environment and persist to .env
