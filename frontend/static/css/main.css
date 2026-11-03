@@ -5,41 +5,41 @@
    ============================================================================== */
 
 :root, [data-bs-theme="light"] {
-    /* Executive Light Theme (Default) */
-    --soc-bg: #f8fafc;
-    --soc-surface: #ffffff;
-    --soc-surface-raised: #f1f5f9;
-    --soc-surface-hover: #e2e8f0;
-    --soc-border: #e2e8f0;
-    --soc-border-subtle: #cbd5e1;
+    /* Executive Government White-to-Cream Palette */
+    --soc-bg: #FAF7F2;
+    --soc-surface: #FFFFFF;
+    --soc-surface-raised: #F5EFE6;
+    --soc-surface-hover: #ECE4D6;
+    --soc-border: #E5DFD3;
+    --soc-border-subtle: #D8D0C2;
 
-    --soc-text: #0f172a;
-    --soc-text-muted: #475569;
-    --soc-text-subtle: #64748b;
+    --soc-text: #1C2024;
+    --soc-text-muted: #555E68;
+    --soc-text-subtle: #79828E;
 
-    /* Severity Palettes - High Contrast, Accessible */
-    --sev-critical-bg: #fef2f2;
-    --sev-critical-text: #991b1b;
-    --sev-critical-border: #f87171;
+    /* Severity Palettes - Harmonized with Cream & White */
+    --sev-critical-bg: #FFF1F0;
+    --sev-critical-text: #991B1B;
+    --sev-critical-border: #FCA5A5;
 
-    --sev-high-bg: #fff7ed;
-    --sev-high-text: #9a3412;
-    --sev-high-border: #fb923c;
+    --sev-high-bg: #FFF7ED;
+    --sev-high-text: #9A3412;
+    --sev-high-border: #FDBA74;
 
-    --sev-medium-bg: #fffbeb;
-    --sev-medium-text: #92400e;
-    --sev-medium-border: #fbbf24;
+    --sev-medium-bg: #FEFCE8;
+    --sev-medium-text: #854D0E;
+    --sev-medium-border: #FDE047;
 
-    --sev-low-bg: #f0fdf4;
+    --sev-low-bg: #F0FDF4;
     --sev-low-text: #166534;
-    --sev-low-border: #86efac;
+    --sev-low-border: #86EFAC;
 
-    --soc-accent: #1d4ed8;
-    --soc-accent-hover: #1e40af;
-    --soc-success: #15803d;
-    --soc-warning: #b45309;
+    --soc-accent: #133E87;
+    --soc-accent-hover: #0F2C59;
+    --soc-success: #15803D;
+    --soc-warning: #B45309;
 
-    --soc-card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+    --soc-card-shadow: 0 1px 3px 0 rgba(40, 30, 15, 0.05), 0 2px 6px -1px rgba(40, 30, 15, 0.03);
     --soc-card-radius: 8px;
 
     --soc-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -205,9 +205,9 @@ body {
 }
 
 .soc-nav-item.active {
-    background-color: #eff6ff;
-    color: #1d4ed8;
-    border-left-color: #1d4ed8;
+    background-color: var(--soc-surface-raised);
+    color: var(--soc-accent);
+    border-left-color: var(--soc-accent);
     font-weight: 600;
 }
 
@@ -448,7 +448,7 @@ body {
 
 /* Executive Master Tab Bar */
 .master-tabs-bar {
-    background: var(--soc-surface);
+    background: var(--soc-surface-raised);
     border: 1px solid var(--soc-border);
     border-radius: 10px;
     padding: 6px;
@@ -475,39 +475,43 @@ body {
     gap: 8px;
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+    white-space: nowrap;
 }
 
 .master-tab-btn:hover {
-    background: var(--soc-surface-raised);
+    background: var(--soc-surface);
     color: var(--soc-text);
 }
 
 .master-tab-btn.active {
-    background: #1d4ed8;
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(29, 78, 216, 0.2);
+    background: #FFFFFF;
+    color: var(--soc-accent);
+    border-color: var(--soc-border);
+    box-shadow: 0 2px 6px rgba(40, 30, 15, 0.08);
 }
 
 .master-tab-btn.tab-saved.active {
-    background: #059669;
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+    background: #FFFFFF;
+    color: var(--soc-success);
+    border-color: var(--soc-border);
+    box-shadow: 0 2px 6px rgba(21, 128, 61, 0.12);
 }
 
 .master-tab-btn.tab-automation.active {
-    background: #334155;
-    color: #ffffff;
-    box-shadow: 0 2px 4px rgba(51, 65, 85, 0.2);
+    background: #FFFFFF;
+    color: var(--soc-text);
+    border-color: var(--soc-border);
+    box-shadow: 0 2px 6px rgba(40, 30, 15, 0.08);
 }
 
 /* Quick District Filter Chips */
 .district-chip {
-    padding: 3px 10px;
+    padding: 4px 11px;
     border-radius: 16px;
     font-size: 0.74rem;
     font-weight: 500;
-    border: 1px solid var(--soc-border-subtle);
-    background: var(--soc-surface);
+    border: 1px solid var(--soc-border);
+    background: #FFFFFF;
     color: var(--soc-text-muted);
     cursor: pointer;
     transition: all 0.15s ease;
@@ -518,12 +522,12 @@ body {
 .district-chip:hover {
     background: var(--soc-surface-raised);
     color: var(--soc-text);
-    border-color: var(--soc-border);
+    border-color: var(--soc-border-subtle);
 }
 
 .district-chip.active {
-    background: #eff6ff;
-    color: #1d4ed8;
-    border-color: #93c5fd;
+    background: var(--soc-accent);
+    color: #FFFFFF !important;
+    border-color: var(--soc-accent);
     font-weight: 600;
 }
