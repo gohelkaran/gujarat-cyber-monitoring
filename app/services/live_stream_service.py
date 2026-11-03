@@ -114,51 +114,67 @@ GUJARAT_DISTRICTS = [
 
 # Comprehensive synonyms, talukas, headquarters and transliterations for all 33 Gujarat districts
 DISTRICT_MATCH_TERMS: Dict[str, List[str]] = {
-    # Gir Somnath & Talukas (Priority)
-    "gir somnath": ["gir somnath", "somnath", "veraval", "kodinar", "una", "talala", "sutrapada", "gir gadhada", "ગીર સોમનાથ", "ગીર", "વેરાવળ", "સોમનાથ", "કોડીનાર", "ઉના", "તાલાલા", "સુત્રાપાડા"],
-    "veraval": ["veraval", "વેરાવળ", "ભાલકા", "પાટણ", "બંદર", "veraval port", "સોમનાથ", "somnath", "gir somnath"],
-    "somnath": ["somnath", "prabhas patan", "સોમનાથ", "પ્રભાસ પાટણ", "વેરાવળ", "veraval", "gir somnath"],
-    "kodinar": ["kodinar", "કોડીનાર", "ઘાંટવડ", "મુળ દ્વારકા", "mul dwarka", "gir somnath", "ગીર સોમનાથ"],
-    "una": ["una", "ઉના", "ડેલવાડા", "delwada", "નવાબંદર", "gir somnath", "ગીર સોમનાથ"],
-    "talala": ["talala", "તાલાલા", "gir forest", "ગીર", "gir somnath", "ગીર સોમનાથ"],
-    "sutrapada": ["sutrapada", "સુત્રાપાડા", "ધામળેજ", "gir somnath", "ગીર સોમનાથ"],
-    "gir gadhada": ["gir gadhada", "ગીર ગઢડા", "ગઢડા", "gir somnath", "ગીર સોમનાથ"],
+    # Gir Somnath & Talukas (Strictly separated per taluka jurisdiction)
+    "veraval": ["veraval", "વેરાવળ", "veraval port", "વેરાવળ બંદર", "ભાલકા", "bhalka"],
+    "somnath": ["somnath", "સોમનાથ", "prabhas patan", "પ્રભાસ પાટણ", "પ્રભાસપાટણ"],
+    "kodinar": ["kodinar", "કોડીનાર", "ઘાંટવડ", "મુળ દ્વારકા", "mul dwarka"],
+    "una": [r"\buna\b", "ઉના", "ડેલવાડા", "delwada", "નવાબંદર"],
+    "talala": ["talala", "તાલાલા", "talala gir", "તાલાલા ગીર"],
+    "sutrapada": ["sutrapada", "સુત્રાપાડા", "ધામળેજ", "dhamlej"],
+    "gir gadhada": ["gir gadhada", "ગીર ગઢડા"],
+    "gir somnath": [
+        "gir somnath", "girsomnath", "ગીર સોમનાથ", "ગીરસોમનાથ", "ગીર-સોમનાથ", "ગીર જંગલ", "gir forest",
+        "veraval", "વેરાવળ", "somnath", "સોમનાથ", "kodinar", "કોડીનાર",
+        "una", "ઉના", "talala", "તાલાલા", "sutrapada", "સુત્રાપાડા", "gir gadhada", "ગીર ગઢડા"
+    ],
 
     # 33 Districts of Gujarat
-    "ahmedabad": ["ahmedabad", "અમદાવાદ", "vastrapur", "naroda", "satellite", "maninagar", "chandkheda", "sanand", "bopal", "nikol"],
-    "surat": ["surat", "સુરત", "katargam", "varachha", "olpad", "bardoli", "rander", "adajan", "majura", "kamrej"],
-    "rajkot": ["rajkot", "રાજકોટ", "gondal", "jetpur", "dhoraji", "upleta", "jasdan"],
-    "vadodara": ["vadodara", "વડોદરા", "baroda", "padra", "dabhoi", "waghodia", "karjan"],
-    "bhavnagar": ["bhavnagar", "ભાવનગર", "mahuva", "palitana", "sihor", "talaja", "gariadhar"],
-    "jamnagar": ["jamnagar", "જામનગર", "reliance", "khambhalia", "dhrol", "kalavad", "lalpur"],
-    "junagadh": ["junagadh", "જૂનાગઢ", "keshod", "visavadar", "mangarol", "manavadar", "vanthali", "bilkha"],
-    "gandhinagar": ["gandhinagar", "ગાંધીનગર", "kalol", "dahegam", "mansa", "gift city"],
-    "kutch": ["kutch", "kachchh", "કચ્છ", "bhuj", "gandhidham", "mundra", "anjar", "mandvi", "nakhatrana", "ભુજ"],
-    "morbi": ["morbi", "મોરબી", "wankaner", "halvad", "વાંકાનેર", "હળવદ", "maliya"],
-    "surendranagar": ["surendranagar", "સુરેન્દ્રનગર", "wadhwan", "dhrangadhra", "chotila", "limbdi", "વઢવાણ", "ધ્રાંગધ્રા"],
-    "amreli": ["amreli", "અમરેલી", "dhari", "savarkundla", "rajula", "jafrabad", "babra", "bagasara", "સાવરકુંડલા"],
+    "ahmedabad": ["ahmedabad", "અમદાવાદ", "vastrapur", "naroda", "satellite", "maninagar", "chandkheda", "sanand", "bopal", "nikol", "બોડકદેવ", "ચાંદખેડા", "સાણંદ"],
+    "surat": ["surat", "સુરત", "katargam", "varachha", "olpad", "bardoli", "rander", "adajan", "majura", "kamrej", "કતારગામ", "વરાછા", "ઓલપાડ", "બારડોલી", "અડાજણ", "કામરેજ"],
+    "rajkot": ["rajkot", "રાજકોટ", "gondal", "jetpur", "dhoraji", "upleta", "jasdan", "ગોંડલ", "જેતપુર", "ધોરાજી", "ઉપલેટા"],
+    "vadodara": ["vadodara", "વડોદરા", "baroda", "padra", "dabhoi", "waghodia", "karjan", "પાદરા", "ડભોઇ", "વાઘોડિયા", "કરજણ"],
+    "bhavnagar": ["bhavnagar", "ભાવનગર", "mahuva", "palitana", "sihor", "talaja", "gariadhar", "મહુવા", "પાલીતાણા", "સિહોર", "તળાજા"],
+    "jamnagar": ["jamnagar", "જામનગર", "reliance", "khambhalia", "dhrol", "kalavad", "lalpur", "ધ્રોલ", "કાલાવડ", "લાલપુર"],
+    "junagadh": ["junagadh", "જૂનાગઢ", "જુનાગઢ", "keshod", "visavadar", "mangarol", "manavadar", "vanthali", "bilkha", "કેશોદ", "વિસાવદર", "માંગરોળ", "માણાવદર"],
+    "gandhinagar": ["gandhinagar", "ગાંધીનગર", "kalol", "dahegam", "mansa", "gift city", "કલોલ", "દહેગામ", "માણસા"],
+    "kutch": ["kutch", "kachchh", "કચ્છ", "bhuj", "gandhidham", "mundra", "anjar", "mandvi", "nakhatrana", "ભુજ", "ગાંધીધામ", "મુંદ્રા", "અંજાર", "માંડવી"],
+    "morbi": ["morbi", "મોરબી", "wankaner", "halvad", "વાંકાનેર", "હળવદ", "maliya", "માળિયા"],
+    "surendranagar": ["surendranagar", "સુરેન્દ્રનગર", "wadhwan", "dhrangadhra", "chotila", "limbdi", "વઢવાણ", "ધ્રાંગધ્રા", "ચોટીલા", "લીંબડી"],
+    "amreli": ["amreli", "અમરેલી", "dhari", "savarkundla", "rajula", "jafrabad", "babra", "bagasara", "સાવરકુંડલા", "રાજુલા", "જાફરાબાદ", "ધારી", "પીપાવાવ", "pipavav"],
     "porbandar": ["porbandar", "પોરબંદર", "ranavav", "kutiyana", "રાણાવાવ", "કુતિયાણા"],
-    "dwarka": ["dwarka", "devbhumi dwarka", "દ્વારકા", "ખંભાળિયા", "khambhalia", "okha", "bhanvad", "kalyanpur"],
-    "devbhumi dwarka": ["dwarka", "devbhumi dwarka", "દ્વારકા", "ખંભાળિયા", "khambhalia", "okha", "bhanvad", "kalyanpur"],
-    "mehsana": ["mehsana", "મહેસાણા", "visnagar", "kadi", "unjha", "vadnagar", "vijapur", "ઊંઝા", "વિસનગર"],
+    "dwarka": ["dwarka", "devbhumi dwarka", "દ્વારકા", "દેવભૂમિ દ્વારકા", "ખંભાળિયા", "khambhalia", "okha", "ઓખા", "bhanvad", "kalyanpur"],
+    "devbhumi dwarka": ["dwarka", "devbhumi dwarka", "દ્વારકા", "દેવભૂમિ દ્વારકા", "ખંભાળિયા", "khambhalia", "okha", "ઓખા", "bhanvad", "kalyanpur"],
+    "mehsana": ["mehsana", "મહેસાણા", "visnagar", "kadi", "unjha", "vadnagar", "vijapur", "ઊંઝા", "વિસનગર", "કડી", "વડનગર"],
     "patan": ["patan", "પાટણ", "siddhpur", "radhanpur", "chanasma", "harij", "સિદ્ધપુર", "રાધનપુર"],
-    "banaskantha": ["banaskantha", "બનાસકાંઠા", "palanpur", "deesa", "danta", "thrad", "vav", "પાલનપુર", "ડીસા", "ધાનેરા"],
-    "sabarkantha": ["sabarkantha", "સાબરકાંઠા", "himmatnagar", "idhar", "prantij", "khedbrahma", "હિંમતનગર", "ઇડર"],
+    "banaskantha": ["banaskantha", "બનાસકાંઠા", "palanpur", "deesa", "danta", "thrad", "vav", "પાલનપુર", "ડીસા", "ધાનેરા", "થરાદ"],
+    "sabarkantha": ["sabarkantha", "સાબરકાંઠા", "himmatnagar", "himatnagar", "idhar", "prantij", "khedbrahma", "હિંમતનગર", "ઇડર"],
     "aravalli": ["aravalli", "અરવલ્લી", "modasa", "bayad", "malpur", "dhansura", "bhiloda", "મોડાસા", "બાયડ"],
     "kheda": ["kheda", "ખેડા", "nadiad", "matar", "mahudha", "dakor", "kapadvanj", "thasra", "નડિયાદ", "ડાકોર"],
     "anand": ["anand", "આણંદ", "khambhat", "petlad", "borsad", "umreth", "sojitra", "તારાપુર", "ખંભાત", "પેટલાદ"],
     "panchmahal": ["panchmahal", "પંચમહાલ", "godhra", "halol", "kalol", "shehra", "morva", "ગોધરા", "હાલોલ"],
     "dahod": ["dahod", "દાહોદ", "zalod", "limkheda", "devgadh baria", "fatepura", "ઝાલોદ", "ગરબાડા"],
     "mahisagar": ["mahisagar", "મહીસાગર", "lunawada", "santrampur", "balasinor", "kadana", "khanpur", "લુણાવાડા", "બાલાસિનોર"],
-    "bharuch": ["bharuch", "ભરૂચ", "ankleshwar", "dahej", "jambusar", "hansot", "vagra", "અંકલેશ્વર", "દહેજ"],
-    "narmada": ["narmada", "નર્મદા", "rajpipla", "kevadiya", "dediyapada", "sagbara", "garudeshwar", "રાજપીપળા", "કેવડિયા"],
+    "bharuch": ["bharuch", "ભરૂચ", "ankleshwar", "dahej", "jambusar", "hansot", "vagra", "અંકલેશ્વર", "દહેજ", "જંબુસર"],
+    "narmada": ["narmada", "નર્મદા", "rajpipla", "kevadiya", "dediyapada", "sagbara", "garudeshwar", "statue of unity", "રાજપીપળા", "કેવડિયા"],
     "navsari": ["navsari", "નવસારી", "bilimora", "chikhli", "gandevi", "vansda", "બીલીમોરા", "ચીખલી"],
     "valsad": ["valsad", "વલસાડ", "vapi", "umargam", "pardi", "dharampur", "kaprada", "વાપી", "પારડી", "ઉમરગામ"],
     "tapi": ["tapi", "તાપી", "vyara", "songadh", "ucchal", "nizar", "valod", "વ્યારા", "સોનગઢ"],
     "dang": ["dang", "ડાંગ", "ahwa", "saputara", "waghai", "subir", "આહવા", "સાપુતારા"],
-    "botad": ["botad", "બોટાદ", "gadhada", "barwala", "ranpur", "ગઢડા", "બરવાળા", "રાણપુર"],
+    "botad": ["botad", "બોટાદ", "gadhada", "barwala", "ranpur", "બરવાળા", "રાણપુર"],
     "chhota udepur": ["chhota udepur", "chhota udaipur", "છોટા ઉદેપુર", "bodeli", "sankheda", "jetpur pavi", "naswadi", "બોડેલી"],
     "chhota udaipur": ["chhota udepur", "chhota udaipur", "છોટા ઉદેપુર", "bodeli", "sankheda", "jetpur pavi", "naswadi", "બોડેલી"],
+}
+
+# Talukas of Gir Somnath District for targeted classification
+GIR_SOMNATH_TALUKAS = {
+    "veraval": ("Veraval (Gir Somnath)", ["veraval", "વેરાવળ", "veraval port", "વેરાવળ બંદર", "ભાલકા", "bhalka"]),
+    "somnath": ("Somnath (Gir Somnath)", ["somnath", "સોમનાથ", "prabhas patan", "પ્રભાસ પાટણ", "પ્રભાસપાટણ"]),
+    "kodinar": ("Kodinar (Gir Somnath)", ["kodinar", "કોડીનાર", "ઘાંટવડ", "મુળ દ્વારકા"]),
+    "una": ("Una (Gir Somnath)", [r"\buna\b", "ઉના", "ડેલવાડા", "delwada"]),
+    "talala": ("Talala (Gir Somnath)", ["talala", "તાલાલા", "talala gir", "તાલાલા ગીર"]),
+    "sutrapada": ("Sutrapada (Gir Somnath)", ["sutrapada", "સુત્રાપાડા", "ધામળેજ"]),
+    "gir gadhada": ("Gir Gadhada (Gir Somnath)", ["gir gadhada", "ગીર ગઢડા"]),
+    "gir somnath": ("Gir Somnath", ["gir somnath", "girsomnath", "ગીર સોમનાથ", "ગીરસોમનાથ", "ગીર-સોમનાથ"]),
 }
 
 
@@ -228,7 +244,7 @@ class LiveStreamService:
                             seen_links.add(link)
 
                             pub_dt = self._parse_date(pub_str)
-                            city = self._detect_city(title + " " + desc)
+                            city = self._detect_city(title, desc)
                             cat = self._detect_crime_category(title + " " + desc)
 
                             gathered_items.append({
@@ -397,16 +413,44 @@ class LiveStreamService:
             # 1. City / District Filter (Support Talukas, Clusters & Sub-regions)
             if city and city.strip() and city.strip() != "All Gujarat":
                 c_clean = city.strip().lower()
-                terms = DISTRICT_MATCH_TERMS.get(c_clean)
-                if not terms:
-                    for k, v in DISTRICT_MATCH_TERMS.items():
-                        if k in c_clean or c_clean in k:
-                            terms = v
-                            break
-                if not terms:
-                    terms = [c_clean]
+                matched_city = False
 
-                matched_city = any(t in full_text for t in terms) or (c_clean in it_city.lower()) or any(t in it_city.lower() for t in terms)
+                # Case A: District-wide Gir Somnath requested
+                if c_clean in ["gir somnath", "all gir somnath", "all gir somnath district"]:
+                    if "gir somnath" in it_city.lower():
+                        matched_city = True
+                    else:
+                        gs_terms = DISTRICT_MATCH_TERMS.get("gir somnath", [])
+                        matched_city = any(self._term_matches(t, title.lower() if t.isascii() else title) for t in gs_terms)
+
+                # Case B: Specific Gir Somnath Taluka requested (e.g. Veraval, Somnath, Kodinar, Una, Talala, Sutrapada, Gir Gadhada)
+                elif c_clean in GIR_SOMNATH_TALUKAS:
+                    # Article's detected city must match the requested taluka specifically
+                    if c_clean in it_city.lower():
+                        matched_city = True
+                    else:
+                        # Or headline explicitly mentions this taluka
+                        taluka_label, terms = GIR_SOMNATH_TALUKAS[c_clean]
+                        matched_city = any(self._term_matches(t, title.lower() if t.isascii() else title) for t in terms)
+
+                # Case C: Any other Gujarat District (e.g. Bharuch, Rajkot, Surat, Ahmedabad, etc.)
+                else:
+                    terms = DISTRICT_MATCH_TERMS.get(c_clean)
+                    if not terms:
+                        for k, v in DISTRICT_MATCH_TERMS.items():
+                            if k in c_clean or c_clean in k:
+                                terms = v
+                                break
+                    if not terms:
+                        terms = [c_clean]
+
+                    # Match if detected city matches the requested district
+                    if c_clean in it_city.lower() or any(t in it_city.lower() for t in terms[:3]):
+                        matched_city = True
+                    else:
+                        # Or headline explicitly mentions this district
+                        matched_city = any(self._term_matches(t, title.lower() if t.isascii() else title) for t in terms)
+
                 if not matched_city:
                     continue
 
@@ -544,22 +588,46 @@ class LiveStreamService:
 
         return datetime.now(timezone.utc)
 
-    def _detect_city(self, text: str) -> str:
-        text_lower = text.lower()
-        if any(w in text_lower or w in text for w in ["somnath", "veraval", "ગીર સોમનાથ", "વેરાવળ", "kodinar", "una", "talala", "sutrapada"]):
-            if "kodinar" in text_lower or "કોડીનાર" in text:
-                return "Kodinar (Gir Somnath)"
-            if "una" in text_lower or "ઉના" in text:
-                return "Una (Gir Somnath)"
-            if "somnath" in text_lower or "સોમનાથ" in text:
-                return "Somnath (Gir Somnath)"
-            return "Veraval (Gir Somnath)"
+    def _term_matches(self, term: str, text: str) -> bool:
+        if term.startswith(r"\b"):
+            return bool(re.search(term, text, re.IGNORECASE))
+        return term in text
 
-        # Check districts with their full synonym lists
+    def _detect_city(self, title: str, desc: str = "") -> str:
+        if not title:
+            return "All Gujarat"
+        title_lower = title.lower()
+
+        # Priority 1: Check Gir Somnath Talukas in Title (Headline is authoritative)
+        for taluka_key, (label, terms) in GIR_SOMNATH_TALUKAS.items():
+            for t in terms:
+                if self._term_matches(t, title_lower if t.isascii() else title):
+                    return label
+
+        # Priority 2: Check all other 33 Districts in Title
         for d in GUJARAT_DISTRICTS:
+            if d.lower() == "gir somnath" or d.lower() == "veraval":
+                continue
             terms = DISTRICT_MATCH_TERMS.get(d.lower(), [])
-            if any(t in text_lower or t in text for t in terms):
-                return d
+            for t in terms:
+                if self._term_matches(t, title_lower if t.isascii() else title):
+                    return d
+
+        # Priority 3: If not identified from Title, check Description with same strict rules
+        if desc:
+            desc_lower = desc.lower()
+            for taluka_key, (label, terms) in GIR_SOMNATH_TALUKAS.items():
+                for t in terms:
+                    if self._term_matches(t, desc_lower if t.isascii() else desc):
+                        return label
+
+            for d in GUJARAT_DISTRICTS:
+                if d.lower() == "gir somnath" or d.lower() == "veraval":
+                    continue
+                terms = DISTRICT_MATCH_TERMS.get(d.lower(), [])
+                for t in terms:
+                    if self._term_matches(t, desc_lower if t.isascii() else desc):
+                        return d
 
         return "All Gujarat"
 

@@ -61,9 +61,11 @@ LIVE_GUJARAT_RSS_FEEDS = [
     }
 ]
 
+from app.services.live_stream_service import GIR_SOMNATH_TALUKAS, DISTRICT_MATCH_TERMS
+
 # Gujarat District & Taluka Keyword Mapping for Automated Geolocation
 GUJARAT_DISTRICT_MAP = {
-    "Gir Somnath": ["gir somnath", "girsomnath", "ગીર સોમનાથ", "veraval", "વેરાવળ", "somnath", "સોમનાથ", "kodinar", "કોડીનાર", "una", "ઉના", "talala", "તાલાલા", "sutrapada", "સુત્રાપાડા", "gir gadhada", "ગીર ગઢડા"],
+    "Gir Somnath": ["gir somnath", "girsomnath", "ગીર સોમનાથ", "veraval", "વેરાવળ", "somnath", "સોમનાથ", "kodinar", "કોડીનાર", r"\buna\b", "ઉના", "talala", "તાલાલા", "sutrapada", "સુત્રાપાડા", "gir gadhada", "ગીર ગઢડા"],
     "Ahmedabad": ["ahmedabad", "અમદાવાદ", "sg highway", "bodakdev", "satellite", "maninagar", "bapunagar", "naroda", "sanand", "chandkheda"],
     "Surat": ["surat", "સુરત", "varachha", "adajan", "katargam", "rander", "vesu", "kamrej", "bardoli"],
     "Vadodara": ["vadodara", "વડોદરા", "baroda", "sayajiganj", "gotri", "karelibaug", "makarpura", "waghodia", "padra"],
@@ -727,25 +729,47 @@ class CrimeFeedService:
     def __init__(self, db: Session):
         self.db = db
 
-    def detect_district(self, text: str) -> str:
-        """Detects Gujarat District from text headline or caption."""
-        if not text:
+    def _term_matches(self, term: str, text: str) -> bool:
+        if term.startswith(r"\b"):
+            return bool(re.search(term, text, re.IGNORECASE))
+        return term in text
+
+    def detect_district(self, text_or_title: str, desc: str = "") -> str:
+        """Detects Gujarat District with headline priority and taluka specificity."""
+        if not text_or_title:
             return "All Gujarat"
-        text_lower = text.lower()
-        for district, keywords in GUJARAT_DISTRICT_MAP.items():
-            for kw in keywords:
-                if kw in text_lower:
-                    if district == "Gir Somnath":
-                        if "veraval" in text_lower or "વેરાવળ" in text_lower:
-                            return "Veraval (Gir Somnath)"
-                        if "somnath" in text_lower or "સોમનાથ" in text_lower:
-                            return "Somnath (Gir Somnath)"
-                        if "kodinar" in text_lower or "કોડીનાર" in text_lower:
-                            return "Kodinar (Gir Somnath)"
-                        if "una" in text_lower or "ઉના" in text_lower:
-                            return "Una (Gir Somnath)"
-                        return "Gir Somnath (Veraval HQ)"
-                    return district
+        title = text_or_title
+        title_lower = title.lower()
+
+        # Priority 1: Gir Somnath Talukas in Title
+        for taluka_key, (label, terms) in GIR_SOMNATH_TALUKAS.items():
+            for t in terms:
+                if self._term_matches(t, title_lower if t.isascii() else title):
+                    return label
+
+        # Priority 2: Other 32 Districts in Title
+        for dist_name, terms in GUJARAT_DISTRICT_MAP.items():
+            if dist_name == "Gir Somnath":
+                continue
+            for kw in terms:
+                if self._term_matches(kw, title_lower if kw.isascii() else title):
+                    return dist_name
+
+        # Priority 3: Description inspection
+        if desc:
+            desc_lower = desc.lower()
+            for taluka_key, (label, terms) in GIR_SOMNATH_TALUKAS.items():
+                for t in terms:
+                    if self._term_matches(t, desc_lower if t.isascii() else desc):
+                        return label
+
+            for dist_name, terms in GUJARAT_DISTRICT_MAP.items():
+                if dist_name == "Gir Somnath":
+                    continue
+                for kw in terms:
+                    if self._term_matches(kw, desc_lower if kw.isascii() else desc):
+                        return dist_name
+
         return "All Gujarat"
 
     def is_crime_relevant(self, text: str) -> bool:
@@ -808,7 +832,7 @@ class CrimeFeedService:
                             continue
 
                         # Detect district
-                        district = self.detect_district(full_text)
+                        district = self.detect_district(title, description)
 
                         # Parse published datetime with accurate timezone handling (Gujarat feeds are in IST)
                         pub_dt = now

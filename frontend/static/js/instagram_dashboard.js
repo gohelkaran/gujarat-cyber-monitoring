@@ -1201,7 +1201,12 @@ const InstagramApp = {
         if ((kw.length >= 1 || cityFilter.length >= 1) && pool.length > 0) {
             const matched = pool.filter(r => {
                 const text = `${r.headline || ''} ${r.full_caption || r.caption || ''} ${r.city || ''} ${r.origin_label || ''} ${r.crime_category || ''} ${r.source_account || ''}`.toLowerCase();
-                const cityMatch = !cityFilter || text.includes(cityFilter) || (r.city && r.city.toLowerCase().includes(cityFilter));
+                let cityMatch = true;
+                if (cityFilter && cityFilter !== 'all gujarat') {
+                    const cLower = (r.city || '').toLowerCase();
+                    const hLower = (r.headline || '').toLowerCase();
+                    cityMatch = cLower.includes(cityFilter) || hLower.includes(cityFilter);
+                }
                 const kwMatch = !kw || text.includes(kw);
                 return cityMatch && kwMatch;
             });
