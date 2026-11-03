@@ -554,111 +554,126 @@ const InstagramApp = {
     },
 
     renderDashboard(data) {
-        // 1. Connection Status & Latency
-        const conn = data.connection_status || {};
-        const connBadge = document.getElementById("conn-status-badge");
-        const latencyBadge = document.getElementById("conn-latency-badge");
-        const accountNameEl = document.getElementById("connected-account-name");
-        const demoPillEl = document.getElementById("demo-indicator-pill");
-        const rateLimitBadge = document.getElementById("rate-limit-badge");
+        if (!data) return;
 
-        if (connBadge) {
-            if (conn.is_connected) {
-                const modeLabel = conn.is_mock_mode ? "CONNECTED (SANDBOX TEST MODE)" : "CONNECTED (LIVE META GRAPH API)";
-                connBadge.innerHTML = `<i class="bi bi-circle-fill text-success me-1"></i> ${modeLabel}`;
-            } else {
-                connBadge.innerHTML = `<i class="bi bi-circle-fill text-danger me-1"></i> DISCONNECTED / NO SOURCE`;
+        // 1. Connection Status & Telemetry (Guarded)
+        try {
+            const conn = data.connection_status || {};
+            const connBadge = document.getElementById("conn-status-badge");
+            const latencyBadge = document.getElementById("conn-latency-badge");
+            const accountNameEl = document.getElementById("connected-account-name");
+            const demoPillEl = document.getElementById("demo-indicator-pill");
+            const rateLimitBadge = document.getElementById("rate-limit-badge");
+
+            if (connBadge) {
+                if (conn.is_connected) {
+                    const modeLabel = conn.is_mock_mode ? "CONNECTED (SANDBOX TEST MODE)" : "CONNECTED (LIVE META GRAPH API)";
+                    connBadge.innerHTML = `<i class="bi bi-circle-fill text-success me-1"></i> ${modeLabel}`;
+                } else {
+                    connBadge.innerHTML = `<i class="bi bi-circle-fill text-danger me-1"></i> DISCONNECTED / NO SOURCE`;
+                }
+            }
+
+            if (latencyBadge && conn.latency_ms !== undefined) {
+                latencyBadge.textContent = `LATENCY: ${conn.latency_ms} ms`;
+            }
+
+            if (accountNameEl) {
+                accountNameEl.textContent = conn.account_name || (conn.target_identifier ? `@${conn.target_identifier}` : "No Account Linked");
+            }
+
+            if (demoPillEl) {
+                if (conn.is_mock_mode) {
+                    demoPillEl.innerHTML = `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-shield-fill-exclamation me-1"></i> DEMO / SYNTHETIC DATA MODE</span>`;
+                } else {
+                    demoPillEl.innerHTML = `<span class="badge bg-success text-light font-mono px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i> AUTHORIZED LIVE API STREAM</span>`;
+                }
+            }
+
+            if (rateLimitBadge && conn.rate_limit_remaining !== undefined) {
+                rateLimitBadge.textContent = `RATE LIMIT: ${conn.rate_limit_remaining}/${conn.rate_limit_limit || 200} remaining`;
+            }
+
+            // Render Granted Permissions
+            const permList = document.getElementById("granted-permissions-list");
+            if (permList) {
+                const perms = conn.granted_permissions || [];
+                if (perms.length > 0) {
+                    permList.innerHTML = perms.map(p => `<span class="badge bg-success-subtle text-success border border-success-subtle font-mono">${this.escapeHtml(p)}</span>`).join(" ");
+                } else {
+                    permList.innerHTML = `<span class="badge bg-danger-subtle text-danger font-mono">None granted</span>`;
+                }
+            }
+
+            // 2. KPI Metrics
+            const metrics = data.metrics || {};
+            const kpiItems = document.getElementById("kpi-items-count");
+            if (kpiItems) kpiItems.textContent = metrics.total_items_retrieved || 0;
+
+            const kpiMatches = document.getElementById("kpi-matches-count");
+            if (kpiMatches) kpiMatches.textContent = metrics.total_keyword_matches || 0;
+
+            const kpiPending = document.getElementById("kpi-pending-review-count");
+            if (kpiPending) kpiPending.textContent = metrics.pending_review_matches || 0;
+
+            const kpiKeywords = document.getElementById("kpi-keywords-count");
+            if (kpiKeywords) kpiKeywords.textContent = metrics.active_keywords_count || 0;
+
+            const liveBadge = document.getElementById("live-count-badge");
+            if (liveBadge && metrics.total_items_retrieved !== undefined) {
+                liveBadge.textContent = `${metrics.total_items_retrieved} Real Articles`;
+            }
+            const savedBadge = document.getElementById("saved-count-badge");
+            if (savedBadge && metrics.saved_db_count !== undefined) {
+                savedBadge.textContent = metrics.saved_db_count;
+            }
+            const savedKpi = document.getElementById("saved-kpi-count");
+            if (savedKpi && metrics.saved_db_count !== undefined) {
+                savedKpi.textContent = metrics.saved_db_count;
+            }
+
+            const lastSync = conn.last_successful_sync_at;
+            const lastSyncEl = document.getElementById("kpi-last-collection-time");
+            if (lastSyncEl && lastSync) {
+                try {
+                    lastSyncEl.textContent = `Last sync: ${new Date(lastSync).toLocaleTimeString()}`;
+                } catch(e) {}
+            }
+
+            // 3. Configured Keywords Badges
+            const kwContainer = document.getElementById("keywords-badges-container");
+            if (kwContainer) {
+                const keywords = data.configured_keywords || [];
+                if (keywords.length > 0) {
+                    kwContainer.innerHTML = keywords.map(k => `
+                        <span class="badge bg-dark border border-secondary text-light font-mono me-1 mb-1 p-2">
+                            <i class="bi bi-tag text-info me-1"></i><strong>${this.escapeHtml(k.keyword)}</strong>
+                            <span class="text-secondary ms-1">(${this.escapeHtml(k.category)} &bull; ${k.match_type})</span>
+                            <span class="badge bg-secondary ms-1">${k.hits_count || 0} hits</span>
+                        </span>
+                    `).join("");
+                } else {
+                    kwContainer.innerHTML = `<span class="text-secondary small font-mono">No active keywords configured.</span>`;
+                }
+            }
+        } catch (telemetryErr) {
+            console.debug("Telemetry header parse note:", telemetryErr);
+        }
+
+        // 4. Monitoring Results Table (Always runs guaranteed)
+        try {
+            if (!this.filters.keyword && data.results && data.results.length > 0) {
+                this._rawDataset = [...data.results];
+            }
+            this.renderResultsTable(data.results || [], data.pagination || {});
+            this._lastKnownCount = data.metrics?.total_items_retrieved || this._lastKnownCount;
+        } catch (tableErr) {
+            console.error("Table render error:", tableErr);
+            const tbody = document.getElementById("monitoring-results-tbody");
+            if (tbody) {
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-danger font-mono"><i class="bi bi-exclamation-triangle me-2"></i>Error parsing articles. Please click Refresh Feeds.</td></tr>`;
             }
         }
-
-        if (latencyBadge && conn.latency_ms !== undefined) {
-            latencyBadge.textContent = `LATENCY: ${conn.latency_ms} ms`;
-        }
-
-        if (accountNameEl) {
-            accountNameEl.textContent = conn.account_name || (conn.target_identifier ? `@${conn.target_identifier}` : "No Account Linked");
-        }
-
-        if (demoPillEl) {
-            if (conn.is_mock_mode) {
-                demoPillEl.innerHTML = `<span class="badge bg-warning text-dark font-mono px-2 py-1"><i class="bi bi-shield-fill-exclamation me-1"></i> DEMO / SYNTHETIC DATA MODE</span>`;
-            } else {
-                demoPillEl.innerHTML = `<span class="badge bg-success text-light font-mono px-2 py-1"><i class="bi bi-check-circle-fill me-1"></i> AUTHORIZED LIVE API STREAM</span>`;
-            }
-        }
-
-        if (rateLimitBadge && conn.rate_limit_remaining !== undefined) {
-            rateLimitBadge.textContent = `RATE LIMIT: ${conn.rate_limit_remaining}/${conn.rate_limit_limit || 200} remaining`;
-        }
-
-        // Render Granted Permissions
-        const permList = document.getElementById("granted-permissions-list");
-        if (permList) {
-            const perms = conn.granted_permissions || [];
-            if (perms.length > 0) {
-                permList.innerHTML = perms.map(p => `<span class="badge bg-success-subtle text-success border border-success-subtle font-mono">${this.escapeHtml(p)}</span>`).join(" ");
-            } else {
-                permList.innerHTML = `<span class="badge bg-danger-subtle text-danger font-mono">None granted</span>`;
-            }
-        }
-
-        // 2. KPI Metrics
-        const metrics = data.metrics || {};
-        const kpiItems = document.getElementById("kpi-items-count");
-        if (kpiItems) kpiItems.textContent = metrics.total_items_retrieved || 0;
-
-        const kpiMatches = document.getElementById("kpi-matches-count");
-        if (kpiMatches) kpiMatches.textContent = metrics.total_keyword_matches || 0;
-
-        const kpiPending = document.getElementById("kpi-pending-review-count");
-        if (kpiPending) kpiPending.textContent = metrics.pending_review_matches || 0;
-
-        const kpiKeywords = document.getElementById("kpi-keywords-count");
-        if (kpiKeywords) kpiKeywords.textContent = metrics.active_keywords_count || 0;
-
-        const liveBadge = document.getElementById("live-count-badge");
-        if (liveBadge && metrics.total_items_retrieved !== undefined) {
-            liveBadge.textContent = `${metrics.total_items_retrieved} Real Articles`;
-        }
-        const savedBadge = document.getElementById("saved-count-badge");
-        if (savedBadge && metrics.saved_db_count !== undefined) {
-            savedBadge.textContent = metrics.saved_db_count;
-        }
-        const savedKpi = document.getElementById("saved-kpi-count");
-        if (savedKpi && metrics.saved_db_count !== undefined) {
-            savedKpi.textContent = metrics.saved_db_count;
-        }
-
-        const lastSync = conn.last_successful_sync_at;
-        if (lastSync) {
-            document.getElementById("kpi-last-collection-time").textContent = `Last sync: ${new Date(lastSync).toLocaleTimeString()}`;
-        }
-
-        // 3. Configured Keywords Badges
-        const kwContainer = document.getElementById("keywords-badges-container");
-        if (kwContainer) {
-            const keywords = data.configured_keywords || [];
-            if (keywords.length > 0) {
-                kwContainer.innerHTML = keywords.map(k => `
-                    <span class="badge bg-dark border border-secondary text-light font-mono me-1 mb-1 p-2">
-                        <i class="bi bi-tag text-info me-1"></i><strong>${this.escapeHtml(k.keyword)}</strong>
-                        <span class="text-secondary ms-1">(${this.escapeHtml(k.category)} &bull; ${k.match_type})</span>
-                        <span class="badge bg-secondary ms-1">${k.hits_count || 0} hits</span>
-                    </span>
-                `).join("");
-            } else {
-                kwContainer.innerHTML = `<span class="text-secondary small font-mono">No active keywords configured.</span>`;
-            }
-        }
-
-        // 4. Monitoring Results Table
-        if (!this.filters.keyword && data.results && data.results.length > 0) {
-            this._rawDataset = [...data.results];
-        }
-        this.renderResultsTable(data.results || [], data.pagination || {});
-
-        // Track total count for new-post detection
-        this._lastKnownCount = data.metrics?.total_items_retrieved || this._lastKnownCount;
     },
 
     renderResultsTable(results, pagination) {
@@ -719,8 +734,20 @@ const InstagramApp = {
             const isNew = collectedAt && (now - collectedAt) < 10 * 60 * 1000;
             const newBadge = isNew ? `<span class="badge bg-danger text-light font-mono ms-1 px-1" style="font-size:0.6rem;animation:pulse 1s infinite;">NEW</span>` : '';
 
-            const pubDate = row.published_at ? new Date(row.published_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '--';
-            const pubTime = row.published_at ? new Date(row.published_at).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '';
+            let pubDate = '--';
+            let pubTime = '';
+            try {
+                if (row.published_at) {
+                    const dt = new Date(row.published_at);
+                    if (!isNaN(dt.getTime())) {
+                        pubDate = dt.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+                        pubTime = dt.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                    }
+                }
+            } catch (e) {
+                pubDate = '--';
+                pubTime = '';
+            }
             const relTime = this.formatRelativeTime(row.published_at);
             const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 80) + '...' : 'Crime Bulletin');
 
@@ -833,6 +860,7 @@ const InstagramApp = {
         if (!isoStr) return '--';
         try {
             const dt = new Date(isoStr);
+            if (isNaN(dt.getTime())) return '--';
             const now = new Date();
             const diffMs = now - dt;
             const diffSec = Math.floor(diffMs / 1000);
