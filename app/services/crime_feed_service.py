@@ -14,7 +14,10 @@ import hashlib
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from email.utils import parsedate_to_datetime
-import dateutil.parser
+try:
+    import dateutil.parser
+except ImportError:
+    dateutil = None
 from typing import Dict, Any, List, Optional
 import xml.etree.ElementTree as ET
 import httpx
@@ -811,17 +814,20 @@ class CrimeFeedService:
                         pub_dt = now
                         if pub_date_str:
                             try:
-                                dt = dateutil.parser.parse(pub_date_str)
+                                cleaned = re.sub(r"([+-]\d{2}):(\d{2})$", r"\1\2", pub_date_str.strip())
+                                dt = parsedate_to_datetime(cleaned)
                                 if dt.tzinfo is None:
                                     dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
                                 pub_dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
                             except Exception:
                                 try:
-                                    cleaned = re.sub(r"([+-]\d{2}):(\d{2})$", r"\1\2", pub_date_str.strip())
-                                    dt = parsedate_to_datetime(cleaned)
-                                    if dt.tzinfo is None:
-                                        dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
-                                    pub_dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+                                    if dateutil and hasattr(dateutil, "parser"):
+                                        dt = dateutil.parser.parse(pub_date_str)
+                                        if dt.tzinfo is None:
+                                            dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
+                                        pub_dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+                                    else:
+                                        pub_dt = now
                                 except Exception:
                                     pub_dt = now
 

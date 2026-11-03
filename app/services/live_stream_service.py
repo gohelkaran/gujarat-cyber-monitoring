@@ -16,7 +16,10 @@ from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 from typing import List, Dict, Any, Optional
 from email.utils import parsedate_to_datetime
-import dateutil.parser
+try:
+    import dateutil.parser
+except ImportError:
+    dateutil = None
 import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
@@ -509,24 +512,37 @@ class LiveStreamService:
     def _parse_date(self, date_str: str) -> datetime:
         if not date_str:
             return datetime.now(timezone.utc)
+        s = date_str.strip()
+        # 1. Standard RFC 2822 parsing (with colon normalized '+05:30' -> '+0530')
         try:
-            # 1. Use dateutil to accurately parse "+05:30", "+0530", RFC 2822, ISO
-            dt = dateutil.parser.parse(date_str)
+            cleaned = re.sub(r"([+-]\d{2}):(\d{2})$", r"\1\2", s)
+            dt = parsedate_to_datetime(cleaned)
             if dt.tzinfo is None:
-                # Naive timestamps from Gujarat media/news RSS feeds are in Indian Standard Time (IST)
                 dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
             return dt.astimezone(timezone.utc)
         except Exception:
+            pass
+
+        # 2. Try dateutil if available
+        if dateutil and hasattr(dateutil, "parser"):
             try:
-                # Fallback to email.utils.parsedate_to_datetime
-                # Normalize "+05:30" to "+0530" for standard RFC parser
-                cleaned = re.sub(r"([+-]\d{2}):(\d{2})$", r"\1\2", date_str.strip())
-                dt = parsedate_to_datetime(cleaned)
+                dt = dateutil.parser.parse(s)
                 if dt.tzinfo is None:
                     dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
                 return dt.astimezone(timezone.utc)
             except Exception:
-                return datetime.now(timezone.utc)
+                pass
+
+        # 3. ISO format fallback
+        try:
+            dt = datetime.fromisoformat(s.replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=ZoneInfo("Asia/Kolkata"))
+            return dt.astimezone(timezone.utc)
+        except Exception:
+            pass
+
+        return datetime.now(timezone.utc)
 
     def _detect_city(self, text: str) -> str:
         text_lower = text.lower()
