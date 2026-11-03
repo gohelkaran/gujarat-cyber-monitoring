@@ -69,14 +69,17 @@
         <!-- Main SOC Navigation Sidebar -->
         <aside class="soc-sidebar" aria-label="Monitoring Navigation">
             <div class="soc-nav-heading">INTELLIGENCE DESK</div>
-            <a href="/instagram" class="soc-nav-item active" id="nav-monitoring">
+            <a href="javascript:void(0)" class="soc-nav-item active" id="nav-live" onclick="if(window.InstagramApp) { InstagramApp.switchTab('live'); }">
                 <i class="bi bi-broadcast text-primary"></i> Live Monitoring
             </a>
-            <a href="javascript:void(0)" class="soc-nav-item" id="nav-results" onclick="InstagramApp.scrollToSection('results-section')">
+            <a href="javascript:void(0)" class="soc-nav-item" id="nav-results" onclick="if(window.InstagramApp) { InstagramApp.switchTab('live'); InstagramApp.scrollToSection('results-section'); }">
                 <i class="bi bi-newspaper text-info"></i> News &amp; Social Feeds
             </a>
-            <a href="javascript:void(0)" class="soc-nav-item" id="nav-saved-cases" onclick="InstagramApp.setViewMode('saved')">
+            <a href="javascript:void(0)" class="soc-nav-item" id="nav-saved" onclick="if(window.InstagramApp) { InstagramApp.switchTab('saved'); }">
                 <i class="bi bi-bookmark-check-fill text-success"></i> Saved Case Records
+            </a>
+            <a href="javascript:void(0)" class="soc-nav-item" id="nav-automation" onclick="if(window.InstagramApp) { InstagramApp.switchTab('automation'); }">
+                <i class="bi bi-gear-fill text-secondary"></i> Crawler &amp; Automation
             </a>
             <a href="javascript:void(0)" class="soc-nav-item" id="nav-collect-btn" onclick="InstagramApp.syncAllStreams()">
                 <i class="bi bi-arrow-repeat text-warning"></i> Refresh All Feeds

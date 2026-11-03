@@ -22,23 +22,87 @@ const InstagramApp = {
     _currentResults: [],
     _currentModalItem: null,
 
-    setViewMode(mode) {
-        this.filters.viewMode = mode;
-        const btnLive = document.getElementById("btn-mode-live");
-        const btnSaved = document.getElementById("btn-mode-saved");
-        if (mode === "live") {
-            btnLive?.classList.add("btn-info", "active");
-            btnLive?.classList.remove("btn-outline-info");
-            btnSaved?.classList.remove("btn-warning", "active");
-            btnSaved?.classList.add("btn-outline-warning");
-        } else {
-            btnSaved?.classList.add("btn-warning", "active");
-            btnSaved?.classList.remove("btn-outline-warning");
-            btnLive?.classList.remove("btn-info", "active");
-            btnLive?.classList.add("btn-outline-info");
+    switchTab(tabName) {
+        document.querySelectorAll(".master-tab-btn").forEach(el => el.classList.remove("active"));
+        document.querySelectorAll(".soc-nav-item").forEach(el => el.classList.remove("active"));
+
+        const tabBtn = document.getElementById(`tab-btn-${tabName}`);
+        const navItem = document.getElementById(`nav-${tabName}`);
+        if (tabBtn) tabBtn.classList.add("active");
+        if (navItem) navItem.classList.add("active");
+
+        const livePane = document.getElementById("pane-live-controls");
+        const savedPane = document.getElementById("pane-saved-controls");
+        const autoPane = document.getElementById("tab-pane-automation");
+        const resultsSection = document.getElementById("results-section");
+
+        if (tabName === "live") {
+            if (livePane) livePane.classList.remove("d-none");
+            if (savedPane) savedPane.classList.add("d-none");
+            if (autoPane) autoPane.classList.add("d-none");
+            if (resultsSection) resultsSection.classList.remove("d-none");
+
+            this.filters.viewMode = "live";
+            this.currentPage = 1;
+            this.loadDashboardData(true);
+        } else if (tabName === "saved") {
+            if (livePane) livePane.classList.add("d-none");
+            if (savedPane) savedPane.classList.remove("d-none");
+            if (autoPane) autoPane.classList.add("d-none");
+            if (resultsSection) resultsSection.classList.remove("d-none");
+
+            this.filters.viewMode = "saved";
+            this.currentPage = 1;
+            this.loadDashboardData(true);
+        } else if (tabName === "automation") {
+            if (livePane) livePane.classList.add("d-none");
+            if (savedPane) savedPane.classList.add("d-none");
+            if (autoPane) autoPane.classList.remove("d-none");
+            if (resultsSection) resultsSection.classList.add("d-none");
         }
-        this.currentPage = 1;
-        this.loadDashboardData(true);
+    },
+
+    setViewMode(mode) {
+        this.switchTab(mode);
+    },
+
+    async exportSavedCsv() {
+        this.showToast("Exporting saved evidence records to CSV...");
+        try {
+            const res = await fetch("/api/v1/instagram/dashboard?view_mode=saved&page_size=500");
+            const json = await res.json();
+            const items = json.data?.results || [];
+            if (items.length === 0) {
+                this.showToast("No saved evidence records found to export.", "warning");
+                return;
+            }
+
+            const headers = ["ID", "Origin", "City/District", "Published At", "Headline", "Threat Category", "DB Status", "Permalink"];
+            const rows = items.map(item => [
+                `"${item.id || ''}"`,
+                `"${(item.origin_label || item.source_account || '').replace(/"/g, '""')}"`,
+                `"${(item.city || '').replace(/"/g, '""')}"`,
+                `"${item.published_at || ''}"`,
+                `"${(item.headline || item.caption_snippet || '').replace(/"/g, '""')}"`,
+                `"${(item.crime_category || '').replace(/"/g, '""')}"`,
+                `"${item.review_status || 'SAVED'}"`,
+                `"${item.permalink || ''}"`
+            ]);
+
+            const csvContent = "\uFEFF" + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `gujarat_police_saved_evidence_${new Date().toISOString().slice(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            this.showToast(`Exported ${items.length} saved evidence records to CSV.`, "success");
+        } catch (e) {
+            console.error("Export CSV error:", e);
+            this.showToast("Failed to export CSV.", "danger");
+        }
     },
 
     async saveRecord(itemId, btnElem) {
@@ -70,9 +134,10 @@ const InstagramApp = {
                 btnElem.onclick = (e) => { e.stopPropagation(); this.unsaveRecord(itemId, btnElem); };
             }
             const savedBadge = document.getElementById("saved-count-badge");
-            if (savedBadge) {
-                savedBadge.textContent = parseInt(savedBadge.textContent || "0") + 1;
-            }
+            const savedKpi = document.getElementById("saved-kpi-count");
+            const nextCount = parseInt(savedBadge?.textContent || savedKpi?.textContent || "0") + 1;
+            if (savedBadge) savedBadge.textContent = nextCount;
+            if (savedKpi) savedKpi.textContent = nextCount;
         } catch (err) {
             console.error("Save record error:", err);
             this.showToast("Failed to save record to database.", "danger");
@@ -111,10 +176,11 @@ const InstagramApp = {
                     btnElem.onclick = (e) => { e.stopPropagation(); this.saveRecord(itemId, btnElem); };
                 }
                 const savedBadge = document.getElementById("saved-count-badge");
-                if (savedBadge) {
-                    const cur = parseInt(savedBadge.textContent || "1");
-                    savedBadge.textContent = Math.max(0, cur - 1);
-                }
+                const savedKpi = document.getElementById("saved-kpi-count");
+                const cur = parseInt(savedBadge?.textContent || savedKpi?.textContent || "1");
+                const nextCount = Math.max(0, cur - 1);
+                if (savedBadge) savedBadge.textContent = nextCount;
+                if (savedKpi) savedKpi.textContent = nextCount;
             }
         } catch (err) {
             console.error("Unsave record error:", err);
@@ -538,10 +604,17 @@ const InstagramApp = {
 
         // 2. KPI Metrics
         const metrics = data.metrics || {};
-        document.getElementById("kpi-items-count").textContent = metrics.total_items_retrieved || 0;
-        document.getElementById("kpi-matches-count").textContent = metrics.total_keyword_matches || 0;
-        document.getElementById("kpi-pending-review-count").textContent = metrics.pending_review_matches || 0;
-        document.getElementById("kpi-keywords-count").textContent = metrics.active_keywords_count || 0;
+        const kpiItems = document.getElementById("kpi-items-count");
+        if (kpiItems) kpiItems.textContent = metrics.total_items_retrieved || 0;
+
+        const kpiMatches = document.getElementById("kpi-matches-count");
+        if (kpiMatches) kpiMatches.textContent = metrics.total_keyword_matches || 0;
+
+        const kpiPending = document.getElementById("kpi-pending-review-count");
+        if (kpiPending) kpiPending.textContent = metrics.pending_review_matches || 0;
+
+        const kpiKeywords = document.getElementById("kpi-keywords-count");
+        if (kpiKeywords) kpiKeywords.textContent = metrics.active_keywords_count || 0;
 
         const liveBadge = document.getElementById("live-count-badge");
         if (liveBadge && metrics.total_items_retrieved !== undefined) {
@@ -550,6 +623,10 @@ const InstagramApp = {
         const savedBadge = document.getElementById("saved-count-badge");
         if (savedBadge && metrics.saved_db_count !== undefined) {
             savedBadge.textContent = metrics.saved_db_count;
+        }
+        const savedKpi = document.getElementById("saved-kpi-count");
+        if (savedKpi && metrics.saved_db_count !== undefined) {
+            savedKpi.textContent = metrics.saved_db_count;
         }
 
         const lastSync = conn.last_successful_sync_at;

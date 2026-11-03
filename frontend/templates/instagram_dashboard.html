@@ -1,320 +1,394 @@
 {% extends "base.html" %}
 
-{% block title %}Instagram Monitoring &bull; Gujarat Cyber Crime Early Warning System{% endblock %}
+{% block title %}Social Media & Crime Intelligence Desk &bull; Gujarat Police{% endblock %}
 
 {% block content %}
-<div class="container-fluid px-3 py-2">
+<div class="container-fluid px-3 py-3">
 
-    <!-- Top Alert & Telemetry Strip -->
-    <div class="card p-2 mb-3 font-mono small shadow-sm">
-        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="badge bg-primary px-2 py-1"><i class="bi bi-shield-check me-1"></i>GUJARAT CYBER INTELLIGENCE</span>
-                <span class="text-secondary" id="conn-status-badge"><i class="bi bi-circle-fill text-success me-1"></i> Active Live Stream</span>
-                <span class="badge bg-light text-secondary border font-mono" id="conn-latency-badge">LATENCY: 42 ms</span>
-                <span class="text-muted d-none d-lg-inline"><i class="bi bi-info-circle me-1"></i> Real-time multi-source monitoring across all 33 Gujarat districts.</span>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#limitationsModal">
-                    <i class="bi bi-info-circle me-1"></i> Guidelines
-                </button>
-                <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#connectOAuthModal" onclick="InstagramApp.loadOfficialConfig()">
-                    <i class="bi bi-meta me-1"></i> Connect Meta API
-                </button>
-                <button class="btn btn-sm btn-soc-primary font-mono" id="btn-trigger-collection" onclick="InstagramApp.syncAllStreams()">
-                    <i class="bi bi-arrow-repeat me-1" id="collect-icon"></i> Refresh All Feeds
-                </button>
-            </div>
-        </div>
+    <!-- ========================================================================= -->
+    <!-- EXECUTIVE MASTER WORKSPACE TABS                                           -->
+    <!-- Separates the dashboard into 3 distinct, uncluttered operational zones    -->
+    <!-- ========================================================================= -->
+    <div class="master-tabs-bar">
+        <button type="button" class="master-tab-btn active" id="tab-btn-live" onclick="InstagramApp.switchTab('live')">
+            <i class="bi bi-broadcast text-danger"></i> 🔴 LIVE MONITORING FEED (<span id="live-count-badge">964 Real Articles</span>)
+        </button>
+        <button type="button" class="master-tab-btn tab-saved" id="tab-btn-saved" onclick="InstagramApp.switchTab('saved')">
+            <i class="bi bi-bookmark-check-fill text-success"></i> 💾 SAVED CASE EVIDENCE (<span id="saved-count-badge">0</span> In Database)
+        </button>
+        <button type="button" class="master-tab-btn tab-automation" id="tab-btn-automation" onclick="InstagramApp.switchTab('automation')">
+            <i class="bi bi-gear-fill text-primary"></i> ⚙️ CRAWLER &amp; AUTOMATION OPS
+        </button>
     </div>
 
-    <!-- Telemetry KPI Cards -->
-    <div class="row g-3 mb-3">
-        <div class="col-xl-3 col-sm-6">
-            <div class="kpi-card p-3">
-                <div class="d-flex justify-content-between text-secondary small fw-semibold">
-                    <span>1. MONITORED LIVE ARTICLES</span>
-                    <i class="bi bi-newspaper text-primary fs-5"></i>
-                </div>
-                <div class="kpi-value text-primary mt-2 mb-1" id="kpi-items-count">0</div>
-                <div class="kpi-subtext" id="kpi-items-subtitle">Real-time news &amp; social intelligence</div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6">
-            <div class="kpi-card p-3">
-                <div class="d-flex justify-content-between text-secondary small fw-semibold">
-                    <span>2. SAVED CASE RECORDS</span>
-                    <i class="bi bi-bookmark-check-fill text-success fs-5"></i>
-                </div>
-                <div class="kpi-value text-success mt-2 mb-1" id="saved-count-badge">0</div>
-                <div class="kpi-subtext">Evidence persisted to database</div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6">
-            <div class="kpi-card p-3">
-                <div class="d-flex justify-content-between text-secondary small fw-semibold">
-                    <span>3. ACTIVE KEYWORD HITS</span>
-                    <i class="bi bi-search text-warning fs-5"></i>
-                </div>
-                <div class="kpi-value text-warning mt-2 mb-1" id="kpi-matches-count">0</div>
-                <div class="kpi-subtext" id="kpi-matches-subtitle">Cyber crime, fraud &amp; threats matched</div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-sm-6">
-            <div class="kpi-card p-3">
-                <div class="d-flex justify-content-between text-secondary small fw-semibold">
-                    <span>4. DISTRICT COVERAGE</span>
-                    <i class="bi bi-geo-alt-fill text-info fs-5"></i>
-                </div>
-                <div class="kpi-value text-info mt-2 mb-1">33 Dists</div>
-                <div class="kpi-subtext" id="kpi-last-collection-time">All Gujarat Statewide jurisdictions</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Automated Background Ingestion Status -->
-    <div class="card mb-3 shadow-sm">
-        <div class="card-body p-3">
-            <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
-                <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <span id="scheduler-pulse-badge" class="badge bg-success-subtle text-success border border-success-subtle font-mono px-3 py-1">
-                        <span class="spinner-grow spinner-grow-sm text-success me-1" role="status" style="width: 0.6rem; height: 0.6rem;"></span>
-                        AUTOMATED INGESTION: <span id="scheduler-status-text">ACTIVE</span>
-                    </span>
-                    <span class="text-secondary small font-mono">
-                        &bull; Interval: <strong>Every 5 mins</strong> &bull; Priority Area: <span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono">Gir Somnath &amp; 33 Districts</span>
-                    </span>
-                </div>
-                <div class="d-flex align-items-center gap-3 font-mono small text-secondary">
-                    <div>Next Run in: <strong class="text-warning-emphasis" id="scheduler-countdown">--</strong></div>
-                    <div>Last Sync: <strong class="text-dark-emphasis" id="scheduler-last-run">--</strong></div>
-                    <div>Auto-Ingested: <strong class="text-primary" id="scheduler-items-count">0</strong></div>
-                </div>
-                <div class="d-flex gap-1">
-                    <button class="btn btn-sm btn-outline-primary font-mono" id="btn-trigger-scheduler" onclick="InstagramApp.triggerSchedulerNow()" title="Trigger immediate background ingestion cycle">
-                        <i class="bi bi-lightning-charge-fill me-1"></i> Trigger Now
-                    </button>
-                    <button class="btn btn-sm btn-outline-secondary font-mono" id="btn-toggle-scheduler" onclick="InstagramApp.toggleScheduler()" title="Pause or resume automated background polling">
-                        <i class="bi bi-pause-fill me-1"></i> Pause
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Gir Somnath District Focus & Quick Taluka Pills -->
-    <div class="card mb-3 shadow-sm">
-        <div class="card-body p-3">
-            <div class="d-flex flex-wrap align-items-center justify-content-between mb-2">
-                <div>
-                    <span class="badge bg-primary text-light font-mono fw-bold me-2"><i class="bi bi-geo-alt-fill me-1"></i>DISTRICT FOCUS: GIR SOMNATH</span>
-                    <span class="small text-secondary fw-semibold">Local Cyber Crime Intelligence &bull; Veraval HQ &amp; Rural Talukas</span>
-                </div>
-                <div class="small text-secondary font-mono">
-                    Sources: <span class="badge bg-light text-secondary border">Sandesh</span> &bull; <span class="badge bg-light text-secondary border">TV9</span> &bull; <span class="badge bg-light text-secondary border">ABP Asmita</span> &bull; <span class="badge bg-light text-secondary border">Police Network</span>
-                </div>
-            </div>
-            
-            <div class="d-flex flex-wrap align-items-center gap-1 mt-2">
-                <span class="small font-mono text-secondary me-2"><i class="bi bi-pin-map-fill text-warning me-1"></i>Talukas &amp; Villages:</span>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-all-gir-somnath" onclick="InstagramApp.selectTaluka('Gir Somnath')">
-                    ★ All Gir Somnath
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-veraval" onclick="InstagramApp.selectTaluka('Veraval')">
-                    Veraval (HQ &amp; Port)
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-somnath" onclick="InstagramApp.selectTaluka('Somnath')">
-                    Somnath / Prabhas Patan
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-kodinar" onclick="InstagramApp.selectTaluka('Kodinar')">
-                    Kodinar
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-una" onclick="InstagramApp.selectTaluka('Una')">
-                    Una
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-talala" onclick="InstagramApp.selectTaluka('Talala')">
-                    Talala (Gir)
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-sutrapada" onclick="InstagramApp.selectTaluka('Sutrapada')">
-                    Sutrapada
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-secondary font-mono" id="pill-gir-gadhada" onclick="InstagramApp.selectTaluka('Gir Gadhada')">
-                    Gir Gadhada
-                </button>
-                <button type="button" class="btn btn-xs btn-outline-primary font-mono active ms-auto" id="pill-all-gujarat" onclick="InstagramApp.selectTaluka('')">
-                    Show All Gujarat (33 Dists)
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Unified View Switcher & Stream Platforms -->
-    <div class="card mb-3 shadow-sm">
-        <div class="card-body p-2 d-flex flex-wrap align-items-center justify-content-between gap-2">
-            <!-- View Mode Switcher -->
-            <div class="d-flex align-items-center gap-2">
-                <span class="text-secondary small font-mono fw-bold">VIEW MODE:</span>
-                <div class="btn-group" role="group" aria-label="View Mode">
-                    <button type="button" class="btn btn-sm btn-primary active font-mono fw-bold px-3" id="btn-mode-live" onclick="InstagramApp.setViewMode('live')">
-                        <i class="bi bi-broadcast me-1"></i> LIVE STREAM (<span id="live-count-badge">700+ Real Articles</span>)
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-success font-mono fw-bold px-3" id="btn-mode-saved" onclick="InstagramApp.setViewMode('saved')">
-                        <i class="bi bi-bookmark-check-fill me-1"></i> SAVED CASE RECORDS
-                    </button>
-                </div>
-            </div>
-
-            <!-- Platform Filters -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <span class="text-secondary small font-mono fw-bold">PLATFORM:</span>
-                <div class="btn-group" role="group" aria-label="Platform Filter">
-                    <button type="button" class="btn btn-sm btn-outline-primary active font-mono" id="btn-platform-ALL" onclick="InstagramApp.setPlatform('ALL')">
-                        ALL STREAMS
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-NEWS_FEED" onclick="InstagramApp.setPlatform('NEWS_FEED')">
-                        <i class="bi bi-newspaper me-1"></i> GUJARAT NEWS
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-INSTAGRAM" onclick="InstagramApp.setPlatform('INSTAGRAM')">
-                        <i class="bi bi-instagram me-1"></i> INSTAGRAM
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-FACEBOOK" onclick="InstagramApp.setPlatform('FACEBOOK')">
-                        <i class="bi bi-facebook me-1"></i> FACEBOOK
-                    </button>
-                </div>
-            </div>
-
-            <!-- Harvester Dropdown -->
-            <div class="dropdown">
-                <button class="btn btn-sm btn-outline-secondary dropdown-toggle font-mono" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-gear me-1"></i> Ingestion Tools
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-                    <li><a class="dropdown-item small" href="javascript:void(0)" onclick="InstagramApp.syncAllStreams()"><i class="bi bi-arrow-repeat me-2 text-primary"></i>Sync All Streams</a></li>
-                    <li><a class="dropdown-item small" href="javascript:void(0)" onclick="InstagramApp.syncCrimeFeeds()"><i class="bi bi-newspaper me-2 text-warning"></i>Sync Gujarat News RSS</a></li>
-                    <li><a class="dropdown-item small" href="javascript:void(0)" onclick="InstagramApp.triggerPublicHarvester()"><i class="bi bi-robot me-2 text-info"></i>Run Public Profile Harvester</a></li>
-                    <li><a class="dropdown-item small" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#apifyModal" onclick="InstagramApp.loadScraperStatus()"><i class="bi bi-lightning-charge me-2 text-danger"></i>Apify 1000+ Gateway</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filter Bar for Results Table -->
-    <div class="card mb-3 shadow-sm">
-        <div class="card-header py-2 d-flex justify-content-between align-items-center">
-            <div class="fw-semibold small font-mono">
-                <i class="bi bi-funnel me-1 text-primary"></i> SEARCH &amp; REAL-TIME INTELLIGENCE FILTERS
-            </div>
-            <div class="small text-secondary">Instant auto-search &bull; 33 Districts &bull; Crime Categories</div>
-        </div>
-        <div class="card-body p-3">
-            <div class="row g-2 align-items-end">
-                <div class="col-md-2">
-                    <label class="form-label small text-secondary fw-semibold mb-1">City / District (33 Dists)</label>
-                    <select id="filter-city" class="form-select form-select-sm font-mono" onchange="InstagramApp.applyFilters()">
-                        <option value="" selected>All Gujarat Statewide (33 Districts)</option>
-                        <optgroup label="📍 Gir Somnath District (Priority)">
-                            <option value="Gir Somnath">★ All Gir Somnath District</option>
-                            <option value="Veraval">Veraval (District HQ &amp; Port)</option>
-                            <option value="Somnath">Somnath / Prabhas Patan</option>
-                            <option value="Kodinar">Kodinar</option>
-                            <option value="Una">Una</option>
-                            <option value="Talala">Talala (Gir)</option>
-                            <option value="Sutrapada">Sutrapada</option>
-                            <option value="Gir Gadhada">Gir Gadhada</option>
-                        </optgroup>
-                        <optgroup label="🌊 Saurashtra &amp; Coastal Gujarat">
-                            <option value="Rajkot">Rajkot</option>
-                            <option value="Bhavnagar">Bhavnagar</option>
-                            <option value="Jamnagar">Jamnagar</option>
-                            <option value="Junagadh">Junagadh</option>
-                            <option value="Porbandar">Porbandar</option>
-                            <option value="Amreli">Amreli</option>
-                            <option value="Morbi">Morbi</option>
-                            <option value="Surendranagar">Surendranagar</option>
-                            <option value="Botad">Botad</option>
-                            <option value="Devbhumi Dwarka">Devbhumi Dwarka</option>
-                        </optgroup>
-                        <optgroup label="🏢 Central &amp; North Gujarat">
-                            <option value="Ahmedabad">Ahmedabad</option>
-                            <option value="Gandhinagar">Gandhinagar</option>
-                            <option value="Vadodara">Vadodara</option>
-                            <option value="Anand">Anand</option>
-                            <option value="Kheda">Kheda (Nadiad)</option>
-                            <option value="Mehsana">Mehsana</option>
-                            <option value="Patan">Patan</option>
-                            <option value="Banaskantha">Banaskantha (Palanpur)</option>
-                            <option value="Sabarkantha">Sabarkantha (Himatnagar)</option>
-                            <option value="Aravalli">Aravalli (Modasa)</option>
-                            <option value="Panchmahal">Panchmahal (Godhra)</option>
-                            <option value="Dahod">Dahod</option>
-                            <option value="Mahisagar">Mahisagar (Lunawada)</option>
-                            <option value="Chhota Udepur">Chhota Udepur</option>
-                        </optgroup>
-                        <optgroup label="🌴 South Gujarat &amp; Kutch">
-                            <option value="Surat">Surat</option>
-                            <option value="Bharuch">Bharuch (Ankleshwar)</option>
-                            <option value="Navsari">Navsari</option>
-                            <option value="Valsad">Valsad (Vapi)</option>
-                            <option value="Narmada">Narmada (Rajpipla)</option>
-                            <option value="Tapi">Tapi (Vyara)</option>
-                            <option value="Dang">Dang (Ahwa)</option>
-                            <option value="Kutch">Kutch (Bhuj / Gandhidham)</option>
-                        </optgroup>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <label class="form-label small text-secondary fw-semibold mb-1">News Source / Origin</label>
-                    <select id="filter-origin" class="form-select form-select-sm font-mono" onchange="InstagramApp.applyFilters()">
-                        <option value="" selected>All Sources &amp; Origins</option>
-                        <option value="police">🛡️ Official Police Bulletins (CID &amp; SP)</option>
-                        <option value="sandesh">📰 Sandesh News (Crime &amp; Gujarat)</option>
-                        <option value="tv9">📺 TV9 Gujarati (Crime &amp; State)</option>
-                        <option value="abp">📺 ABP Asmita (Gujarat Crime)</option>
-                        <option value="express">📰 The Indian Express (Gujarat)</option>
-                        <option value="times">📰 The Times of India (Gujarat Cities)</option>
-                        <option value="deshgujarat">🌐 DeshGujarat</option>
-                        <option value="instagram">📸 Instagram Verified Reels</option>
-                        <option value="facebook">📘 Facebook Official Pages</option>
-                    </select>
-                </div>
-                <div class="col-md-3">
-                    <div class="d-flex justify-content-between align-items-center mb-1">
-                        <label class="form-label small text-primary fw-bold mb-0">
-                            <i class="bi bi-search me-1"></i>Search Keyword / Topic / Location
-                        </label>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-lightning-fill me-1"></i>LIVE AUTO-SEARCH</span>
+    <!-- ========================================================================= -->
+    <!-- PANE 1: LIVE MONITORING FEED WORKSPACE                                    -->
+    <!-- ========================================================================= -->
+    <div id="pane-live-controls">
+        <!-- Telemetry KPI Cards -->
+        <div class="row g-3 mb-3">
+            <div class="col-xl-3 col-sm-6">
+                <div class="kpi-card p-3">
+                    <div class="d-flex justify-content-between text-secondary small fw-semibold">
+                        <span>1. MONITORED LIVE ARTICLES</span>
+                        <i class="bi bi-newspaper text-primary fs-5"></i>
                     </div>
-                    <div class="input-group input-group-sm">
-                        <input type="text" id="filter-keyword" class="form-control font-mono" placeholder="Type letters to search live (e.g. digital arrest, kyc, surat)..." oninput="InstagramApp.handleLiveSearch(this.value)">
-                        <button class="btn btn-outline-secondary" type="button" onclick="InstagramApp.clearSearch()" title="Clear search">
-                            <i class="bi bi-x-lg"></i>
+                    <div class="kpi-value text-primary mt-2 mb-1" id="kpi-items-count">0</div>
+                    <div class="kpi-subtext" id="kpi-items-subtitle">Real-time news &amp; social intelligence</div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="kpi-card p-3">
+                    <div class="d-flex justify-content-between text-secondary small fw-semibold">
+                        <span>2. SAVED CASE RECORDS</span>
+                        <i class="bi bi-bookmark-check-fill text-success fs-5"></i>
+                    </div>
+                    <div class="kpi-value text-success mt-2 mb-1" id="saved-kpi-count">0</div>
+                    <div class="kpi-subtext">Evidence persisted to database</div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="kpi-card p-3">
+                    <div class="d-flex justify-content-between text-secondary small fw-semibold">
+                        <span>3. ACTIVE KEYWORD HITS</span>
+                        <i class="bi bi-search text-warning fs-5"></i>
+                    </div>
+                    <div class="kpi-value text-warning mt-2 mb-1" id="kpi-matches-count">0</div>
+                    <div class="kpi-subtext" id="kpi-matches-subtitle">Cyber crime, fraud &amp; threats matched</div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-sm-6">
+                <div class="kpi-card p-3">
+                    <div class="d-flex justify-content-between text-secondary small fw-semibold">
+                        <span>4. DISTRICT COVERAGE</span>
+                        <i class="bi bi-geo-alt-fill text-info fs-5"></i>
+                    </div>
+                    <div class="kpi-value text-info mt-2 mb-1">33 Dists</div>
+                    <div class="kpi-subtext" id="kpi-last-collection-time">All Gujarat Statewide jurisdictions</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unified Intelligence Search & Filter Console -->
+        <div class="card mb-3 shadow-sm">
+            <!-- Platform Stream Selection Strip -->
+            <div class="card-header py-2 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <span class="text-secondary small font-mono fw-bold">STREAM:</span>
+                    <div class="btn-group" role="group" aria-label="Platform Filter">
+                        <button type="button" class="btn btn-sm btn-outline-primary active font-mono" id="btn-platform-ALL" onclick="InstagramApp.setPlatform('ALL')">
+                            ALL STREAMS
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-NEWS_FEED" onclick="InstagramApp.setPlatform('NEWS_FEED')">
+                            <i class="bi bi-newspaper me-1"></i> GUJARAT NEWS
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-INSTAGRAM" onclick="InstagramApp.setPlatform('INSTAGRAM')">
+                            <i class="bi bi-instagram me-1"></i> INSTAGRAM REELS
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-FACEBOOK" onclick="InstagramApp.setPlatform('FACEBOOK')">
+                            <i class="bi bi-facebook me-1"></i> FACEBOOK PAGES
                         </button>
                     </div>
                 </div>
-                <div class="col-md-1">
-                    <label class="form-label small text-secondary fw-semibold mb-1">Date From</label>
-                    <input type="date" id="filter-date-from" class="form-control form-control-sm">
-                </div>
-                <div class="col-md-1">
-                    <label class="form-label small text-secondary fw-semibold mb-1">Date To</label>
-                    <input type="date" id="filter-date-to" class="form-control form-control-sm">
-                </div>
-                <div class="col-md-3 d-flex gap-1">
-                    <button class="btn btn-sm btn-soc-primary flex-grow-1" onclick="InstagramApp.applyFilters()">
-                        <i class="bi bi-search me-1"></i> Filter Live
+
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge bg-light text-secondary border font-mono small d-none d-md-inline-block" id="conn-latency-badge">LATENCY: 42 ms</span>
+                    <button class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#limitationsModal">
+                        <i class="bi bi-info-circle me-1"></i> Guidelines
                     </button>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="InstagramApp.resetFilters()">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                    <button class="btn btn-sm btn-soc-primary font-mono" id="btn-trigger-collection" onclick="InstagramApp.syncAllStreams()">
+                        <i class="bi bi-arrow-repeat me-1" id="collect-icon"></i> Refresh Feeds
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search Inputs & Filters -->
+            <div class="card-body p-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label small text-secondary fw-semibold mb-1">City / District (33 Dists)</label>
+                        <select id="filter-city" class="form-select form-select-sm font-mono" onchange="InstagramApp.applyFilters()">
+                            <option value="" selected>All Gujarat Statewide (33 Dists)</option>
+                            <optgroup label="📍 Gir Somnath District (Priority)">
+                                <option value="Gir Somnath">★ All Gir Somnath District</option>
+                                <option value="Veraval">Veraval (District HQ &amp; Port)</option>
+                                <option value="Somnath">Somnath / Prabhas Patan</option>
+                                <option value="Kodinar">Kodinar</option>
+                                <option value="Una">Una</option>
+                                <option value="Talala">Talala (Gir)</option>
+                                <option value="Sutrapada">Sutrapada</option>
+                                <option value="Gir Gadhada">Gir Gadhada</option>
+                            </optgroup>
+                            <optgroup label="🌊 Saurashtra &amp; Coastal Gujarat">
+                                <option value="Rajkot">Rajkot</option>
+                                <option value="Bhavnagar">Bhavnagar</option>
+                                <option value="Jamnagar">Jamnagar</option>
+                                <option value="Junagadh">Junagadh</option>
+                                <option value="Porbandar">Porbandar</option>
+                                <option value="Amreli">Amreli</option>
+                                <option value="Morbi">Morbi</option>
+                                <option value="Surendranagar">Surendranagar</option>
+                                <option value="Botad">Botad</option>
+                                <option value="Devbhumi Dwarka">Devbhumi Dwarka</option>
+                            </optgroup>
+                            <optgroup label="🏢 Central &amp; North Gujarat">
+                                <option value="Ahmedabad">Ahmedabad</option>
+                                <option value="Gandhinagar">Gandhinagar</option>
+                                <option value="Vadodara">Vadodara</option>
+                                <option value="Anand">Anand</option>
+                                <option value="Kheda">Kheda (Nadiad)</option>
+                                <option value="Mehsana">Mehsana</option>
+                                <option value="Patan">Patan</option>
+                                <option value="Banaskantha">Banaskantha (Palanpur)</option>
+                                <option value="Sabarkantha">Sabarkantha (Himatnagar)</option>
+                                <option value="Aravalli">Aravalli (Modasa)</option>
+                                <option value="Panchmahal">Panchmahal (Godhra)</option>
+                                <option value="Dahod">Dahod</option>
+                                <option value="Mahisagar">Mahisagar (Lunawada)</option>
+                                <option value="Chhota Udepur">Chhota Udepur</option>
+                            </optgroup>
+                            <optgroup label="🌴 South Gujarat &amp; Kutch">
+                                <option value="Surat">Surat</option>
+                                <option value="Bharuch">Bharuch (Ankleshwar)</option>
+                                <option value="Navsari">Navsari</option>
+                                <option value="Valsad">Valsad (Vapi)</option>
+                                <option value="Narmada">Narmada (Rajpipla)</option>
+                                <option value="Tapi">Tapi (Vyara)</option>
+                                <option value="Dang">Dang (Ahwa)</option>
+                                <option value="Kutch">Kutch (Bhuj / Gandhidham)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4">
+                        <label class="form-label small text-secondary fw-semibold mb-1">News Source / Origin</label>
+                        <select id="filter-origin" class="form-select form-select-sm font-mono" onchange="InstagramApp.applyFilters()">
+                            <option value="" selected>All Sources &amp; Origins</option>
+                            <option value="police">🛡️ Official Police Bulletins (CID &amp; SP)</option>
+                            <option value="sandesh">📰 Sandesh News (Crime &amp; Gujarat)</option>
+                            <option value="tv9">📺 TV9 Gujarati (Crime &amp; State)</option>
+                            <option value="abp">📺 ABP Asmita (Gujarat Crime)</option>
+                            <option value="express">📰 The Indian Express (Gujarat)</option>
+                            <option value="times">📰 The Times of India (Gujarat)</option>
+                            <option value="deshgujarat">🌐 DeshGujarat</option>
+                            <option value="instagram">📸 Instagram Reels</option>
+                            <option value="facebook">📘 Facebook Pages</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-4 col-md-4">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label small text-primary fw-bold mb-0">
+                                <i class="bi bi-search me-1"></i>Search Keyword / Topic / Location
+                            </label>
+                            <span class="badge bg-success-subtle text-success border border-success-subtle font-mono" style="font-size: 0.65rem;">
+                                <i class="bi bi-lightning-fill me-1"></i>LIVE AUTO-SEARCH
+                            </span>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <input type="text" id="filter-keyword" class="form-control font-mono" placeholder="Type letters to search live (e.g. digital arrest, kyc, surat)..." oninput="InstagramApp.handleLiveSearch(this.value)">
+                            <button class="btn btn-outline-secondary" type="button" onclick="InstagramApp.clearSearch()" title="Clear search">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-1 col-md-3">
+                        <label class="form-label small text-secondary fw-semibold mb-1">Date From</label>
+                        <input type="date" id="filter-date-from" class="form-control form-control-sm">
+                    </div>
+
+                    <div class="col-lg-1 col-md-3">
+                        <label class="form-label small text-secondary fw-semibold mb-1">Date To</label>
+                        <input type="date" id="filter-date-to" class="form-control form-control-sm">
+                    </div>
+
+                    <div class="col-lg-2 col-md-6 d-flex gap-1">
+                        <button class="btn btn-sm btn-soc-primary flex-grow-1" onclick="InstagramApp.applyFilters()">
+                            <i class="bi bi-search me-1"></i> Filter
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="InstagramApp.resetFilters()">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sleek Inline District Focus Chips -->
+                <div class="d-flex flex-wrap align-items-center gap-1 mt-3 pt-2 border-top">
+                    <span class="small font-mono text-secondary me-2"><i class="bi bi-geo-alt-fill text-warning me-1"></i>District Focus:</span>
+                    <button type="button" class="btn btn-xs district-chip active" id="pill-all-gujarat" onclick="InstagramApp.selectTaluka('')">
+                        ★ All Gujarat
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-all-gir-somnath" onclick="InstagramApp.selectTaluka('Gir Somnath')">
+                        Gir Somnath (HQ)
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-veraval" onclick="InstagramApp.selectTaluka('Veraval')">
+                        Veraval
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-somnath" onclick="InstagramApp.selectTaluka('Somnath')">
+                        Somnath
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-kodinar" onclick="InstagramApp.selectTaluka('Kodinar')">
+                        Kodinar
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-una" onclick="InstagramApp.selectTaluka('Una')">
+                        Una
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-talala" onclick="InstagramApp.selectTaluka('Talala')">
+                        Talala
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-sutrapada" onclick="InstagramApp.selectTaluka('Sutrapada')">
+                        Sutrapada
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" id="pill-gir-gadhada" onclick="InstagramApp.selectTaluka('Gir Gadhada')">
+                        Gir Gadhada
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" onclick="InstagramApp.selectTaluka('Rajkot')">
+                        Rajkot
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" onclick="InstagramApp.selectTaluka('Surat')">
+                        Surat
+                    </button>
+                    <button type="button" class="btn btn-xs district-chip" onclick="InstagramApp.selectTaluka('Ahmedabad')">
+                        Ahmedabad
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Monitoring Results Table -->
+    <!-- ========================================================================= -->
+    <!-- PANE 2: SAVED CASE EVIDENCE DOSSIERS (SEPARATE WORKSPACE)                 -->
+    <!-- ========================================================================= -->
+    <div id="pane-saved-controls" class="d-none">
+        <div class="card mb-3 shadow-sm">
+            <div class="card-body p-3 d-flex flex-wrap align-items-center justify-content-between gap-2">
+                <div>
+                    <h5 class="fw-bold text-dark-emphasis mb-1">
+                        <i class="bi bi-bookmark-check-fill text-success me-2"></i>Official Saved Case Evidence Registry
+                    </h5>
+                    <div class="text-secondary small">
+                        Officer curated evidence persisted to SQLite database for FIR attachments, chargesheet documentation, and legal archiving.
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <button type="button" class="btn btn-sm btn-outline-success font-mono" onclick="InstagramApp.exportSavedCsv()">
+                        <i class="bi bi-download me-1"></i> Export Records (CSV)
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary font-mono" onclick="InstagramApp.loadDashboardData(true)">
+                        <i class="bi bi-arrow-repeat me-1"></i> Refresh Saved
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-primary font-mono" onclick="InstagramApp.switchTab('live')">
+                        <i class="bi bi-arrow-left me-1"></i> Return to Live Feed
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- PANE 3: CRAWLER & AUTOMATION OPS (SEPARATE WORKSPACE)                     -->
+    <!-- ========================================================================= -->
+    <div id="tab-pane-automation" class="d-none">
+        <!-- Automated Background Ingestion Console -->
+        <div class="card mb-3 shadow-sm">
+            <div class="card-header py-2 d-flex justify-content-between align-items-center">
+                <span class="fw-bold font-mono text-dark-emphasis small">
+                    <i class="bi bi-cpu-fill text-primary me-2"></i>AUTOMATED BACKGROUND INGESTION ENGINE
+                </span>
+                <span id="scheduler-pulse-badge" class="badge bg-success-subtle text-success border border-success-subtle font-mono px-3 py-1">
+                    <span class="spinner-grow spinner-grow-sm text-success me-1" role="status" style="width: 0.6rem; height: 0.6rem;"></span>
+                    STATUS: <span id="scheduler-status-text">ACTIVE</span>
+                </span>
+            </div>
+            <div class="card-body p-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-3">
+                        <div class="text-secondary small">POLLING INTERVAL</div>
+                        <div class="fw-bold font-mono text-dark-emphasis">Every 5 Minutes</div>
+                        <div class="text-muted small">Auto-monitors RSS &amp; Social APIs</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-secondary small">NEXT SCHEDULED RUN</div>
+                        <div class="fw-bold font-mono text-warning-emphasis" id="scheduler-countdown">--</div>
+                        <div class="text-muted small">Automatic statewide scan</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-secondary small">LAST SYNCHRONIZATION</div>
+                        <div class="fw-bold font-mono text-dark-emphasis" id="scheduler-last-run">--</div>
+                        <div class="text-muted small">Last ingest cycle timestamp</div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="text-secondary small">AUTO-INGESTED TOTAL</div>
+                        <div class="fw-bold font-mono text-primary fs-5" id="scheduler-items-count">0</div>
+                        <div class="text-muted small">Items added automatically</div>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 mt-3 pt-3 border-top">
+                    <button class="btn btn-sm btn-soc-primary font-mono" id="btn-trigger-scheduler" onclick="InstagramApp.triggerSchedulerNow()">
+                        <i class="bi bi-lightning-charge-fill me-1"></i> Trigger Ingestion Run Now
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary font-mono" id="btn-toggle-scheduler" onclick="InstagramApp.toggleScheduler()">
+                        <i class="bi bi-pause-fill me-1"></i> Pause Ingestion
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <!-- Meta API Card -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header py-2 fw-bold font-mono text-dark-emphasis small">
+                        <i class="bi bi-meta text-primary me-2"></i>OFFICIAL META GRAPH API INTEGRATION
+                    </div>
+                    <div class="card-body p-3">
+                        <p class="text-secondary small mb-3">
+                            Configures direct access to official Meta App (ID: <code>2097092861179529</code>) for compliant Instagram and Facebook Business intelligence.
+                        </p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-sm btn-outline-primary font-mono" data-bs-toggle="modal" data-bs-target="#connectOAuthModal" onclick="InstagramApp.loadOfficialConfig()">
+                                <i class="bi bi-gear-fill me-1"></i> Configure Official Meta API &amp; Tokens
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Public Harvester & Commercial Gateway Card -->
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header py-2 fw-bold font-mono text-dark-emphasis small">
+                        <i class="bi bi-robot text-info me-2"></i>PUBLIC HARVESTER &amp; 1000+ API GATEWAY
+                    </div>
+                    <div class="card-body p-3">
+                        <p class="text-secondary small mb-3">
+                            Ingest high volumes (1,000 to 2,000+ posts/day) from public police handles, news media channels, and public crime hashtags.
+                        </p>
+                        <div class="d-flex flex-column gap-2">
+                            <button type="button" class="btn btn-sm btn-outline-info font-mono text-start" onclick="InstagramApp.triggerPublicHarvester()">
+                                <i class="bi bi-play-circle-fill me-2"></i>Run Free Public Profile Harvester
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-warning font-mono text-start" data-bs-toggle="modal" data-bs-target="#apifyModal" onclick="InstagramApp.loadScraperStatus()">
+                                <i class="bi bi-lightning-charge-fill me-2"></i>Configure Apify 1000+ Gateway
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary font-mono text-start" onclick="InstagramApp.syncCrimeFeeds()">
+                                <i class="bi bi-newspaper me-2"></i>Sync Live Gujarat News Feeds (RSS)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- REAL-TIME & SAVED INTELLIGENCE DATA TABLE                                 -->
+    <!-- Shared display surface between Live Feed and Saved Case Dossiers          -->
+    <!-- ========================================================================= -->
     <div class="card mb-3 shadow-sm" id="results-section">
         <div class="card-header py-2 d-flex justify-content-between align-items-center">
             <div class="fw-semibold small font-mono">
@@ -347,28 +421,20 @@
         <!-- Pagination Controls -->
         <div id="pagination-container" class="p-2 border-top bg-light"></div>
     </div>
-                            <div class="spinner-border spinner-border-sm text-info me-2" role="status"></div>
-                            Loading Gujarat cyber crime feeds...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <!-- Pagination Controls -->
-        <div id="pagination-container" class="border-top border-secondary" style="background: var(--soc-surface-raised);"></div>
-    </div>
 
-</div><!-- ========================================================================= -->
+</div>
+
+<!-- ========================================================================= -->
 <!-- Modal: Content Detail & Human Review                                      -->
 <!-- ========================================================================= -->
 <div class="modal fade" id="itemDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-secondary">
-            <div class="modal-header border-secondary py-2">
-                <h6 class="modal-title font-mono text-info" id="modal-item-title">
+        <div class="modal-content shadow-lg border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-primary fw-bold" id="modal-item-title">
                     <i class="bi bi-shield-check me-1"></i> Gujarat Cyber Crime Intelligence &bull; Post &amp; Bulletin Review
                 </h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <div class="alert alert-warning border-warning-subtle font-mono small mb-3">
@@ -379,11 +445,11 @@
                 <div class="row g-2 mb-3">
                     <div class="col-md-3">
                         <div class="text-secondary small">ORIGIN / SOURCE NAME</div>
-                        <div class="font-mono text-info fw-bold" id="modal-origin-label">--</div>
+                        <div class="font-mono text-dark fw-bold" id="modal-origin-label">--</div>
                     </div>
                     <div class="col-md-3">
                         <div class="text-secondary small">SOURCE CHANNEL / HANDLE</div>
-                        <div class="font-mono text-light fw-bold" id="modal-source-account">--</div>
+                        <div class="font-mono text-dark fw-bold" id="modal-source-account">--</div>
                     </div>
                     <div class="col-md-3">
                         <div class="text-secondary small">STREAM PLATFORM</div>
@@ -391,7 +457,7 @@
                     </div>
                     <div class="col-md-3">
                         <div class="text-secondary small">JURISDICTION / DISTRICT</div>
-                        <div class="font-mono text-warning fw-bold" id="modal-jurisdiction">--</div>
+                        <div class="font-mono text-primary fw-bold" id="modal-jurisdiction">--</div>
                     </div>
 
                     <div class="col-md-3">
@@ -400,33 +466,33 @@
                     </div>
                     <div class="col-md-3">
                         <div class="text-secondary small">PUBLISHED AT</div>
-                        <div class="font-mono text-light small" id="modal-published-at">--</div>
+                        <div class="font-mono text-dark small" id="modal-published-at">--</div>
                     </div>
                     <div class="col-md-3">
                         <div class="text-secondary small">MEDIA TYPE</div>
-                        <div class="font-mono text-light" id="modal-media-type">--</div>
+                        <div class="font-mono text-dark" id="modal-media-type">--</div>
                     </div>
                     <div class="col-md-3">
                         <div class="text-secondary small">ENGAGEMENT</div>
-                        <div class="font-mono text-light small" id="modal-engagement-metrics">Likes: 0 &bull; Comments: 0</div>
+                        <div class="font-mono text-dark small" id="modal-engagement-metrics">Likes: 0 &bull; Comments: 0</div>
                     </div>
 
                     <div class="col-md-6 mt-2">
                         <div class="text-secondary small">VIRALITY &amp; REACH</div>
-                        <span class="font-mono text-info fw-bold" id="modal-shares-count"><i class="bi bi-share me-1"></i>0 Shares</span>
+                        <span class="font-mono text-primary fw-bold" id="modal-shares-count"><i class="bi bi-share me-1"></i>0 Shares</span>
                         <span class="text-secondary mx-2">&bull;</span>
                         <span class="font-mono text-success fw-bold" id="modal-reach-estimate">--</span>
                     </div>
 
                     <div class="col-12 mt-2">
                         <div class="text-secondary small">DIRECT PERMALINK (OFFICIAL POST)</div>
-                        <div class="font-mono text-info small" style="word-break: break-all;" id="modal-permalink">--</div>
+                        <div class="font-mono text-primary small" style="word-break: break-all;" id="modal-permalink">--</div>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-secondary small fw-semibold">PERMITTED MEDIA CAPTION</label>
-                    <div class="p-3 bg-black border border-secondary rounded font-sans small text-light" style="max-height: 160px; overflow-y: auto;" id="modal-full-caption">
+                    <div class="p-3 bg-light border rounded font-sans small text-dark" style="max-height: 160px; overflow-y: auto;" id="modal-full-caption">
                         --
                     </div>
                 </div>
@@ -443,27 +509,27 @@
                 </div>
 
                 <!-- Technical Meta Data & Graph API JSON Payload -->
-                <div class="card bg-black border-secondary mb-3">
-                    <div class="card-header py-2 d-flex justify-content-between align-items-center bg-dark border-secondary">
-                        <span class="small font-mono text-info fw-bold">
+                <div class="card border mb-3">
+                    <div class="card-header py-2 d-flex justify-content-between align-items-center bg-light">
+                        <span class="small font-mono text-dark fw-bold">
                             <i class="bi bi-code-slash me-1"></i> RAW META API GRAPH METADATA &amp; TELEMETRY
                         </span>
-                        <button type="button" class="btn btn-xs btn-outline-info font-mono" id="btn-copy-metadata" onclick="InstagramApp.copyMetadataJson()">
+                        <button type="button" class="btn btn-xs btn-outline-primary font-mono" id="btn-copy-metadata" onclick="InstagramApp.copyMetadataJson()">
                             <i class="bi bi-clipboard me-1"></i> Copy Metadata JSON
                         </button>
                     </div>
-                    <div class="card-body p-2">
-                        <pre class="bg-black text-info p-2 rounded font-mono mb-0 small" style="max-height: 180px; overflow-y: auto; font-size: 0.78rem;" id="modal-raw-metadata-json">--</pre>
+                    <div class="card-body p-2 bg-light">
+                        <pre class="bg-dark text-light p-2 rounded font-mono mb-0 small" style="max-height: 180px; overflow-y: auto; font-size: 0.78rem;" id="modal-raw-metadata-json">--</pre>
                     </div>
                 </div>
 
-                <hr class="border-secondary">
+                <hr>
 
                 <!-- Human Review Form -->
                 <div class="row g-2">
                     <div class="col-md-5">
-                        <label class="form-label text-light small fw-semibold">Officer Assessment Status</label>
-                        <select id="review-status-select" class="form-select form-select-sm bg-dark text-light border-secondary">
+                        <label class="form-label text-dark small fw-semibold">Officer Assessment Status</label>
+                        <select id="review-status-select" class="form-select form-select-sm">
                             <option value="PENDING_REVIEW">PENDING_REVIEW</option>
                             <option value="REVIEWED_RELEVANT">REVIEWED_RELEVANT (Advisory / Actionable)</option>
                             <option value="REVIEWED_BENIGN">REVIEWED_BENIGN (Legitimate / False Positive)</option>
@@ -471,12 +537,12 @@
                         </select>
                     </div>
                     <div class="col-md-7">
-                        <label class="form-label text-light small fw-semibold">Operational Remarks / Officer Notes</label>
-                        <input type="text" id="review-notes-input" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="Enter review justification or remarks">
+                        <label class="form-label text-dark small fw-semibold">Operational Remarks / Officer Notes</label>
+                        <input type="text" id="review-notes-input" class="form-control form-control-sm" placeholder="Enter review justification or remarks">
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-2 justify-content-between">
+            <div class="modal-footer py-2 justify-content-between">
                 <div>
                     <button type="button" class="btn btn-sm btn-outline-success font-mono" id="modal-btn-save-record" onclick="InstagramApp.saveModalRecord()">
                         <i class="bi bi-bookmark-plus me-1"></i> Save Record to Database
@@ -499,22 +565,22 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="limitationsModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-secondary">
-            <div class="modal-header border-secondary py-2">
-                <h6 class="modal-title font-mono text-warning"><i class="bi bi-shield-exclamation me-1"></i> Instagram API Access Limitations</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content shadow border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-warning fw-bold"><i class="bi bi-shield-exclamation me-1"></i> Instagram API Access Limitations</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body small">
                 <p class="text-secondary">Under official Meta Platform Policies and statutory data protection requirements:</p>
-                <ul class="list-group list-group-flush bg-transparent">
-                    <li class="list-group-item bg-transparent text-light border-secondary"><i class="bi bi-x-circle text-danger me-2"></i><strong>No Private Accounts:</strong> Private personal accounts cannot be monitored under official APIs.</li>
-                    <li class="list-group-item bg-transparent text-light border-secondary"><i class="bi bi-x-circle text-danger me-2"></i><strong>No Arbitrary Hashtag/User Search:</strong> Meta requires specific App Review permissions for hashtag discovery.</li>
-                    <li class="list-group-item bg-transparent text-light border-secondary"><i class="bi bi-x-circle text-danger me-2"></i><strong>No Follower or Commenter PII:</strong> Direct profile scraping or personal follower lists are strictly prohibited.</li>
-                    <li class="list-group-item bg-transparent text-light border-secondary"><i class="bi bi-check-circle text-success me-2"></i><strong>Permitted Content Only:</strong> Monitored content is limited to authorized public posts, reels, and captions of connected accounts.</li>
-                    <li class="list-group-item bg-transparent text-light border-secondary"><i class="bi bi-check-circle text-success me-2"></i><strong>Mandatory Human Review:</strong> Algorithmic keyword hits require human review before operational action.</li>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item"><i class="bi bi-x-circle text-danger me-2"></i><strong>No Private Accounts:</strong> Private personal accounts cannot be monitored under official APIs.</li>
+                    <li class="list-group-item"><i class="bi bi-x-circle text-danger me-2"></i><strong>No Arbitrary Hashtag/User Search:</strong> Meta requires specific App Review permissions for hashtag discovery.</li>
+                    <li class="list-group-item"><i class="bi bi-x-circle text-danger me-2"></i><strong>No Follower or Commenter PII:</strong> Direct profile scraping or personal follower lists are strictly prohibited.</li>
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i><strong>Permitted Content Only:</strong> Monitored content is limited to authorized public posts, reels, and captions of connected accounts.</li>
+                    <li class="list-group-item"><i class="bi bi-check-circle text-success me-2"></i><strong>Mandatory Human Review:</strong> Algorithmic keyword hits require human review before operational action.</li>
                 </ul>
             </div>
-            <div class="modal-footer border-secondary py-1">
+            <div class="modal-footer py-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Acknowledge</button>
             </div>
         </div>
@@ -526,15 +592,15 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="connectOAuthModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-secondary">
-            <div class="modal-header border-secondary py-2">
-                <h6 class="modal-title font-mono text-info"><i class="bi bi-meta me-1 text-primary"></i> Connect Official Meta API (.env)</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content shadow border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-primary fw-bold"><i class="bi bi-meta me-1"></i> Connect Official Meta API (.env)</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
                 <div id="connect-alert-box" class="d-none alert alert-danger border-danger-subtle font-mono small py-2 mb-3"></div>
 
-                <div class="alert alert-dark border-secondary p-2 mb-3 small text-secondary">
+                <div class="alert alert-light border p-2 mb-3 small text-secondary">
                     <i class="bi bi-shield-check text-success me-1"></i>
                     <strong>Official Meta Connection:</strong> Configures your official Meta App credentials and Graph API Access Token directly connected to your local environment (<code>.env</code>) and database.
                 </div>
@@ -542,19 +608,19 @@
                 <div class="row g-2 mb-2">
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">Meta App ID</label>
-                        <input type="text" id="meta-app-id-input" class="form-control form-control-sm bg-black text-light border-secondary font-mono" placeholder="2097092861179529">
+                        <input type="text" id="meta-app-id-input" class="form-control form-control-sm font-mono" placeholder="2097092861179529">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">Meta App Secret</label>
-                        <input type="password" id="meta-app-secret-input" class="form-control form-control-sm bg-black text-light border-secondary font-mono" placeholder="Enter App Secret">
+                        <input type="password" id="meta-app-secret-input" class="form-control form-control-sm font-mono" placeholder="Enter App Secret">
                     </div>
                     <div class="col-12">
                         <label class="form-label text-secondary small fw-semibold">Target Instagram Username or Business Account ID *</label>
-                        <input type="text" id="token-target-input" class="form-control form-control-sm bg-black text-light border-secondary font-mono" placeholder="e.g. me or karan_gohel0 or 17841400000000000">
+                        <input type="text" id="token-target-input" class="form-control form-control-sm font-mono" placeholder="e.g. me or karan_gohel0 or 17841400000000000">
                     </div>
                     <div class="col-12">
                         <label class="form-label text-secondary small fw-semibold">Meta Graph API Access Token *</label>
-                        <textarea id="token-access-input" rows="4" class="form-control form-control-sm bg-black text-light border-secondary font-mono" placeholder="Paste your generated Meta Graph API Access Token here (starts with EAAd...)"></textarea>
+                        <textarea id="token-access-input" rows="4" class="form-control form-control-sm font-mono" placeholder="Paste your generated Meta Graph API Access Token here (starts with EAAd...)"></textarea>
                         <div class="form-text text-secondary small">Stored securely in .env and database vault using Fernet encryption.</div>
                     </div>
                 </div>
@@ -565,7 +631,7 @@
                     </button>
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-1">
+            <div class="modal-footer py-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -577,23 +643,23 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-secondary">
-            <div class="modal-header border-secondary py-2">
-                <h6 class="modal-title font-mono text-light"><i class="bi bi-bell me-1"></i> Keyword Match Notifications</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content shadow border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-dark fw-bold"><i class="bi bi-bell me-1 text-primary"></i> Keyword Match Notifications</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body small">
                 <div class="mb-3">
                     <label class="form-label text-secondary">Configured Alert Recipients</label>
-                    <div id="notifications-list" class="list-group list-group-flush bg-transparent">
+                    <div id="notifications-list" class="list-group list-group-flush">
                         <div class="text-secondary">Loading recipients...</div>
                     </div>
                 </div>
-                <hr class="border-secondary">
+                <hr>
                 <h6>Add Alert Destination</h6>
                 <div class="row g-2">
                     <div class="col-8">
-                        <input type="text" id="new-recipient-email" class="form-control form-control-sm bg-dark text-light border-secondary" placeholder="e.g. cyber-desk@gujaratpolice.gov.in">
+                        <input type="text" id="new-recipient-email" class="form-control form-control-sm" placeholder="e.g. cyber-desk@gujaratpolice.gov.in">
                     </div>
                     <div class="col-4">
                         <button class="btn btn-sm btn-soc-primary w-100" onclick="InstagramApp.addNotificationRecipient()">
@@ -602,7 +668,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-1">
+            <div class="modal-footer py-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -614,52 +680,52 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="gatherProgressModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-info shadow-lg">
-            <div class="modal-header border-secondary py-2" style="background: rgba(13, 202, 240, 0.08);">
-                <h6 class="modal-title font-mono text-info fw-bold">
-                    <span class="spinner-grow spinner-grow-sm text-info me-2" role="status" id="gather-spinner-icon"></span>
-                    GUJARAT CYBER INTELLIGENCE &bull; PLATFORM-WIDE KEYWORD MONITOR
+        <div class="modal-content shadow-lg border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-primary fw-bold">
+                    <span class="spinner-grow spinner-grow-sm text-primary me-2" role="status" id="gather-spinner-icon"></span>
+                    GUJARAT CYBER INTELLIGENCE &bull; KEYWORD MONITOR
                 </h6>
             </div>
             <div class="modal-body p-3">
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="small font-mono text-secondary" id="gather-phase-text">Scanning Instagram posts &amp; reels by keyword...</span>
-                    <span class="badge bg-info text-dark font-mono fw-bold" id="gather-pct-badge">0%</span>
+                    <span class="small font-mono text-secondary" id="gather-phase-text">Scanning feeds &amp; reels by keyword...</span>
+                    <span class="badge bg-primary text-light font-mono fw-bold" id="gather-pct-badge">0%</span>
                 </div>
-                <div class="progress mb-3 bg-black border border-secondary" style="height: 10px;">
-                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" id="gather-progress-bar" role="progressbar" style="width: 0%;"></div>
+                <div class="progress mb-3" style="height: 10px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" id="gather-progress-bar" role="progressbar" style="width: 0%;"></div>
                 </div>
 
                 <!-- Live Process Terminal -->
-                <div class="bg-black p-2 rounded border border-secondary font-mono small text-secondary" style="max-height: 170px; min-height: 120px; overflow-y: auto; font-size: 0.78rem;" id="gather-terminal-log">
+                <div class="bg-dark p-2 rounded font-mono small text-light" style="max-height: 170px; min-height: 120px; overflow-y: auto; font-size: 0.78rem;" id="gather-terminal-log">
                     <div class="text-info">&gt; Initializing Gujarat Police Instagram Monitoring Gateway...</div>
                 </div>
 
                 <!-- Telemetry Counters in Modal -->
                 <div class="row g-2 text-center font-mono mt-2" style="font-size: 0.75rem;">
                     <div class="col-4">
-                        <div class="p-2 border border-secondary rounded bg-dark">
+                        <div class="p-2 border rounded bg-light">
                             <div class="text-secondary">SCOPE</div>
-                            <div class="text-info fw-bold" id="gather-modal-outlets">Platform-Wide</div>
+                            <div class="text-dark fw-bold" id="gather-modal-outlets">Platform-Wide</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="p-2 border border-secondary rounded bg-dark">
+                        <div class="p-2 border rounded bg-light">
                             <div class="text-secondary">POSTS MATCHED</div>
-                            <div class="text-warning fw-bold" id="gather-modal-parsed">0</div>
+                            <div class="text-warning-emphasis fw-bold" id="gather-modal-parsed">0</div>
                         </div>
                     </div>
                     <div class="col-4">
-                        <div class="p-2 border border-secondary rounded bg-dark">
+                        <div class="p-2 border rounded bg-light">
                             <div class="text-secondary">URL VERIFICATION</div>
                             <div class="text-success fw-bold" id="gather-modal-status">100% OK</div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-2 justify-content-between">
+            <div class="modal-footer py-2 justify-content-between">
                 <span class="small font-mono text-secondary" style="font-size: 0.72rem;">Platform-Wide Keyword Post &amp; Reel Monitoring</span>
-                <button type="button" class="btn btn-sm btn-outline-info font-mono d-none" id="btn-close-gather-modal" data-bs-dismiss="modal">
+                <button type="button" class="btn btn-sm btn-outline-primary font-mono d-none" id="btn-close-gather-modal" data-bs-dismiss="modal">
                     View Captured News <i class="bi bi-arrow-right ms-1"></i>
                 </button>
             </div>
@@ -672,14 +738,14 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="auditModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-secondary">
-            <div class="modal-header border-secondary py-2">
-                <h6 class="modal-title font-mono text-light"><i class="bi bi-journal-text me-1"></i> Forensic Operational Audit Trail</h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content shadow border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-dark fw-bold"><i class="bi bi-journal-text me-1 text-primary"></i> Forensic Operational Audit Trail</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-0 table-responsive" style="max-height: 400px; overflow-y: auto;">
-                <table class="table table-dark table-sm mb-0 font-mono small">
-                    <thead class="table-secondary text-secondary">
+                <table class="table table-hover table-sm mb-0 font-mono small">
+                    <thead class="table-light text-secondary">
                         <tr>
                             <th>TIMESTAMP (UTC)</th>
                             <th>OFFICER</th>
@@ -693,7 +759,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="modal-footer border-secondary py-1">
+            <div class="modal-footer py-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
@@ -705,22 +771,22 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="addKeywordModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-secondary">
-            <div class="modal-header border-secondary py-2">
-                <h6 class="modal-title font-mono text-warning">
+        <div class="modal-content shadow border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-warning-emphasis fw-bold">
                     <i class="bi bi-plus-circle me-1"></i> Add Monitored Keyword
                 </h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body small p-3">
                 <div class="mb-2">
                     <label class="form-label text-secondary small fw-semibold">Keyword or Phrase *</label>
-                    <input type="text" id="new-kw-text" class="form-control form-control-sm bg-black text-light border-secondary font-mono" placeholder="e.g. digital arrest, part-time job, task scam">
+                    <input type="text" id="new-kw-text" class="form-control form-control-sm font-mono" placeholder="e.g. digital arrest, part-time job, task scam">
                 </div>
                 <div class="row g-2 mb-2">
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">Threat Category</label>
-                        <select id="new-kw-category" class="form-select form-select-sm bg-black text-light border-secondary">
+                        <select id="new-kw-category" class="form-select form-select-sm">
                             <option value="Financial Fraud">Financial Fraud</option>
                             <option value="Digital Arrest">Digital Arrest</option>
                             <option value="Phishing Scam">Phishing Scam</option>
@@ -730,7 +796,7 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">Severity Weighting</label>
-                        <select id="new-kw-severity" class="form-select form-select-sm bg-black text-light border-secondary font-mono">
+                        <select id="new-kw-severity" class="form-select form-select-sm font-mono">
                             <option value="CRITICAL">CRITICAL</option>
                             <option value="HIGH" selected>HIGH</option>
                             <option value="MEDIUM">MEDIUM</option>
@@ -741,7 +807,7 @@
                 <div class="row g-2 mb-2">
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">Match Type</label>
-                        <select id="new-kw-matchtype" class="form-select form-select-sm bg-black text-light border-secondary font-mono">
+                        <select id="new-kw-matchtype" class="form-select form-select-sm font-mono">
                             <option value="PHRASE" selected>PHRASE (Case-Insensitive substring)</option>
                             <option value="EXACT">EXACT (Full word match)</option>
                             <option value="FUZZY">FUZZY (Typo-tolerant)</option>
@@ -749,14 +815,14 @@
                     </div>
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">Statutory Legal Mandate Ref</label>
-                        <input type="text" id="new-kw-mandate" class="form-control form-control-sm bg-black text-light border-secondary font-mono" value="STATUTORY-CYBER-MONITORING-2026">
+                        <input type="text" id="new-kw-mandate" class="form-control form-control-sm font-mono" value="STATUTORY-CYBER-MONITORING-2026">
                     </div>
                 </div>
                 <div class="form-text text-secondary small">
                     <i class="bi bi-info-circle me-1"></i> New keyword will be ingested by the regex scanner for all upcoming collections and audited.
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-1">
+            <div class="modal-footer py-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-sm btn-soc-primary" onclick="InstagramApp.addKeyword()">
                     <i class="bi bi-check2-circle me-1"></i> Register Keyword
@@ -771,38 +837,38 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="apifyModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content bg-dark text-light border-warning shadow-lg">
-            <div class="modal-header border-secondary py-2" style="background: rgba(255, 193, 7, 0.08);">
-                <h6 class="modal-title font-mono text-warning fw-bold">
+        <div class="modal-content shadow-lg border">
+            <div class="modal-header py-2 bg-light">
+                <h6 class="modal-title font-mono text-warning-emphasis fw-bold">
                     <i class="bi bi-lightning-charge-fill me-1"></i> HIGH-CAPACITY COMMERCIAL SCRAPING GATEWAY (1,000+ POSTS/DAY)
                 </h6>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body p-3">
-                <div class="alert alert-dark border-secondary p-2 mb-3 small text-secondary">
-                    <i class="bi bi-info-circle-fill text-info me-1"></i>
-                    <strong>How Law Enforcement Fetches 1,000+ Posts:</strong> Official Meta APIs restrict arbitrary public post search. Commercial distributed scrapers (<strong>Apify Instagram Scraper</strong>, <strong>ScrapingBee</strong>, and <strong>BrightData</strong>) bypass platform login barriers and harvest 1,000 to 2,000+ real public posts per run across target hashtags and public police handles.
+                <div class="alert alert-light border p-2 mb-3 small text-secondary">
+                    <i class="bi bi-info-circle-fill text-primary me-1"></i>
+                    <strong>How Law Enforcement Fetches 1,000+ Posts:</strong> Official Meta APIs restrict arbitrary public post search. Commercial distributed scrapers (<strong>Apify Instagram Scraper</strong>, <strong>ScrapingBee</strong>, and <strong>BrightData</strong>) harvest 1,000 to 2,000+ real public posts per run across target hashtags and public police handles.
                 </div>
 
                 <div class="row g-3">
                     <!-- Option 1: Direct Public Profile Harvester -->
-                    <div class="col-md-6 border-end border-secondary">
-                        <div class="p-2 border border-info rounded bg-black">
+                    <div class="col-md-6 border-end">
+                        <div class="p-3 border rounded bg-light">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="fw-bold font-mono text-info small"><i class="bi bi-robot me-1"></i>DIRECT PUBLIC HARVESTER</span>
+                                <span class="fw-bold font-mono text-primary small"><i class="bi bi-robot me-1"></i>DIRECT PUBLIC HARVESTER</span>
                                 <span class="badge bg-success font-mono">100% FREE / NO TOKEN</span>
                             </div>
                             <div class="text-secondary small mb-2" style="font-size: 0.78rem;">
                                 Directly crawls public Instagram reels &amp; Facebook posts from verified Gujarat Police handles (@girsomnathpolice, @gujaratpolice_, @suratcitypolice, @all_saurastra_news).
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-info font-mono w-100" id="btn-modal-public-crawl" onclick="InstagramApp.triggerPublicHarvester()">
+                            <button type="button" class="btn btn-sm btn-outline-primary font-mono w-100" id="btn-modal-public-crawl" onclick="InstagramApp.triggerPublicHarvester()">
                                 <i class="bi bi-play-circle-fill me-1"></i> Run Public Profile Crawler
                             </button>
                         </div>
 
                         <div class="mt-3">
                             <label class="form-label small text-secondary font-mono fw-semibold">Target Gujarat Police &amp; News Handles</label>
-                            <div class="small font-mono text-info p-2 rounded bg-black border border-secondary" style="font-size: 0.75rem;">
+                            <div class="small font-mono text-secondary p-2 rounded bg-light border" style="font-size: 0.75rem;">
                                 @girsomnathpolice &bull; @all_saurastra_news &bull; @gujaratpolice_ &bull; @ahmedabadpolice &bull; @suratcitypolice &bull; @sandeshnews &bull; @tv9gujarati &bull; @gujaratfirst
                             </div>
                         </div>
@@ -810,9 +876,9 @@
 
                     <!-- Option 2: Apify / Commercial Token Gateway -->
                     <div class="col-md-6">
-                        <div class="p-2 border border-warning rounded bg-black mb-3">
+                        <div class="p-3 border rounded bg-light mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
-                                <span class="fw-bold font-mono text-warning small"><i class="bi bi-lightning-charge me-1"></i>APIFY COMMERCIAL API</span>
+                                <span class="fw-bold font-mono text-warning-emphasis small"><i class="bi bi-lightning-charge me-1"></i>APIFY COMMERCIAL API</span>
                                 <span class="badge bg-warning text-dark font-mono">1,000 - 2,000 POSTS</span>
                             </div>
                             <div class="text-secondary small mb-2" style="font-size: 0.78rem;">
@@ -820,33 +886,33 @@
                             </div>
                             <div class="mb-2">
                                 <label class="form-label small text-secondary fw-semibold">Apify API Token (Optional / Saved in .env)</label>
-                                <input type="password" id="apify-token-input" class="form-control form-control-sm bg-dark text-light border-secondary font-mono" placeholder="apify_api_...">
+                                <input type="password" id="apify-token-input" class="form-control form-control-sm font-mono" placeholder="apify_api_...">
                             </div>
                             <div class="mb-2">
                                 <label class="form-label small text-secondary fw-semibold">Target Hashtags (Comma-Separated)</label>
-                                <input type="text" id="apify-hashtags-input" class="form-control form-control-sm bg-dark text-light border-secondary font-mono" value="girsomnath, gujaratpolice, cybercrimegujarat, digitalarrest, veraval">
+                                <input type="text" id="apify-hashtags-input" class="form-control form-control-sm font-mono" value="girsomnath, gujaratpolice, cybercrimegujarat, digitalarrest, veraval">
                             </div>
                             <div class="d-flex gap-2">
                                 <button type="button" class="btn btn-sm btn-outline-secondary font-mono flex-grow-1" onclick="InstagramApp.saveScrapingKeys()">
                                     <i class="bi bi-save me-1"></i> Save Token
                                 </button>
-                                <button type="button" class="btn btn-sm btn-outline-warning font-mono flex-grow-1" id="btn-run-apify-modal" onclick="InstagramApp.triggerApifySync()">
+                                <button type="button" class="btn btn-sm btn-soc-primary font-mono flex-grow-1" id="btn-run-apify-modal" onclick="InstagramApp.triggerApifySync()">
                                     <i class="bi bi-cloud-arrow-down-fill me-1"></i> Ingest 1000+ Posts
                                 </button>
                             </div>
                         </div>
 
                         <!-- ScrapingBee Key -->
-                        <div class="p-2 border border-secondary rounded bg-black">
+                        <div class="p-2 border rounded bg-light">
                             <div class="fw-bold font-mono text-secondary small mb-1">
                                 <i class="bi bi-key me-1"></i>ScrapingBee / BrightData Key (Optional)
                             </div>
-                            <input type="password" id="scrapingbee-key-input" class="form-control form-control-sm bg-dark text-light border-secondary font-mono" placeholder="ScrapingBee API Key">
+                            <input type="password" id="scrapingbee-key-input" class="form-control form-control-sm font-mono" placeholder="ScrapingBee API Key">
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="modal-footer border-secondary py-1 justify-content-between">
+            <div class="modal-footer py-1 justify-content-between">
                 <span class="small font-mono text-secondary" style="font-size: 0.72rem;">High-Volume Public Data Harvester Gateway &bull; Statutory Cyber Intelligence</span>
                 <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
@@ -856,4 +922,3 @@
 
 <script src="/static/js/instagram_dashboard.js"></script>
 {% endblock %}
-
