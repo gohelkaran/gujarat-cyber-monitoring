@@ -355,16 +355,19 @@ class LiveStreamService:
             except Exception as e:
                 logger.warning(f"Notice appending verified 33 districts catalog: {e}")
 
+            # Intelligent Multi-Channel News Deduplication (Collapses duplicate reports of the same story across Sandesh, TV9, ABP, etc.)
+            deduped_items = self._deduplicate_news_items(gathered_items)
+
             # Sort descending by published_at
-            gathered_items.sort(key=lambda x: x.get("published_at", ""), reverse=True)
-            buffer.set_items(gathered_items)
-            logger.info(f"Refreshed live stream. Total in-memory live items: {len(gathered_items)}")
+            deduped_items.sort(key=lambda x: x.get("published_at", ""), reverse=True)
+            buffer.set_items(deduped_items)
+            logger.info(f"Refreshed live stream. Total in-memory live items: {len(deduped_items)} (Deduplicated from {len(gathered_items)})")
 
             return {
                 "status": "SUCCESS",
-                "total_live_items": len(gathered_items),
+                "total_live_items": len(deduped_items),
                 "last_crawled_at": buffer.last_crawled_at.isoformat() if buffer.last_crawled_at else None,
-                "message": f"Live Stream updated with {len(gathered_items)} real articles across Gujarat."
+                "message": f"Live Stream updated with {len(deduped_items)} real unique articles across Gujarat."
             }
         finally:
             buffer.is_crawling = False
@@ -552,6 +555,57 @@ class LiveStreamService:
                 "total_pages": (total_filtered + page_size - 1) // page_size if total_filtered > 0 else 1
             }
         }
+
+    def _deduplicate_news_items(self, items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Deduplicates news stories reported by multiple channels (e.g. Sandesh, TV9, ABP Asmita)
+        reporting the same incident. Normalizes headlines, strips media publisher tags,
+        and eliminates duplicate or overlapping reports while preserving multi-channel attribution.
+        """
+        deduped = []
+        seen_fingerprints = {}
+
+        def _get_fingerprint(headline: str, city: str) -> str:
+            clean = headline or ""
+            # Remove publisher suffixes (e.g. " - Sandesh", " - TV9 Gujarati", " | ABP Asmita")
+            clean = re.sub(r'[\s\-–|:]+(Sandesh|TV9|ABP|Divya\s*Bhaskar|Gujarat\s*Samachar|News18|Zee|India\s*News).*$', '', clean, flags=re.IGNORECASE)
+            # Remove city prefixes like "Rajkot News:", "Ahmedabad News:", "Bomb Threat :"
+            clean = re.sub(r'^(Rajkot|Surat|Ahmedabad|Vadodara|Gandhinagar|Bhavnagar|Jamnagar|Junagadh|Veraval|Amreli|Bharuch|Navsari|Valsad|Kutch)\s*(News)?\s*[:\-–|]+', '', clean, flags=re.IGNORECASE)
+            clean = re.sub(r'^(Bomb\s*Threat|Breaking|Crime\s*News|Alert)\s*[:\-–|]+', '', clean, flags=re.IGNORECASE)
+            # Extract alphanumeric / Gujarati word tokens (length >= 2)
+            tokens = [t.lower() for t in re.findall(r'[\w\u0A80-\u0AFF]+', clean) if len(t) >= 2]
+            # Use sorted significant tokens to ensure same story with words slightly rearranged matches
+            tokens_sorted = sorted(tokens[:7])
+            c_tag = (city or "statewide").split("(")[0].strip().lower()
+            return f"{c_tag}_" + "_".join(tokens_sorted)
+
+        for it in items:
+            headline = it.get("headline") or it.get("title") or ""
+            city = it.get("city") or "statewide"
+            fp = _get_fingerprint(headline, city)
+
+            # If fingerprint has fewer than 2 tokens, fall back to permalink
+            if len(fp.split("_")) < 3:
+                link = it.get("permalink", "")
+                if link and link in seen_fingerprints:
+                    continue
+                seen_fingerprints[link] = it
+                deduped.append(it)
+                continue
+
+            if fp not in seen_fingerprints:
+                seen_fingerprints[fp] = it
+                deduped.append(it)
+            else:
+                # Same story reported by another news channel!
+                # Attach other channel attribution to original item without duplicating rows
+                orig = seen_fingerprints[fp]
+                orig_label = orig.get("origin_label", "")
+                curr_label = it.get("origin_label", "")
+                if curr_label and curr_label not in orig_label and len(orig_label) < 65:
+                    orig["origin_label"] = f"{orig_label} & {curr_label}"
+
+        return deduped
 
     def _parse_date(self, date_str: str) -> datetime:
         if not date_str:

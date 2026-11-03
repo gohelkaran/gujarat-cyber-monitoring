@@ -753,12 +753,9 @@ class InstagramService:
         """
 
         source = self.db.query(SocialSource).filter(
-
             SocialSource.source_type == SourceType.INSTAGRAM,
-
             SocialSource.is_enabled == True
-
-        ).first()
+        ).order_by(SocialSource.updated_at.desc()).first()
 
         if not source:
 
@@ -2015,12 +2012,9 @@ class InstagramService:
         # 1. Attempt live Meta collection if live token is configured
 
         source = self.db.query(SocialSource).filter(
-
             SocialSource.source_type == SourceType.INSTAGRAM,
-
             SocialSource.is_enabled == True
-
-        ).first()
+        ).order_by(SocialSource.updated_at.desc()).first()
 
         live_items_count = 0
 

@@ -973,37 +973,119 @@
 </div>
 
 <!-- ========================================================================= -->
-<!-- Modal: Notification Settings                                              -->
+<!-- Modal: District-Wise Early Warning & Cyber Crime Alert Rules              -->
 <!-- ========================================================================= -->
 <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content shadow border">
-            <div class="modal-header py-2 bg-light">
-                <h6 class="modal-title font-mono text-dark fw-bold"><i class="bi bi-bell me-1 text-primary"></i> Keyword Match Notifications</h6>
+            <div class="modal-header py-2" style="background: #F5EFE6; border-bottom: 1px solid var(--soc-border);">
+                <h6 class="modal-title font-mono text-dark fw-bold">
+                    <i class="bi bi-bell-fill text-danger me-2"></i>District-Wise Early Warning &amp; Cyber Crime Alert Rules
+                </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body small">
-                <div class="mb-3">
-                    <label class="form-label text-secondary">Configured Alert Recipients</label>
-                    <div id="notifications-list" class="list-group list-group-flush">
-                        <div class="text-secondary">Loading recipients...</div>
+            <div class="modal-body p-3 small">
+                <!-- Alert Info Banner -->
+                <div class="alert alert-light border p-2 mb-3" style="background: #FAF7F2; border-color: var(--soc-border) !important;">
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                        <div>
+                            <i class="bi bi-shield-exclamation text-primary me-1"></i>
+                            <strong>District Targeted Surveillance:</strong> Configure real-time alerts when new crime bulletins, narcotics raids, or cyber fraud posts match your assigned jurisdiction.
+                        </div>
+                        <button type="button" class="btn btn-xs btn-outline-danger font-mono" onclick="InstagramApp.testAlertSound()">
+                            <i class="bi bi-volume-up-fill me-1"></i> Test Audio Alarm
+                        </button>
                     </div>
                 </div>
-                <hr>
-                <h6>Add Alert Destination</h6>
-                <div class="row g-2">
-                    <div class="col-8">
-                        <input type="text" id="new-recipient-email" class="form-control form-control-sm" placeholder="e.g. cyber-desk@gujaratpolice.gov.in">
+
+                <!-- Add District Alert Form -->
+                <div class="card p-3 mb-3 border" style="background: #FFFFFF;">
+                    <div class="fw-bold font-mono text-dark mb-2">
+                        <i class="bi bi-plus-circle-fill text-success me-1"></i> Register New District Alert Rule
                     </div>
-                    <div class="col-4">
-                        <button class="btn btn-sm btn-soc-primary w-100" onclick="InstagramApp.addNotificationRecipient()">
-                            <i class="bi bi-plus-lg me-1"></i> Add
+                    <div class="row g-2 mb-2">
+                        <div class="col-md-5">
+                            <label class="form-label text-secondary small font-mono mb-1">Target District / City <span class="text-danger">*</span></label>
+                            <select id="alert-rule-district" class="form-select form-select-sm font-mono">
+                                <option value="All Gujarat (Statewide)">All Gujarat Statewide (33 Districts)</option>
+                                <option value="Gir Somnath" selected>Gir Somnath (Veraval HQ)</option>
+                                <option value="Surat">Surat (City &amp; Rural)</option>
+                                <option value="Ahmedabad">Ahmedabad (City &amp; Rural)</option>
+                                <option value="Rajkot">Rajkot (City &amp; Rural)</option>
+                                <option value="Vadodara">Vadodara (City &amp; Rural)</option>
+                                <option value="Bhavnagar">Bhavnagar</option>
+                                <option value="Jamnagar">Jamnagar</option>
+                                <option value="Junagadh">Junagadh</option>
+                                <option value="Gandhinagar">Gandhinagar</option>
+                                <option value="Bharuch">Bharuch</option>
+                                <option value="Kutch">Kutch (Bhuj / Gandhidham)</option>
+                                <option value="Morbi">Morbi</option>
+                                <option value="Mehsana">Mehsana</option>
+                                <option value="Anand">Anand</option>
+                                <option value="Patan">Patan</option>
+                                <option value="Banaskantha">Banaskantha (Palanpur)</option>
+                                <option value="Sabarkantha">Sabarkantha (Himmatnagar)</option>
+                                <option value="Navsari">Navsari</option>
+                                <option value="Valsad">Valsad</option>
+                                <option value="Surendranagar">Surendranagar</option>
+                                <option value="Amreli">Amreli</option>
+                                <option value="Porbandar">Porbandar</option>
+                                <option value="Botad">Botad</option>
+                                <option value="Devbhumi Dwarka">Devbhumi Dwarka (Khambhalia)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-7">
+                            <label class="form-label text-secondary small font-mono mb-1">Officer Email / Alert Destination</label>
+                            <input type="email" id="alert-rule-email" class="form-control form-control-sm font-mono" placeholder="officer@gujaratpolice.gov.in (Optional)">
+                        </div>
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label text-secondary small font-mono mb-1">Threat Categories Monitored</label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="form-check form-check-inline small">
+                                <input class="form-check-input" type="checkbox" id="chk-cat-cyber" checked>
+                                <label class="form-check-label" for="chk-cat-cyber">🚨 Cyber Crime &amp; Fraud</label>
+                            </div>
+                            <div class="form-check form-check-inline small">
+                                <input class="form-check-input" type="checkbox" id="chk-cat-narcotics" checked>
+                                <label class="form-check-label" for="chk-cat-narcotics">💊 Narcotics &amp; Prohibition</label>
+                            </div>
+                            <div class="form-check form-check-inline small">
+                                <input class="form-check-input" type="checkbox" id="chk-cat-laworder" checked>
+                                <label class="form-check-label" for="chk-cat-laworder">⚔️ Law &amp; Order</label>
+                            </div>
+                            <div class="form-check form-check-inline small">
+                                <input class="form-check-input" type="checkbox" id="chk-cat-advisory" checked>
+                                <label class="form-check-label" for="chk-cat-advisory">📢 Police Advisories</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center pt-2 border-top" style="border-color: var(--soc-border) !important;">
+                        <div class="form-check form-switch small">
+                            <input class="form-check-input" type="checkbox" id="chk-audio-alert" checked>
+                            <label class="form-check-label font-mono" for="chk-audio-alert">Play Sound Alarm on Crime Match</label>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-soc-primary font-mono fw-bold" onclick="InstagramApp.saveDistrictAlertRule()">
+                            <i class="bi bi-check2-circle me-1"></i> Save District Alert Rule
                         </button>
+                    </div>
+                </div>
+
+                <!-- Configured District Rules List -->
+                <div>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="fw-bold font-mono text-dark small">Active District Monitoring Rules:</span>
+                        <span class="badge bg-light text-secondary border font-mono" id="alert-rules-count-badge">0 Active Rules</span>
+                    </div>
+                    <div id="district-alert-rules-list" class="list-group list-group-flush border rounded" style="max-height: 220px; overflow-y: auto;">
+                        <div class="p-3 text-center text-secondary font-mono">Loading district alert rules...</div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer py-1">
-                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary font-mono" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -1254,5 +1336,5 @@
     </div>
 </div>
 
-<script src="/static/js/instagram_dashboard.js?v=2.2.4"></script>
+<script src="/static/js/instagram_dashboard.js?v=2.2.5"></script>
 {% endblock %}

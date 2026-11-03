@@ -309,7 +309,13 @@ const InstagramApp = {
             this.filters.city = citySelect.value;
         }
         this.currentPage = 1;
-        this.loadDashboardData();
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabParam = urlParams.get("tab");
+        if (tabParam) {
+            this.switchTab(tabParam);
+        } else {
+            this.loadDashboardData();
+        }
         this.pollSchedulerStatus();
         // Periodic background scheduler poll every 4 seconds
         setInterval(() => this.pollSchedulerStatus(), 4000);
@@ -349,10 +355,18 @@ const InstagramApp = {
     },
 
     _flashNewPostAlert(count) {
-        this.showToast(`🚨 ${count} new post${count > 1 ? 's' : ''} detected! Dashboard refreshed.`, "success");
+        let hasAudio = false;
+        try {
+            const rules = JSON.parse(localStorage.getItem("soc_district_alert_rules") || "[]");
+            hasAudio = rules.some(r => r.audio && r.active);
+        } catch(e) {}
+        if (hasAudio) {
+            this.testAlertSound();
+        }
+        this.showToast(`🚨 ${count} new post${count > 1 ? 's' : ''} detected! Live stream refreshed.`, "success");
         const resultsSection = document.getElementById("results-section");
         if (resultsSection) {
-            resultsSection.style.boxShadow = "0 0 20px rgba(13,202,240,0.6)";
+            resultsSection.style.boxShadow = "0 0 20px rgba(19, 62, 135, 0.4)";
             setTimeout(() => { resultsSection.style.boxShadow = ""; }, 3000);
         }
     },
@@ -784,9 +798,9 @@ const InstagramApp = {
                             <button class="btn btn-sm btn-soc-primary font-mono" onclick="InstagramApp.gatherNews()">
                                 <i class="bi bi-newspaper me-1"></i> Gather News Feeds
                             </button>
-                            <button class="btn btn-sm btn-outline-warning font-mono" data-bs-toggle="modal" data-bs-target="#connectOAuthModal" onclick="InstagramApp.loadOfficialConfig()">
+                            <a href="/connect-meta" class="btn btn-sm btn-outline-warning font-mono">
                                 <i class="bi bi-meta me-1"></i> Connect Meta API
-                            </button>
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -1246,10 +1260,14 @@ const InstagramApp = {
     },
 
     showToast(message, type = "info") {
-        if (window.SocDashboard && typeof window.SocDashboard.showToast === "function") {
-            window.SocDashboard.showToast(message, type);
+        const body = document.getElementById("socToastBody");
+        const toastEl = document.getElementById("socToast");
+        if (body && toastEl && window.bootstrap) {
+            body.textContent = message;
+            const toast = window.bootstrap.Toast.getOrCreateInstance(toastEl, { delay: 4000 });
+            toast.show();
         } else {
-            console.log(`[TOAST] ${message}`);
+            console.log(`[TOAST] (${type}) ${message}`);
         }
     },
 
@@ -1627,43 +1645,181 @@ const InstagramApp = {
     },
 
     async addNotificationRecipient() {
-        const email = document.getElementById("new-recipient-email").value.trim();
-        if (!email) return;
-
+    testAlertSound() {
         try {
-            const res = await fetch(`/api/v1/instagram/notifications?recipient=${encodeURIComponent(email)}&channel=EMAIL`, {
-                method: "POST"
-            });
-            const json = await res.json();
-            if (json && json.status === "SUCCESS") {
-                document.getElementById("new-recipient-email").value = "";
-                this.loadNotificationsList();
-            }
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const now = ctx.currentTime;
+            
+            // Beep 1
+            const osc1 = ctx.createOscillator();
+            const gain1 = ctx.createGain();
+            osc1.type = "sine";
+            osc1.frequency.setValueAtTime(880, now);
+            gain1.gain.setValueAtTime(0.15, now);
+            gain1.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+            osc1.connect(gain1);
+            gain1.connect(ctx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.12);
+
+            // Beep 2
+            const osc2 = ctx.createOscillator();
+            const gain2 = ctx.createGain();
+            osc2.type = "sine";
+            osc2.frequency.setValueAtTime(1320, now + 0.15);
+            gain2.gain.setValueAtTime(0.2, now + 0.15);
+            gain2.gain.exponentialRampToValueAtTime(0.01, now + 0.32);
+            osc2.connect(gain2);
+            gain2.connect(ctx.destination);
+            osc2.start(now + 0.15);
+            osc2.stop(now + 0.32);
+
+            this.showToast("🔔 Cyber Crime Alarm audio test played successfully!", "info");
         } catch (e) {
-            console.error("Failed adding recipient:", e);
+            console.log("AudioContext notice:", e);
+            this.showToast("🔔 Alert sound trigger activated.", "info");
         }
     },
 
-    async loadNotificationsList() {
-        const container = document.getElementById("notifications-list");
+    loadDistrictAlertSettings() {
+        const container = document.getElementById("district-alert-rules-list");
+        const countBadge = document.getElementById("alert-rules-count-badge");
         if (!container) return;
+
+        let rules = [];
         try {
-            const res = await fetch("/api/v1/instagram/notifications");
-            const json = await res.json();
-            if (json && json.status === "SUCCESS") {
-                container.innerHTML = json.data.map(n => `
-                    <div class="list-group-item bg-transparent text-light border-secondary d-flex justify-content-between align-items-center py-2">
-                        <div>
-                            <span class="badge bg-secondary font-mono me-1">${n.channel}</span>
-                            <span class="font-mono small">${this.escapeHtml(n.recipient)}</span>
-                        </div>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle">ACTIVE</span>
-                    </div>
-                `).join("");
+            const stored = localStorage.getItem("soc_district_alert_rules");
+            if (stored) {
+                rules = JSON.parse(stored);
+            } else {
+                // Seed default rules for Gir Somnath & Ahmedabad
+                rules = [
+                    {
+                        id: "rule_1",
+                        district: "Gir Somnath",
+                        email: "sp-girsomnath@gujaratpolice.gov.in",
+                        categories: ["Cyber Crime & Fraud", "Narcotics & Prohibition", "Law & Order"],
+                        audio: true,
+                        active: true
+                    },
+                    {
+                        id: "rule_2",
+                        district: "All Gujarat (Statewide)",
+                        email: "state-cyberdesk@gujaratpolice.gov.in",
+                        categories: ["Cyber Crime & Fraud", "Police Advisories"],
+                        audio: true,
+                        active: true
+                    }
+                ];
+                localStorage.setItem("soc_district_alert_rules", JSON.stringify(rules));
             }
         } catch (e) {
-            console.error("Failed loading notifications:", e);
+            rules = [];
         }
+
+        if (countBadge) countBadge.textContent = `${rules.length} Active Rules`;
+
+        if (rules.length === 0) {
+            container.innerHTML = `<div class="p-3 text-center text-secondary font-mono">No district alert rules registered. Select a district above to add one.</div>`;
+            return;
+        }
+
+        container.innerHTML = rules.map((r, idx) => `
+            <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center py-2 px-3 border-bottom">
+                <div>
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge font-mono fw-bold" style="background: #133E87; color: #FFFFFF;">
+                            <i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(r.district)}
+                        </span>
+                        ${r.audio ? '<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono"><i class="bi bi-volume-up-fill me-1"></i>AUDIO ALARM</span>' : ''}
+                        <span class="badge bg-success-subtle text-success border border-success-subtle font-mono">ACTIVE</span>
+                    </div>
+                    <div class="small text-secondary font-mono">
+                        ${r.email ? `<i class="bi bi-envelope me-1"></i>${this.escapeHtml(r.email)} &bull; ` : ''}
+                        Threats: <span class="text-dark">${r.categories.join(", ")}</span>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-1 mt-1 mt-sm-0">
+                    <button type="button" class="btn btn-xs btn-outline-danger font-mono" onclick="InstagramApp.deleteDistrictAlertRule(${idx})" title="Remove Alert Rule">
+                        <i class="bi bi-trash3 me-1"></i>Remove
+                    </button>
+                </div>
+            </div>
+        `).join("");
+    },
+
+    saveDistrictAlertRule() {
+        const district = document.getElementById("alert-rule-district")?.value || "Gir Somnath";
+        const email = (document.getElementById("alert-rule-email")?.value || "").trim();
+        const chkCyber = document.getElementById("chk-cat-cyber")?.checked;
+        const chkNarcotics = document.getElementById("chk-cat-narcotics")?.checked;
+        const chkLaworder = document.getElementById("chk-cat-laworder")?.checked;
+        const chkAdvisory = document.getElementById("chk-cat-advisory")?.checked;
+        const audio = document.getElementById("chk-audio-alert")?.checked;
+
+        const categories = [];
+        if (chkCyber) categories.push("Cyber Crime & Fraud");
+        if (chkNarcotics) categories.push("Narcotics & Prohibition");
+        if (chkLaworder) categories.push("Law & Order");
+        if (chkAdvisory) categories.push("Police Advisories");
+
+        if (categories.length === 0) {
+            this.showToast("Please select at least one threat category to monitor.", "warning");
+            return;
+        }
+
+        let rules = [];
+        try {
+            rules = JSON.parse(localStorage.getItem("soc_district_alert_rules") || "[]");
+        } catch (e) { rules = []; }
+
+        const newRule = {
+            id: `rule_${Date.now()}`,
+            district: district,
+            email: email,
+            categories: categories,
+            audio: !!audio,
+            active: true
+        };
+
+        rules.unshift(newRule);
+        localStorage.setItem("soc_district_alert_rules", JSON.stringify(rules));
+
+        // Optionally send to backend if email provided
+        if (email) {
+            fetch(`/api/v1/instagram/notifications?recipient=${encodeURIComponent(email)}&channel=EMAIL&description=${encodeURIComponent(district)}`, {
+                method: "POST"
+            }).catch(e => console.warn(e));
+        }
+
+        this.showToast(`🚨 District alert rule registered for ${district}!`, "success");
+        this.loadDistrictAlertSettings();
+
+        // Clear input
+        const emailInput = document.getElementById("alert-rule-email");
+        if (emailInput) emailInput.value = "";
+    },
+
+    deleteDistrictAlertRule(index) {
+        let rules = [];
+        try {
+            rules = JSON.parse(localStorage.getItem("soc_district_alert_rules") || "[]");
+        } catch (e) { rules = []; }
+
+        if (index >= 0 && index < rules.length) {
+            const removed = rules.splice(index, 1);
+            localStorage.setItem("soc_district_alert_rules", JSON.stringify(rules));
+            this.showToast(`Alert rule for ${removed[0]?.district || 'district'} removed.`, "info");
+            this.loadDistrictAlertSettings();
+        }
+    },
+
+    loadNotificationsList() {
+        this.loadDistrictAlertSettings();
+    },
+
+    addNotificationRecipient() {
+        this.saveDistrictAlertRule();
     },
 
     async addKeyword() {

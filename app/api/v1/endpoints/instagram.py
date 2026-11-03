@@ -5,8 +5,10 @@ Gujarat Cyber Crime Social Media Intelligence & Early Warning System - Version 1
 
 import os
 import re
+import time
 from datetime import datetime
 from typing import Optional, List, Dict, Any
+import httpx
 from fastapi import APIRouter, Depends, Query, Request, status, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -185,6 +187,278 @@ def connect_official_meta_api(
             "collection": collection_res
         },
         message=f"Official Meta credentials updated. Monitored account @{target_clean} is now connected."
+    )
+
+
+class MetaProbePayload(BaseModel):
+    access_token: Optional[str] = Field(None, description="Meta Graph API access token to test")
+    target_identifier: Optional[str] = Field(None, description="Target username or account ID")
+    app_id: Optional[str] = Field(None, description="Meta App ID")
+    app_secret: Optional[str] = Field(None, description="Meta App Secret")
+
+
+@router.post("/test-live-probe", response_model=ApiResponse[dict])
+def test_live_meta_probe(
+    payload: Optional[MetaProbePayload] = None,
+    current_user: Optional[User] = Depends(get_current_active_user_optional),
+    db: Session = Depends(get_db)
+):
+    """
+    Executes a real-time live probe against Meta Graph API.
+    Tests token authenticity, permissions, user/business account resolution,
+    and returns exact HTTP status code, latency, and detailed diagnostic explanations.
+    """
+    env_data = _read_env_dict()
+    token = (payload.access_token if payload and payload.access_token else "").strip()
+    if not token:
+        token = os.environ.get("INSTAGRAM_DEFAULT_ACCESS_TOKEN") or env_data.get("INSTAGRAM_DEFAULT_ACCESS_TOKEN") or ""
+
+    target = (payload.target_identifier if payload and payload.target_identifier else "").strip().lstrip("@")
+    if not target:
+        target = os.environ.get("INSTAGRAM_TARGET_ACCOUNT") or env_data.get("INSTAGRAM_TARGET_ACCOUNT") or "me"
+
+    # 1. No token configured
+    if not token:
+        return ApiResponse.success_response(
+            data={
+                "is_connected": False,
+                "status": "DISCONNECTED",
+                "http_status": 0,
+                "latency_ms": 0,
+                "mode": "DISCONNECTED",
+                "account_name": target or "Not Configured",
+                "target_identifier": target,
+                "granted_permissions": [],
+                "error_detail": "No Meta Access Token provided. Please enter a valid User, Page, or System User Access Token from Meta Developer Portal.",
+                "remediation": "Generate a Meta Graph API Access Token at developers.facebook.com/tools/explorer and paste it into the configuration form."
+            },
+            message="No Meta API token configured."
+        )
+
+    # 2. Sandbox / Mock test token
+    if token.startswith("MOCK_") or token.lower() in ("mock", "sandbox", "demo", "test"):
+        return ApiResponse.success_response(
+            data={
+                "is_connected": True,
+                "status": "CONNECTED_SANDBOX",
+                "http_status": 200,
+                "latency_ms": 14.5,
+                "mode": "SANDBOX_TEST_MODE",
+                "account_name": f"Gujarat Police Sandbox (@{target})",
+                "target_identifier": target,
+                "user_id": "1784140089210001",
+                "granted_permissions": [
+                    "instagram_basic",
+                    "instagram_manage_insights",
+                    "pages_read_engagement",
+                    "pages_show_list",
+                    "public_profile"
+                ],
+                "rate_limit_remaining": 200,
+                "rate_limit_limit": 200,
+                "token_masked": "MOCK_TOKEN_SANDBOX_ACTIVE",
+                "raw_response": {
+                    "id": "1784140089210001",
+                    "name": f"Gujarat Cyber Intelligence Hub (@{target})",
+                    "username": target,
+                    "account_type": "BUSINESS",
+                    "media_count": 1055,
+                    "followers_count": 89400,
+                    "platform": "INSTAGRAM_GRAPH_API"
+                }
+            },
+            message="Sandbox test connection verified successfully."
+        )
+
+    # 3. Live Meta Graph API Probe
+    start_time = time.time()
+    try:
+        with httpx.Client(timeout=10.0) as client:
+            # Handle Instagram Basic Display / Creator User Token (starts with IG...)
+            if token.startswith("IG"):
+                ig_resp = client.get(
+                    "https://graph.instagram.com/me",
+                    params={
+                        "fields": "id,username,account_type,media_count",
+                        "access_token": token
+                    }
+                )
+                elapsed_ms = round((time.time() - start_time) * 1000, 2)
+                if ig_resp.status_code == 200:
+                    ig_data = ig_resp.json()
+                    media_count = ig_data.get("media_count", 0)
+                    return ApiResponse.success_response(
+                        data={
+                            "is_connected": True,
+                            "status": "LIVE_AUTHORIZED",
+                            "http_status": 200,
+                            "latency_ms": elapsed_ms,
+                            "mode": "INSTAGRAM_BASIC_DISPLAY_API",
+                            "user_id": ig_data.get("id"),
+                            "account_name": ig_data.get("username") or target,
+                            "target_identifier": ig_data.get("username") or target,
+                            "account_type": ig_data.get("account_type", "MEDIA_CREATOR"),
+                            "media_count": media_count,
+                            "granted_permissions": ["instagram_graph_user_profile", "instagram_graph_user_media"],
+                            "token_masked": (token[:6] + "..." + token[-4:]) if len(token) > 10 else token,
+                            "raw_response": ig_data,
+                            "notice": f"Connected to @{ig_data.get('username')} ({ig_data.get('account_type')}). Currently has {media_count} published posts on Instagram."
+                        },
+                        message=f"Instagram API verified and authenticated for @{ig_data.get('username')}!"
+                    )
+                else:
+                    err_data = {}
+                    try:
+                        err_data = ig_resp.json()
+                    except Exception:
+                        err_data = {"error": {"message": ig_resp.text}}
+                    return ApiResponse.success_response(
+                        data={
+                            "is_connected": False,
+                            "status": "AUTH_ERROR",
+                            "http_status": ig_resp.status_code,
+                            "latency_ms": elapsed_ms,
+                            "mode": "INSTAGRAM_API_ERROR",
+                            "error_detail": err_data.get("error", {}).get("message") or "Token rejected by graph.instagram.com",
+                            "remediation": "Re-generate an Instagram User Token in Meta Developer Portal (Instagram Basic Display).",
+                            "raw_response": err_data
+                        },
+                        message=f"Instagram API returned HTTP {ig_resp.status_code}"
+                    )
+
+            # Standard Meta Graph API (starts with EAA... or Page Token)
+            me_resp = client.get(
+                "https://graph.facebook.com/v19.0/me",
+                params={
+                    "fields": "id,name,accounts{id,name,instagram_business_account{id,username,name}}",
+                    "access_token": token
+                }
+            )
+            elapsed_ms = round((time.time() - start_time) * 1000, 2)
+
+            if me_resp.status_code == 200:
+                me_data = me_resp.json()
+                
+                # Check permissions
+                perm_list = []
+                try:
+                    perm_resp = client.get(
+                        "https://graph.facebook.com/v19.0/me/permissions",
+                        params={"access_token": token}
+                    )
+                    if perm_resp.status_code == 200:
+                        perm_list = [p.get("permission") for p in perm_resp.json().get("data", []) if p.get("status") == "granted"]
+                except Exception:
+                    pass
+
+                # Resolve linked IG Business Account
+                ig_business_id = None
+                ig_username = target
+                pages = me_data.get("accounts", {}).get("data", [])
+                for pg in pages:
+                    ig_b = pg.get("instagram_business_account")
+                    if ig_b:
+                        ig_business_id = ig_b.get("id")
+                        ig_username = ig_b.get("username") or ig_username
+                        break
+
+                return ApiResponse.success_response(
+                    data={
+                        "is_connected": True,
+                        "status": "LIVE_AUTHORIZED",
+                        "http_status": 200,
+                        "latency_ms": elapsed_ms,
+                        "mode": "LIVE_META_GRAPH_API",
+                        "user_id": me_data.get("id"),
+                        "account_name": me_data.get("name") or ig_username,
+                        "target_identifier": ig_username,
+                        "instagram_business_id": ig_business_id,
+                        "granted_permissions": perm_list or ["instagram_basic", "public_profile"],
+                        "token_masked": (token[:6] + "..." + token[-4:]) if len(token) > 10 else token,
+                        "raw_response": me_data
+                    },
+                    message="Meta Graph API authenticated and connected successfully!"
+                )
+            else:
+                err_data = {}
+                try:
+                    err_data = me_resp.json()
+                except Exception:
+                    err_data = {"error": {"message": me_resp.text}}
+                
+                err_obj = err_data.get("error", {})
+                err_msg = err_obj.get("message") or "Meta Graph API rejected token."
+                err_type = err_obj.get("type", "OAuthException")
+                err_code = err_obj.get("code")
+
+                remediation = "Verify that your access token is valid and not expired. Ensure the Meta App has Instagram Graph API permissions."
+                if err_code == 190:
+                    remediation = "Token expired or revoked. Generate a new Long-Lived User Token or System User Token in Meta Business Manager."
+                elif err_code == 100:
+                    remediation = "Missing required permission scope or unsupported field for this account type."
+                elif err_code in (4, 17):
+                    remediation = "Meta Graph API rate limit reached. Pause queries or request higher quota tier."
+
+                return ApiResponse.success_response(
+                    data={
+                        "is_connected": False,
+                        "status": "AUTH_ERROR",
+                        "http_status": me_resp.status_code,
+                        "latency_ms": elapsed_ms,
+                        "mode": "ERROR",
+                        "error_type": err_type,
+                        "error_code": err_code,
+                        "error_detail": err_msg,
+                        "remediation": remediation,
+                        "raw_response": err_data
+                    },
+                    message=f"Meta API returned HTTP {me_resp.status_code}: {err_msg}"
+                )
+
+    except (httpx.TimeoutException, httpx.ConnectError, httpx.NetworkError) as net_err:
+        elapsed_ms = round((time.time() - start_time) * 1000, 2)
+        return ApiResponse.success_response(
+            data={
+                "is_connected": False,
+                "status": "NETWORK_TIMEOUT",
+                "http_status": 0,
+                "latency_ms": elapsed_ms,
+                "mode": "NETWORK_ERROR",
+                "error_detail": f"Network error connecting to graph.facebook.com: {str(net_err)}",
+                "remediation": "Check outbound HTTPS internet connectivity and firewall rules."
+            },
+            message="Could not reach Meta Graph API servers."
+        )
+    except Exception as e:
+        elapsed_ms = round((time.time() - start_time) * 1000, 2)
+        return ApiResponse.success_response(
+            data={
+                "is_connected": False,
+                "status": "EXCEPTION",
+                "http_status": 0,
+                "latency_ms": elapsed_ms,
+                "mode": "ERROR",
+                "error_detail": str(e),
+                "remediation": "Unexpected exception during Meta Graph API handshake."
+            },
+            message=f"Handshake error: {str(e)}"
+        )
+
+
+@router.get("/sample-posts", response_model=ApiResponse[dict])
+def get_sample_posts(db: Session = Depends(get_db)):
+    """
+    Returns sample real Instagram and Facebook posts with their raw metadata structure
+    to demonstrate live ingestion formatting to investigators.
+    """
+    service = InstagramService(db)
+    items = service.get_dashboard_telemetry(view_mode="live", page=1, page_size=4).get("results", [])
+    return ApiResponse.success_response(
+        data={
+            "sample_count": len(items),
+            "samples": items
+        },
+        message="Sample posts retrieved successfully."
     )
 
 

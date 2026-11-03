@@ -274,6 +274,19 @@ class InstagramAdapter(SocialSourceAdapter):
             )
 
         try:
+            # Check for Instagram Basic Display / Creator User Token (starts with IG...)
+            if self.access_token and self.access_token.startswith("IG"):
+                ig_resp = self._execute_with_retry("GET", "https://graph.instagram.com/me", params={"fields": "id,username,account_type,media_count"}, retries_remaining=1)
+                if ig_resp.status_code == 200:
+                    data = ig_resp.json()
+                    return InstagramCredentialValidationResult(
+                        is_valid=True,
+                        message=f"Credentials authenticated successfully with Instagram Basic Display API for @{data.get('username') or self.target_identifier}.",
+                        user_id=data.get("id"),
+                        username=data.get("username") or self.target_identifier,
+                        is_mock_mode=False
+                    )
+
             # 1. If target_identifier is numeric or "me", try direct query
             url = f"{GRAPH_API_BASE}/{self.target_identifier}"
             params = {"fields": "id,username,name"}

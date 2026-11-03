@@ -148,6 +148,22 @@ def create_application() -> FastAPI:
             }
         )
 
+    @app.get("/connect-meta", response_class=HTMLResponse, include_in_schema=False)
+    @app.get("/meta-connect", response_class=HTMLResponse, include_in_schema=False)
+    async def meta_connect_view(request: Request):
+        return templates.TemplateResponse(
+            "meta_connect.html",
+            {
+                "request": request,
+                "app_name": settings.APP_NAME,
+                "version": settings.APP_VERSION,
+                "env": settings.APP_ENV,
+                "classification": settings.DEFAULT_DATA_CLASSIFICATION,
+                "current_time_localized": format_localized_time(),
+                "current_time_utc": format_timestamp_utc(),
+            }
+        )
+
     @app.post("/", include_in_schema=False)
     async def root_webhook_receiver(request: Request):
         """Forward any webhook POST event hitting root to the official receiver."""
