@@ -132,8 +132,33 @@ const InstagramApp = {
         this.saveRecord(this._currentModalItem.id, btn);
     },
 
+    initTheme() {
+        const savedTheme = localStorage.getItem("soc_theme") || "light";
+        this.applyTheme(savedTheme);
+    },
+
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute("data-bs-theme") || "light";
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        this.applyTheme(newTheme);
+    },
+
+    applyTheme(theme) {
+        document.documentElement.setAttribute("data-bs-theme", theme);
+        localStorage.setItem("soc_theme", theme);
+        const icon = document.getElementById("themeIcon");
+        if (icon) {
+            if (theme === "dark") {
+                icon.className = "bi bi-sun-fill text-warning";
+            } else {
+                icon.className = "bi bi-moon-stars text-secondary";
+            }
+        }
+    },
+
     init() {
         console.log("Initializing Social Media Intelligence Dashboard Controller...");
+        this.initTheme();
         const citySelect = document.getElementById("filter-city");
         if (citySelect && citySelect.value) {
             this.filters.city = citySelect.value;
@@ -143,7 +168,7 @@ const InstagramApp = {
         this.pollSchedulerStatus();
         // Periodic background scheduler poll every 4 seconds
         setInterval(() => this.pollSchedulerStatus(), 4000);
-        // Periodic telemetry poll every 30 seconds — check for new posts
+        // Periodic telemetry poll every 30 seconds — check for new posts without breaking table pagination
         setInterval(() => this._checkForNewPosts(), 30000);
     },
 
@@ -153,6 +178,7 @@ const InstagramApp = {
             if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
             if (this.filters.city) params.append("city", this.filters.city);
             if (this.filters.sourceOrigin) params.append("source_origin", this.filters.sourceOrigin);
+            params.append("view_mode", this.filters.viewMode || "live");
             const res = await fetch(`/api/v1/instagram/dashboard?${params.toString()}&page_size=1`);
             const json = await res.json();
             if (json && json.status === "SUCCESS") {
@@ -160,9 +186,19 @@ const InstagramApp = {
                 if (this._lastKnownCount > 0 && newCount > this._lastKnownCount) {
                     const diff = newCount - this._lastKnownCount;
                     this._flashNewPostAlert(diff);
+                    // Refresh data with current full page size (20 items), NOT page_size=1!
+                    this.loadDashboardData(false);
                 }
                 this._lastKnownCount = newCount;
-                this.renderDashboard(json.data);
+                // Safely update KPI counters without overwriting the table rows
+                const liveBadge = document.getElementById("live-count-badge");
+                if (liveBadge && newCount > 0) {
+                    liveBadge.textContent = `${newCount} Real Articles`;
+                }
+                const kpiCount = document.getElementById("kpi-items-count");
+                if (kpiCount && newCount > 0) {
+                    kpiCount.textContent = newCount;
+                }
             }
         } catch(e) {}
     },
@@ -591,13 +627,13 @@ const InstagramApp = {
             const isSaved = row.is_saved_in_db || row.review_status === "SAVED_IN_DB" || row.review_status === "SAVED_CASE_RECORD";
             const dbStatusBadge = isSaved
                 ? `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-bookmark-check-fill me-1"></i>SAVED</span>`
-                : `<span class="badge bg-secondary font-mono px-2 py-1 text-light"><i class="bi bi-broadcast me-1"></i>LIVE STREAM</span>`;
+                : `<span class="badge bg-secondary-subtle text-secondary font-mono px-2 py-1"><i class="bi bi-broadcast me-1"></i>LIVE STREAM</span>`;
 
             const saveBtn = isSaved
-                ? `<button class="btn btn-xs btn-success font-mono" onclick="event.stopPropagation(); InstagramApp.unsaveRecord('${row.id}', this)" title="Remove from Police Database">
+                ? `<button class="btn btn-sm btn-success font-mono" onclick="event.stopPropagation(); InstagramApp.unsaveRecord('${row.id}', this)" title="Remove from Police Database">
                      <i class="bi bi-bookmark-check-fill me-1"></i> Saved
                    </button>`
-                : `<button class="btn btn-xs btn-outline-success font-mono" onclick="event.stopPropagation(); InstagramApp.saveRecord('${row.id}', this)" title="Save this evidence record to SQLite database">
+                : `<button class="btn btn-sm btn-outline-success font-mono" onclick="event.stopPropagation(); InstagramApp.saveRecord('${row.id}', this)" title="Save this evidence record to SQLite database">
                      <i class="bi bi-bookmark-plus me-1"></i> Save Record
                    </button>`;
 
@@ -622,28 +658,35 @@ const InstagramApp = {
             let platformBadge = '';
             let linkBtnLabel = 'Watch Reel';
             let linkBtnIcon = 'bi-play-btn';
-            let linkBtnClass = 'btn-primary';
+            let linkBtnClass = 'btn-outline-primary';
 
             if (isNews) {
-                platformBadge = `<span class="badge bg-warning text-dark font-mono" style="font-size: 0.65rem;"><i class="bi bi-newspaper me-1"></i>NEWS ARTICLE</span>`;
+                const oLower = originName.toLowerCase();
+                let oClass = 'bg-warning-subtle text-dark border border-warning-subtle';
+                if (oLower.includes('sandesh')) oClass = 'badge-origin-sandesh';
+                else if (oLower.includes('tv9')) oClass = 'badge-origin-tv9';
+                else if (oLower.includes('abp')) oClass = 'badge-origin-abp';
+                else if (oLower.includes('express') || oLower.includes('times')) oClass = 'badge-origin-express';
+
+                platformBadge = `<span class="badge ${oClass} font-mono" style="font-size: 0.68rem;"><i class="bi bi-newspaper me-1"></i>NEWS ARTICLE</span>`;
                 linkBtnLabel = 'Read Article';
                 linkBtnIcon = 'bi-box-arrow-up-right';
-                linkBtnClass = 'btn-outline-warning';
+                linkBtnClass = 'btn-outline-primary';
             } else if (isPolice) {
-                platformBadge = `<span class="badge bg-info text-dark font-mono fw-bold" style="font-size: 0.65rem;"><i class="bi bi-shield-fill-check me-1"></i>POLICE ADVISORY</span>`;
+                platformBadge = `<span class="badge badge-origin-police font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-shield-fill-check me-1"></i>POLICE ADVISORY</span>`;
                 linkBtnLabel = 'View Advisory';
                 linkBtnIcon = 'bi-shield-check';
-                linkBtnClass = 'btn-outline-info';
+                linkBtnClass = 'btn-outline-primary';
             } else if (isFacebook) {
-                platformBadge = `<span class="badge bg-primary text-light font-mono" style="font-size: 0.65rem;"><i class="bi bi-facebook me-1"></i>FB POST</span>`;
+                platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>FB POST</span>`;
                 linkBtnLabel = 'View FB Post';
                 linkBtnIcon = 'bi-facebook';
                 linkBtnClass = 'btn-outline-primary';
             } else {
-                platformBadge = `<span class="badge bg-danger text-light font-mono" style="font-size: 0.65rem;"><i class="bi bi-instagram me-1"></i>IG REEL</span>`;
+                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>IG REEL</span>`;
                 linkBtnLabel = 'Watch Reel';
                 linkBtnIcon = 'bi-play-btn';
-                linkBtnClass = 'btn-primary';
+                linkBtnClass = 'btn-outline-danger';
             }
 
             const crimeCategory = row.crime_category || (row.raw_metadata?.crime_category) || 'Cyber Crime & Public Safety';
@@ -653,41 +696,41 @@ const InstagramApp = {
             return `
                 <tr>
                     <td>
-                        <div class="fw-bold text-light font-mono d-flex align-items-center" style="font-size: 0.85rem;">
-                            <span class="text-truncate" style="max-width: 170px;" title="${this.escapeHtml(originName)}">${this.escapeHtml(originName)}</span>
+                        <div class="fw-bold text-dark-emphasis font-mono d-flex align-items-center" style="font-size: 0.88rem;">
+                            <span class="text-truncate" style="max-width: 175px;" title="${this.escapeHtml(originName)}">${this.escapeHtml(originName)}</span>
                             ${newBadge}
                         </div>
                         <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
                             ${platformBadge}
                             ${row.city ? (row.city.includes("Gir Somnath") 
-                                ? `<span class="badge bg-warning text-dark font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(row.city)}</span>` 
-                                : `<span class="badge bg-info-subtle text-info border border-info-subtle font-mono" style="font-size: 0.65rem;"><i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(row.city)}</span>`) : ''}
+                                ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(row.city)}</span>` 
+                                : `<span class="badge bg-light text-secondary border font-mono" style="font-size: 0.66rem;"><i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(row.city)}</span>`) : ''}
                         </div>
                     </td>
                     <td class="font-mono">
-                        <div class="fw-semibold text-light" style="font-size:0.82rem;">${pubDate}</div>
-                        <div class="text-secondary" style="font-size:0.72rem;">${pubTime}</div>
-                        <span class="badge bg-dark border border-secondary text-success font-mono px-1 mt-1" style="font-size: 0.68rem;">
+                        <div class="fw-semibold text-dark-emphasis" style="font-size:0.84rem;">${pubDate}</div>
+                        <div class="text-secondary" style="font-size:0.74rem;">${pubTime}</div>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle font-mono px-1 mt-1" style="font-size: 0.68rem;">
                             <i class="bi bi-clock me-1"></i>${relTime}
                         </span>
                     </td>
                     <td>
-                        <div class="text-light fw-semibold mb-1" style="font-size: 0.88rem;">
+                        <div class="news-headline font-gujarati">
                             ${this.escapeHtml(headline)}
                         </div>
-                        <div class="text-secondary small text-truncate mb-1" style="max-width: 440px;" title="${this.escapeHtml(row.full_caption || '')}">
+                        <div class="news-caption font-gujarati text-truncate mb-1" style="max-width: 460px;" title="${this.escapeHtml(row.full_caption || '')}">
                             ${this.escapeHtml(row.caption_snippet || row.full_caption || '(No caption)')}
                         </div>
-                        <div class="d-flex flex-wrap align-items-center gap-2 font-mono small text-secondary" style="font-size: 0.75rem;">
-                            <span class="text-light"><i class="bi bi-heart-fill text-danger me-1"></i>${row.like_count || 0}</span>
-                            <span class="text-light"><i class="bi bi-chat-dots-fill text-info me-1"></i>${row.comments_count || 0}</span>
-                            <span class="text-info"><i class="bi bi-share-fill me-1"></i>${sharesCount}</span>
-                            ${hashtags.slice(0, 3).map(h => `<span class="badge bg-dark border border-secondary text-secondary" style="font-size: 0.65rem;">${this.escapeHtml(h)}</span>`).join('')}
+                        <div class="d-flex flex-wrap align-items-center gap-2 font-mono small text-secondary" style="font-size: 0.74rem;">
+                            <span class="text-secondary"><i class="bi bi-heart-fill text-danger me-1"></i>${row.like_count || 0}</span>
+                            <span class="text-secondary"><i class="bi bi-chat-dots-fill text-primary me-1"></i>${row.comments_count || 0}</span>
+                            <span class="text-secondary"><i class="bi bi-share-fill me-1"></i>${sharesCount}</span>
+                            ${hashtags.slice(0, 3).map(h => `<span class="badge bg-light text-secondary border" style="font-size: 0.65rem;">${this.escapeHtml(h)}</span>`).join('')}
                         </div>
                     </td>
                     <td>
-                        <span class="badge bg-dark border border-secondary text-warning font-mono" style="font-size: 0.72rem; white-space: normal; text-align: left;" title="${this.escapeHtml(crimeCategory)}">
-                            <i class="bi bi-shield-exclamation me-1"></i>${this.escapeHtml(crimeCategory)}
+                        <span class="badge bg-warning-subtle text-dark border border-warning-subtle font-mono" style="font-size: 0.74rem; white-space: normal; text-align: left;" title="${this.escapeHtml(crimeCategory)}">
+                            <i class="bi bi-shield-exclamation me-1 text-warning-emphasis"></i>${this.escapeHtml(crimeCategory)}
                         </span>
                     </td>
                     <td>${dbStatusBadge}</td>
@@ -695,12 +738,12 @@ const InstagramApp = {
                         <div class="d-flex justify-content-end align-items-center gap-1">
                             ${saveBtn}
                             ${row.permalink ? `
-                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-xs ${linkBtnClass} font-mono" title="Open direct link: ${this.escapeHtml(row.permalink)}">
-                                    <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${linkBtnClass} font-mono" title="Open original link: ${this.escapeHtml(row.permalink)}">
+                                    <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel}
                                 </a>
                             ` : ''}
-                            <button class="btn btn-xs btn-outline-info" onclick="InstagramApp.openItemModal('${row.item_id}', '${row.id}')" title="Full Evidence, Origin & Telemetry Details">
-                                <i class="bi bi-code-square me-1"></i> Intel
+                            <button class="btn btn-sm btn-outline-secondary font-mono" onclick="InstagramApp.openItemModal('${row.item_id}', '${row.id}')" title="Full Evidence, Origin & Telemetry Details">
+                                <i class="bi bi-eye me-1"></i> Intel
                             </button>
                         </div>
                     </td>
@@ -1638,5 +1681,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+    // Export SocDashboard globally for header toggles
+    window.SocDashboard = InstagramApp;
 });
 
