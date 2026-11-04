@@ -900,20 +900,37 @@ const InstagramApp = {
             const relTime = this.formatRelativeTime(row.published_at);
             const headline = row.headline || (row.full_caption ? row.full_caption.substring(0, 80) + '...' : 'Crime Bulletin');
 
-            const plat = (row.platform || "INSTAGRAM").toUpperCase();
-            const isFacebook = plat === "FACEBOOK";
-            const isNews = plat === "NEWS_FEED";
-            const isPolice = plat === "POLICE_BULLETIN";
+            const plat = (row.platform || "").toUpperCase();
+            const linkStr = (row.permalink || "").toLowerCase();
+            const isInstagram = plat === "INSTAGRAM" || linkStr.includes("instagram.com");
+            const isFacebook = plat === "FACEBOOK" || linkStr.includes("facebook.com");
+            const isPolice = plat === "POLICE_BULLETIN" || linkStr.includes("police.gujarat.gov.in");
+            const isNews = !isInstagram && !isFacebook && !isPolice;
 
             // Origin source name and styling
             const originName = row.origin_label || (row.source_account ? `@${row.source_account}` : 'Gujarat Police Network');
             
             let platformBadge = '';
             let linkBtnLabel = 'Watch Reel';
-            let linkBtnIcon = 'bi-play-btn';
-            let linkBtnClass = 'btn-outline-primary';
+            let linkBtnIcon = 'bi-instagram';
+            let linkBtnClass = 'btn-outline-danger';
 
-            if (isNews) {
+            if (isInstagram) {
+                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>IG REEL</span>`;
+                linkBtnLabel = 'Watch Reel';
+                linkBtnIcon = 'bi-instagram';
+                linkBtnClass = 'btn-outline-danger';
+            } else if (isFacebook) {
+                platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>FB POST</span>`;
+                linkBtnLabel = 'View FB Post';
+                linkBtnIcon = 'bi-facebook';
+                linkBtnClass = 'btn-outline-primary';
+            } else if (isPolice) {
+                platformBadge = `<span class="badge badge-origin-police font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-shield-fill-check me-1"></i>POLICE ADVISORY</span>`;
+                linkBtnLabel = 'View Advisory';
+                linkBtnIcon = 'bi-shield-check';
+                linkBtnClass = 'btn-outline-primary';
+            } else {
                 const oLower = originName.toLowerCase();
                 let oClass = 'bg-warning-subtle text-dark border border-warning-subtle';
                 if (oLower.includes('sandesh')) oClass = 'badge-origin-sandesh';
@@ -925,21 +942,6 @@ const InstagramApp = {
                 linkBtnLabel = 'Read Article';
                 linkBtnIcon = 'bi-box-arrow-up-right';
                 linkBtnClass = 'btn-outline-primary';
-            } else if (isPolice) {
-                platformBadge = `<span class="badge badge-origin-police font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-shield-fill-check me-1"></i>POLICE ADVISORY</span>`;
-                linkBtnLabel = 'View Advisory';
-                linkBtnIcon = 'bi-shield-check';
-                linkBtnClass = 'btn-outline-primary';
-            } else if (isFacebook) {
-                platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>FB POST</span>`;
-                linkBtnLabel = 'View FB Post';
-                linkBtnIcon = 'bi-facebook';
-                linkBtnClass = 'btn-outline-primary';
-            } else {
-                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>IG REEL</span>`;
-                linkBtnLabel = 'Watch Reel';
-                linkBtnIcon = 'bi-play-btn';
-                linkBtnClass = 'btn-outline-danger';
             }
 
             const crimeCategory = row.crime_category || (row.raw_metadata?.crime_category) || 'Cyber Crime & Public Safety';
@@ -1072,20 +1074,22 @@ const InstagramApp = {
                 if (srcAcctEl) srcAcctEl.textContent = item.source_account ? `@${item.source_account}` : "@gujarat_police";
                 
                 const plat = (item.platform || "NEWS_FEED").toUpperCase();
-                const isFb = plat === "FACEBOOK" || (item.permalink && item.permalink.includes("facebook.com"));
-                const isNews = plat === "NEWS_FEED" || plat === "ARTICLE";
-                const isPolice = plat === "POLICE_BULLETIN";
+                const linkStr = (item.permalink || "").toLowerCase();
+                const isFb = plat === "FACEBOOK" || linkStr.includes("facebook.com");
+                const isIg = plat === "INSTAGRAM" || linkStr.includes("instagram.com");
+                const isPolice = plat === "POLICE_BULLETIN" || linkStr.includes("police.gujarat.gov.in");
+                const isNews = !isFb && !isIg && !isPolice;
 
                 const platBadge = document.getElementById("modal-platform-badge");
                 if (platBadge) {
-                    if (isNews) {
-                        platBadge.innerHTML = `<span class="badge bg-warning text-dark font-mono"><i class="bi bi-newspaper me-1"></i>GUJARAT NEWS</span>`;
-                    } else if (isPolice) {
-                        platBadge.innerHTML = `<span class="badge bg-info text-dark font-mono"><i class="bi bi-shield-fill-check me-1"></i>POLICE BULLETIN</span>`;
+                    if (isIg) {
+                        platBadge.innerHTML = `<span class="badge bg-danger text-light font-mono"><i class="bi bi-instagram me-1"></i>INSTAGRAM REEL</span>`;
                     } else if (isFb) {
                         platBadge.innerHTML = `<span class="badge bg-primary text-light font-mono"><i class="bi bi-facebook me-1"></i>FACEBOOK PAGE</span>`;
+                    } else if (isPolice) {
+                        platBadge.innerHTML = `<span class="badge bg-info text-dark font-mono"><i class="bi bi-shield-fill-check me-1"></i>POLICE BULLETIN</span>`;
                     } else {
-                        platBadge.innerHTML = `<span class="badge bg-danger text-light font-mono"><i class="bi bi-instagram me-1"></i>INSTAGRAM REEL</span>`;
+                        platBadge.innerHTML = `<span class="badge bg-warning text-dark font-mono"><i class="bi bi-newspaper me-1"></i>GUJARAT NEWS</span>`;
                     }
                 }
 
@@ -1119,18 +1123,22 @@ const InstagramApp = {
                         let icon = "bi-box-arrow-up-right";
                         let btnClass = "btn-outline-primary";
                         let label = "Read Original Report";
-                        if (isNews) {
-                            icon = "bi-newspaper";
-                            btnClass = "btn-outline-warning";
-                            label = "Read Full News Article";
-                        } else if (isPolice) {
-                            icon = "bi-shield-check";
-                            btnClass = "btn-outline-info";
-                            label = "View Official Police Advisory";
+                        if (isIg) {
+                            icon = "bi-instagram";
+                            btnClass = "btn-outline-danger";
+                            label = "Watch Instagram Reel";
                         } else if (isFb) {
                             icon = "bi-facebook";
                             btnClass = "btn-outline-primary";
                             label = "Open Direct Facebook Post";
+                        } else if (isPolice) {
+                            icon = "bi-shield-check";
+                            btnClass = "btn-outline-info";
+                            label = "View Official Police Advisory";
+                        } else {
+                            icon = "bi-newspaper";
+                            btnClass = "btn-outline-warning";
+                            label = "Read Full News Article";
                         }
                         permalinkEl.innerHTML = `<a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${btnClass} font-mono"><i class="bi ${icon} me-1"></i> ${label} <i class="bi bi-box-arrow-up-right ms-1"></i></a>`;
                     } else {
