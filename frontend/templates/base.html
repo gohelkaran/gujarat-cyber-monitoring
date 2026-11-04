@@ -69,11 +69,11 @@
         <!-- Main SOC Navigation Sidebar -->
         <aside class="soc-sidebar" aria-label="Monitoring Navigation">
             <div class="soc-nav-heading">INTELLIGENCE DESK</div>
-            <a href="/?tab=analytics" class="soc-nav-item {% if request.url.path in ['/', '/instagram'] and request.query_params.get('tab', 'analytics') != 'live' %}active{% endif %}" id="nav-analytics" onclick="if(window.InstagramApp && (window.location.pathname === '/' || window.location.pathname === '/instagram')) { InstagramApp.switchTab('analytics'); return false; }">
-                <i class="bi bi-speedometer2 text-primary"></i> Dashboard (Analysis)
-            </a>
-            <a href="/?tab=live" class="soc-nav-item {% if request.url.path in ['/', '/instagram'] and request.query_params.get('tab') == 'live' %}active{% endif %}" id="nav-live" onclick="if(window.InstagramApp && (window.location.pathname === '/' || window.location.pathname === '/instagram')) { InstagramApp.switchTab('live'); return false; }">
+            <a href="/?tab=live" class="soc-nav-item {% if request.url.path in ['/', '/instagram'] and request.query_params.get('tab') != 'analytics' %}active{% endif %}" id="nav-live" onclick="if(window.InstagramApp && (window.location.pathname === '/' || window.location.pathname === '/instagram')) { InstagramApp.switchTab('live'); return false; }">
                 <i class="bi bi-broadcast text-danger"></i> Live Monitoring
+            </a>
+            <a href="/?tab=analytics" class="soc-nav-item {% if request.url.path in ['/', '/instagram'] and request.query_params.get('tab') == 'analytics' %}active{% endif %}" id="nav-analytics" onclick="if(window.InstagramApp && (window.location.pathname === '/' || window.location.pathname === '/instagram')) { InstagramApp.switchTab('analytics'); return false; }">
+                <i class="bi bi-speedometer2 text-primary"></i> Dashboard (Analysis)
             </a>
 
             <div class="soc-nav-heading">CONFIGURATION</div>

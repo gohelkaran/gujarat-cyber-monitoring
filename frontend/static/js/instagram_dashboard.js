@@ -73,7 +73,14 @@ const InstagramApp = {
 
             this.filters.viewMode = "live";
             this.currentPage = 1;
-            this.loadDashboardData(true);
+            if (this._currentResults && this._currentResults.length > 0) {
+                this.renderResultsTable(this._currentResults, {
+                    page: this.currentPage,
+                    total_count: this._lastKnownCount || 1055,
+                    total_pages: Math.ceil((this._lastKnownCount || 1055) / this.pageSize)
+                });
+            }
+            this.loadDashboardData(this._currentResults.length === 0);
         } else if (tabName === "saved") {
             if (analyticsPane) analyticsPane.classList.add("d-none");
             if (livePane) livePane.classList.add("d-none");
@@ -319,7 +326,7 @@ const InstagramApp = {
         }
         this.currentPage = 1;
         const urlParams = new URLSearchParams(window.location.search);
-        const tabParam = urlParams.get("tab") || "analytics";
+        const tabParam = urlParams.get("tab") || "live";
         this.switchTab(tabParam);
         this.pollSchedulerStatus();
         // Periodic background scheduler poll every 4 seconds
@@ -1687,7 +1694,6 @@ const InstagramApp = {
         }
     },
 
-    async addNotificationRecipient() {
     testAlertSound() {
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -2043,6 +2049,9 @@ const InstagramApp = {
             .replace(/'/g, '&#39;');
     }
 };
+
+window.InstagramApp = InstagramApp;
+window.SocDashboard = InstagramApp;
 
 // Initialize on DOM ready
 document.addEventListener("DOMContentLoaded", () => {

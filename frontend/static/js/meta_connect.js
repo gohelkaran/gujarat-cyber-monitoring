@@ -389,6 +389,8 @@ const MetaConnectApp = {
     }
 };
 
+window.MetaConnectApp = MetaConnectApp;
+
 document.addEventListener("DOMContentLoaded", () => {
     MetaConnectApp.init();
 });
