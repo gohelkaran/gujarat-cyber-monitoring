@@ -2053,21 +2053,14 @@ class InstagramService:
                     pass
 
         # 2. Match and ingest keyword-relevant news items
-
         search_terms = []
-
         if keyword and keyword.strip():
-
-            search_terms = [t.lower() for t in keyword.strip().split() if len(t) > 1]
-
-        
+            search_terms = [t.lower() for t in keyword.strip().split() if len(t) >= 1]
 
         target_city = city.strip() if city and city.strip() and city.strip() != "All Gujarat" else None
-
         target_account = account.strip().lstrip("@").lower() if account and account.strip() else None
-
         items_ingested = 0
-
+        live_feed_additions = []
         now = utc_now()
 
         for news in VERIFIED_NEWS_CATALOG:
@@ -2170,10 +2163,35 @@ class InstagramService:
                     self.db.add(new_rec)
                     items_ingested += 1
 
-        # No synthetic fallback: if keyword has no results in catalog, return only genuine matches.
-        # This ensures data integrity — no fabricated posts are ever shown.
+                headline_txt = (news["caption"].split(".")[0].strip() if news.get("caption") else "Gujarat Police Intel Bulletin")[:120]
+                live_feed_additions.append({
+                    "id": f"gathered_ig_{news['shortcode']}",
+                    "title": headline_txt,
+                    "headline": headline_txt,
+                    "caption": news["caption"],
+                    "permalink": news["permalink"],
+                    "source_account": news["source_account"],
+                    "origin_label": f"@{news['source_account']}",
+                    "platform": "INSTAGRAM",
+                    "city": news["city"],
+                    "crime_category": "Police Intelligence & Public Advisory",
+                    "published_at": pub_dt.isoformat(),
+                    "likes_count": news.get("likes", 0),
+                    "comments_count": news.get("comments", 0),
+                    "is_saved_in_db": True,
+                    "is_live_stream": True
+                })
 
+        # Commit DB records
         self.db.commit()
+
+        # Ingest directly into in-memory live stream buffer so feeds display immediately in real time
+        if live_feed_additions:
+            try:
+                from app.services.live_stream_service import buffer
+                buffer.prepend_items(live_feed_additions)
+            except Exception as e:
+                pass
 
         self.audit.log_security_event(
             actor_id=officer_badge,
@@ -2190,7 +2208,12 @@ class InstagramService:
         if search_terms or target_city or target_account:
             matching_q = self.db.query(CollectedItem)
             if target_city:
-                matching_q = matching_q.filter(CollectedItem.city == target_city)
+                matching_q = matching_q.filter(
+                    or_(
+                        CollectedItem.city.ilike(f"%{target_city}%"),
+                        CollectedItem.caption.ilike(f"%{target_city}%")
+                    )
+                )
             if target_account:
                 matching_q = matching_q.filter(CollectedItem.source_account.ilike(f"%{target_account}%"))
             if search_terms:

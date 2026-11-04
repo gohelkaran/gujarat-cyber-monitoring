@@ -805,8 +805,10 @@ const InstagramApp = {
 
         // 4. Monitoring Results Table (Always runs guaranteed)
         try {
-            if (!this.filters.keyword && data.results && data.results.length > 0) {
-                this._rawDataset = [...data.results];
+            if (data.results && data.results.length > 0) {
+                if (!this.filters.keyword || !this._rawDataset || this._rawDataset.length === 0) {
+                    this._rawDataset = [...data.results];
+                }
             }
             this.renderResultsTable(data.results || [], data.pagination || {});
             this._lastKnownCount = data.metrics?.total_items_retrieved || this._lastKnownCount;
@@ -842,13 +844,16 @@ const InstagramApp = {
                 <tr>
                     <td colspan="6" class="text-center py-5 text-secondary">
                         <i class="bi bi-inbox fs-2 d-block mb-2 text-secondary-emphasis"></i>
-                        <div class="fw-semibold text-light mb-1">No News Feeds Matching Your Search</div>
-                        <div class="small text-secondary mb-3">Enter crime keywords above (e.g. <code>bank fraud</code>, <code>kyc</code>, <code>digital arrest</code>) and click <strong>Search &amp; Monitor All</strong>. Or select <strong>All Gujarat Statewide</strong> to see all posts.</div>
+                        <div class="fw-bold text-dark mb-1 fs-6">No News Feeds Matching Your Search</div>
+                        <div class="small text-secondary mb-3">No matching crime reports found for the selected filter. Click below to reset filters and view all verified Gujarat intelligence feeds.</div>
                         <div class="d-flex justify-content-center gap-2">
-                            <button class="btn btn-sm btn-soc-primary font-mono" onclick="InstagramApp.gatherNews()">
+                            <button type="button" class="btn btn-sm btn-soc-primary font-mono fw-bold" onclick="InstagramApp.resetFilters()">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i> Reset Filters & Show All (1,055+ Feeds)
+                            </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary font-mono" onclick="InstagramApp.gatherNews()">
                                 <i class="bi bi-newspaper me-1"></i> Gather News Feeds
                             </button>
-                            <a href="/connect-meta" class="btn btn-sm btn-outline-warning font-mono">
+                            <a href="/connect-meta" class="btn btn-sm btn-outline-secondary font-mono">
                                 <i class="bi bi-meta me-1"></i> Connect Meta API
                             </a>
                         </div>
@@ -1668,6 +1673,7 @@ const InstagramApp = {
             logMsg(`Monitoring complete: ${total} matching public posts and reels indexed.`, "text-success fw-bold");
 
             this.showToast(`Monitored ${total} keyword-matching posts across Gujarat.`);
+            this.currentPage = 1;
             await this.loadDashboardData(true);
 
             // Auto-close modal after brief visual confirmation
