@@ -184,7 +184,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-29T10:00:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/digital-arrest-assam-arrest-oct2026",
+        "permalink": "https://police.gujarat.gov.in/digital-arrest-assam-arrest-oct2026",
         "likes": 2850,
         "comments": 190,
         "shares": 520,
@@ -278,7 +278,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-25T11:00:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/bhavnagar-gujctoc-cyber-bust-oct2026",
+        "permalink": "https://police.gujarat.gov.in/bhavnagar-gujctoc-cyber-bust-oct2026",
         "likes": 1120,
         "comments": 82,
         "shares": 180,
@@ -326,7 +326,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-28T09:15:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/sim-box-gateway-gandhinagar-raid-oct2026",
+        "permalink": "https://police.gujarat.gov.in/sim-box-gateway-gandhinagar-raid-oct2026",
         "likes": 1420,
         "comments": 95,
         "shares": 240,
@@ -390,7 +390,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-27T10:30:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/mehsana-visnagar-crypto-call-center-raid",
+        "permalink": "https://police.gujarat.gov.in/mehsana-visnagar-crypto-call-center-raid",
         "likes": 880,
         "comments": 64,
         "shares": 130,
@@ -438,7 +438,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-26T14:10:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/banaskantha-atm-skimming-gang-palanpur",
+        "permalink": "https://police.gujarat.gov.in/banaskantha-atm-skimming-gang-palanpur",
         "likes": 740,
         "comments": 52,
         "shares": 98,
@@ -550,7 +550,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-23T14:50:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/godhra-cyber-crime-fake-scholarship-arrest",
+        "permalink": "https://police.gujarat.gov.in/godhra-cyber-crime-fake-scholarship-arrest",
         "likes": 490,
         "comments": 35,
         "shares": 68,
@@ -646,7 +646,7 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "published_at": "2026-10-21T12:30:00Z",
         "platform": "POLICE_BULLETIN",
         "media_type": "POLICE_BULLETIN",
-        "permalink": "https://gujaratpolice.gov.in/press-releases/chhota-udepur-fake-mining-qr-code-bust",
+        "permalink": "https://police.gujarat.gov.in/chhota-udepur-fake-mining-qr-code-bust",
         "likes": 310,
         "comments": 18,
         "shares": 38,
@@ -832,7 +832,7 @@ class CrimeFeedService:
                             continue
 
                         # Detect district
-                        district = self.detect_district(title, description)
+                        district = self.detect_district(title, desc_clean)
 
                         # Parse published datetime with accurate timezone handling (Gujarat feeds are in IST)
                         pub_dt = now
