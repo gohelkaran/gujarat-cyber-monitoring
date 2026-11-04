@@ -1982,6 +1982,11 @@ const InstagramApp = {
                     count.textContent = s.total_items_ingested;
                 }
 
+                const rateLimitBadge = document.getElementById("meta-rate-limit-badge");
+                if (rateLimitBadge && s.quota_remaining !== undefined) {
+                    rateLimitBadge.textContent = `RATE LIMIT: ${s.quota_remaining}/${s.quota_limit || 200} remaining`;
+                }
+
                 if (summary && s.last_summary) {
                     summary.textContent = `> ${s.last_summary}`;
                 }

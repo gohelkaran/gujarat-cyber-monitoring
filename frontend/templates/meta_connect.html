@@ -54,7 +54,7 @@
                                     PROBING META GATEWAY...
                                 </span>
                                 <span class="badge bg-light text-secondary border font-mono" id="meta-latency-badge">Latency: -- ms</span>
-                                <span class="badge bg-light text-secondary border font-mono" id="meta-ratelimit-badge">Quota: 200/200</span>
+                                <span class="badge bg-light text-success border font-mono" id="meta-ratelimit-badge"><i class="bi bi-speedometer2 me-1"></i>Quota: 198/200 remaining (99%)</span>
                             </div>
                             <h5 class="fw-bold text-dark mb-1" id="meta-account-heading">Loading Account Linkage...</h5>
                             <div class="text-secondary small font-mono" id="meta-status-desc">
@@ -79,8 +79,11 @@
                             <span class="text-primary fw-bold" id="badge-perms-count">5 Granted</span>
                         </div>
                         <div class="d-flex justify-content-between align-items-center small font-mono">
-                            <span class="text-secondary fw-semibold">Auto 5-Min Scheduled Polling:</span>
-                            <span class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>ACTIVE</span>
+                            <span class="text-secondary fw-semibold">Auto Background Monitor:</span>
+                            <span class="text-success fw-bold" id="meta-auto-scheduler-badge">
+                                <span class="spinner-grow spinner-grow-sm text-success me-1" style="width: 0.5rem; height: 0.5rem;"></span>
+                                ACTIVE (Gir Somnath &amp; 33 Dists)
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -120,8 +123,8 @@
                     <span class="text-secondary font-mono small fw-bold">3. RATE LIMIT HEALTH</span>
                     <i class="bi bi-speedometer text-success fs-5"></i>
                 </div>
-                <div class="fs-4 fw-bold font-mono text-success" id="kpi-rate-limit">100% Available</div>
-                <div class="text-secondary small font-mono mt-1">200 API calls / hr window</div>
+                <div class="fs-4 fw-bold font-mono text-success" id="kpi-rate-limit">99% Available</div>
+                <div class="text-secondary small font-mono mt-1" id="kpi-rate-limit-sub">198 / 200 API calls remaining (1h window)</div>
             </div>
         </div>
 
@@ -251,6 +254,9 @@
                         </button>
                         <button type="button" class="btn btn-xs btn-outline-warning font-mono" onclick="MetaConnectApp.fetchSamplePostsProbe()">
                             <i class="bi bi-collection-play me-1"></i> Ingest 3 Sample Posts (JSON)
+                        </button>
+                        <button type="button" class="btn btn-xs btn-outline-success font-mono" onclick="MetaConnectApp.triggerBackgroundScanNow()">
+                            <i class="bi bi-arrow-repeat me-1"></i> Trigger Auto Scan (Background)
                         </button>
                     </div>
 

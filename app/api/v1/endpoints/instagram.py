@@ -233,6 +233,11 @@ def test_live_meta_probe(
     if not target or target.lower() in ("me", "@me"):
         target = os.environ.get("INSTAGRAM_TARGET_ACCOUNT") or env_data.get("INSTAGRAM_TARGET_ACCOUNT") or ACTIVE_VERIFIED_META_TARGET
 
+    from app.services.instagram_service import MetaQuotaTracker
+    quota_tracker = MetaQuotaTracker.get_instance()
+    quota_tracker.record_call(1)
+    quota = quota_tracker.get_quota_status()
+
     # 1. No token configured
     if not token:
         return ApiResponse.success_response(
@@ -245,6 +250,9 @@ def test_live_meta_probe(
                 "account_name": target or "Not Configured",
                 "target_identifier": target,
                 "granted_permissions": [],
+                "rate_limit_remaining": quota["remaining"],
+                "rate_limit_limit": quota["limit"],
+                "rate_limit_pct": quota["percentage_available"],
                 "error_detail": "No Meta Access Token provided. Please enter a valid User, Page, or System User Access Token from Meta Developer Portal.",
                 "remediation": "Generate a Meta Graph API Access Token at developers.facebook.com/tools/explorer and paste it into the configuration form."
             },
@@ -270,8 +278,9 @@ def test_live_meta_probe(
                     "pages_show_list",
                     "public_profile"
                 ],
-                "rate_limit_remaining": 200,
-                "rate_limit_limit": 200,
+                "rate_limit_remaining": quota["remaining"],
+                "rate_limit_limit": quota["limit"],
+                "rate_limit_pct": quota["percentage_available"],
                 "token_masked": "MOCK_TOKEN_SANDBOX_ACTIVE",
                 "raw_response": {
                     "id": "1784140089210001",
@@ -316,6 +325,9 @@ def test_live_meta_probe(
                             "account_type": ig_data.get("account_type", "MEDIA_CREATOR"),
                             "media_count": media_count,
                             "granted_permissions": ["instagram_graph_user_profile", "instagram_graph_user_media"],
+                            "rate_limit_remaining": quota["remaining"],
+                            "rate_limit_limit": quota["limit"],
+                            "rate_limit_pct": quota["percentage_available"],
                             "token_masked": (token[:6] + "..." + token[-4:]) if len(token) > 10 else token,
                             "raw_response": ig_data,
                             "notice": f"Connected to @{ig_data.get('username')} ({ig_data.get('account_type')}). Currently has {media_count} published posts on Instagram."
@@ -335,6 +347,9 @@ def test_live_meta_probe(
                             "http_status": ig_resp.status_code,
                             "latency_ms": elapsed_ms,
                             "mode": "INSTAGRAM_API_ERROR",
+                            "rate_limit_remaining": quota["remaining"],
+                            "rate_limit_limit": quota["limit"],
+                            "rate_limit_pct": quota["percentage_available"],
                             "error_detail": err_data.get("error", {}).get("message") or "Token rejected by graph.instagram.com",
                             "remediation": "Re-generate an Instagram User Token in Meta Developer Portal (Instagram Basic Display).",
                             "raw_response": err_data
@@ -390,6 +405,9 @@ def test_live_meta_probe(
                         "target_identifier": ig_username,
                         "instagram_business_id": ig_business_id,
                         "granted_permissions": perm_list or ["instagram_basic", "public_profile"],
+                        "rate_limit_remaining": quota["remaining"],
+                        "rate_limit_limit": quota["limit"],
+                        "rate_limit_pct": quota["percentage_available"],
                         "token_masked": (token[:6] + "..." + token[-4:]) if len(token) > 10 else token,
                         "raw_response": me_data
                     },
@@ -425,6 +443,9 @@ def test_live_meta_probe(
                         "error_type": err_type,
                         "error_code": err_code,
                         "error_detail": err_msg,
+                        "rate_limit_remaining": quota["remaining"],
+                        "rate_limit_limit": quota["limit"],
+                        "rate_limit_pct": quota["percentage_available"],
                         "remediation": remediation,
                         "raw_response": err_data
                     },
@@ -447,6 +468,9 @@ def test_live_meta_probe(
                     "account_type": "MEDIA_CREATOR",
                     "media_count": 0,
                     "granted_permissions": ["instagram_graph_user_profile", "instagram_graph_user_media"],
+                    "rate_limit_remaining": quota["remaining"],
+                    "rate_limit_limit": quota["limit"],
+                    "rate_limit_pct": quota["percentage_available"],
                     "token_masked": (token[:6] + "..." + token[-4:]) if len(token) > 10 else token,
                     "raw_response": {
                         "id": "26805138815850215",
@@ -465,6 +489,9 @@ def test_live_meta_probe(
                 "http_status": 0,
                 "latency_ms": elapsed_ms,
                 "mode": "NETWORK_ERROR",
+                "rate_limit_remaining": quota["remaining"],
+                "rate_limit_limit": quota["limit"],
+                "rate_limit_pct": quota["percentage_available"],
                 "error_detail": f"Network error connecting to graph.facebook.com: {str(net_err)}",
                 "remediation": "Check outbound HTTPS internet connectivity and firewall rules."
             },
@@ -486,6 +513,9 @@ def test_live_meta_probe(
                     "account_type": "MEDIA_CREATOR",
                     "media_count": 0,
                     "granted_permissions": ["instagram_graph_user_profile", "instagram_graph_user_media"],
+                    "rate_limit_remaining": quota["remaining"],
+                    "rate_limit_limit": quota["limit"],
+                    "rate_limit_pct": quota["percentage_available"],
                     "token_masked": (token[:6] + "..." + token[-4:]) if len(token) > 10 else token,
                     "raw_response": {
                         "id": "26805138815850215",
@@ -504,6 +534,9 @@ def test_live_meta_probe(
                 "http_status": 0,
                 "latency_ms": elapsed_ms,
                 "mode": "ERROR",
+                "rate_limit_remaining": quota["remaining"],
+                "rate_limit_limit": quota["limit"],
+                "rate_limit_pct": quota["percentage_available"],
                 "error_detail": str(e),
                 "remediation": "Unexpected exception during Meta Graph API handshake."
             },

@@ -61,6 +61,9 @@ class BackgroundSchedulerService:
             diff = (self.next_run_time - now).total_seconds()
             seconds_remaining = max(0, int(diff))
 
+        from app.services.instagram_service import MetaQuotaTracker
+        quota = MetaQuotaTracker.get_instance().get_quota_status()
+
         return {
             "is_enabled": self.is_enabled,
             "interval_seconds": self.interval_seconds,
@@ -73,6 +76,9 @@ class BackgroundSchedulerService:
             "last_summary": self.last_summary,
             "target_district": self.target_district,
             "target_talukas": self.target_talukas,
+            "quota_remaining": quota["remaining"],
+            "quota_limit": quota["limit"],
+            "quota_pct": quota["percentage_available"],
             "monitored_jurisdictions": "All public posts, news outlets, citizen community reports, and police bulletins across Veraval, Somnath, Kodinar, Una, Talala, Sutrapada, Gir Gadhada, and Gujarat statewide"
         }
 
@@ -162,9 +168,10 @@ class BackgroundSchedulerService:
 
         # Ingest in database using a fresh thread-safe session
         def _db_ingest():
-            from app.services.instagram_service import InstagramService
+            from app.services.instagram_service import InstagramService, MetaQuotaTracker
             from app.services.facebook_service import FacebookService
             from app.services.crime_feed_service import CrimeFeedService
+            MetaQuotaTracker.get_instance().record_call(1)
             db = SessionLocal()
             try:
                 # Refresh real-time live stream buffer without storing to database
