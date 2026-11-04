@@ -23,6 +23,14 @@ const InstagramApp = {
     _currentModalItem: null,
 
     switchTab(tabName) {
+        try {
+            if (window.history && window.history.replaceState) {
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set("tab", tabName);
+                window.history.replaceState({}, "", currentUrl);
+            }
+        } catch(e) {}
+
         document.querySelectorAll(".master-tab-btn").forEach(el => el.classList.remove("active"));
         document.querySelectorAll(".soc-nav-item").forEach(el => el.classList.remove("active"));
 
@@ -50,6 +58,7 @@ const InstagramApp = {
             if (navAnalytics) navAnalytics.classList.add("active");
 
             this._updateAnalyticsMetrics();
+            this.loadDashboardData(false);
         } else if (tabName === "live") {
             if (analyticsPane) analyticsPane.classList.add("d-none");
             if (livePane) livePane.classList.remove("d-none");
@@ -310,12 +319,8 @@ const InstagramApp = {
         }
         this.currentPage = 1;
         const urlParams = new URLSearchParams(window.location.search);
-        const tabParam = urlParams.get("tab");
-        if (tabParam) {
-            this.switchTab(tabParam);
-        } else {
-            this.loadDashboardData();
-        }
+        const tabParam = urlParams.get("tab") || "analytics";
+        this.switchTab(tabParam);
         this.pollSchedulerStatus();
         // Periodic background scheduler poll every 4 seconds
         setInterval(() => this.pollSchedulerStatus(), 4000);
@@ -617,6 +622,18 @@ const InstagramApp = {
     },
 
     async loadDashboardData(showSpinner = true) {
+        const tbody = document.getElementById("monitoring-results-tbody");
+        if (tbody && showSpinner && this.filters.viewMode !== "analytics" && (!this._currentResults || this._currentResults.length === 0)) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-secondary font-mono">
+                        <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                        Loading Gujarat cyber crime feeds...
+                    </td>
+                </tr>
+            `;
+        }
+
         try {
             const params = new URLSearchParams();
             if (this.filters.keyword) params.append("keyword", this.filters.keyword);
@@ -639,9 +656,35 @@ const InstagramApp = {
                 this.renderDashboard(json.data);
             } else {
                 console.warn("Dashboard telemetry error:", json);
+                if (tbody && (!this._currentResults || this._currentResults.length === 0)) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-secondary font-mono">
+                                <i class="bi bi-exclamation-circle text-warning fs-4 d-block mb-2"></i>
+                                <div class="fw-semibold text-dark mb-1">Live feeds temporarily unavailable</div>
+                                <button type="button" class="btn btn-sm btn-soc-primary font-mono mt-2" onclick="InstagramApp.loadDashboardData(true)">
+                                    <i class="bi bi-arrow-repeat me-1"></i> Reload Feeds
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }
             }
         } catch (err) {
             console.error("Failed loading Instagram dashboard telemetry:", err);
+            if (tbody && (!this._currentResults || this._currentResults.length === 0)) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-secondary font-mono">
+                            <i class="bi bi-wifi-off text-danger fs-4 d-block mb-2"></i>
+                            <div class="fw-semibold text-dark mb-1">Gateway connection interrupted</div>
+                            <button type="button" class="btn btn-sm btn-soc-primary font-mono mt-2" onclick="InstagramApp.loadDashboardData(true)">
+                                <i class="bi bi-arrow-repeat me-1"></i> Retry Connection
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }
             this.showToast("Failed to communicate with Instagram Gateway API", "danger");
         }
     },

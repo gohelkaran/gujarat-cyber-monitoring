@@ -211,11 +211,14 @@
                             <button type="submit" class="btn btn-sm font-mono text-white fw-bold px-3" id="btn-save-meta" style="background: #133E87;">
                                 <i class="bi bi-check-circle-fill me-1"></i> Save &amp; Connect Official Meta API
                             </button>
+                            <button type="button" class="btn btn-sm btn-outline-primary font-mono" onclick="MetaConnectApp.useVerifiedWebsecurityToken()">
+                                <i class="bi bi-patch-check-fill me-1 text-primary"></i> Active @websecurity6 Token
+                            </button>
                             <button type="button" class="btn btn-sm btn-outline-success font-mono" onclick="MetaConnectApp.activateSandboxMode()">
-                                <i class="bi bi-shield-check me-1"></i> Use Sandbox Test Mode
+                                <i class="bi bi-shield-check me-1"></i> Sandbox Mode
                             </button>
                             <button type="button" class="btn btn-sm btn-outline-danger font-mono ms-auto" onclick="MetaConnectApp.disconnectToken()">
-                                <i class="bi bi-x-circle me-1"></i> Clear Token
+                                <i class="bi bi-x-circle me-1"></i> Clear
                             </button>
                         </div>
                     </form>

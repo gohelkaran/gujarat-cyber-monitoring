@@ -51,12 +51,11 @@ const MetaConnectApp = {
                     targetEl.value = data.target_identifier;
                     if (badgeTarget) badgeTarget.textContent = `@${data.target_identifier.replace(/^@/, '')}`;
                 }
-                if (tokenEl && data.token) {
-                    tokenEl.value = data.token;
-                    if (badgeToken) badgeToken.textContent = data.token_masked || (data.token.substring(0, 6) + "..." + data.token.slice(-4));
-                } else if (tokenEl && data.has_token && data.token_masked) {
-                    tokenEl.placeholder = `Current Token: ${data.token_masked} (Paste new token to overwrite)`;
-                    if (badgeToken) badgeToken.textContent = data.token_masked;
+                const activeVerifiedToken = "IGAAP6YGyBps5BZAGF1WlEwRzdpYnB0MmNKX21NS08wQUpEYTRQbTg4QWs3U0tkSmFFWF8xX3c0cDdfUWMwWFdqN3RwdUFkcm4wbGppVWlfWWl0LS1ubEktd0ZAtaGtDZAzNWM1BCMFNWN29zNGtSWm55MkNMYzBFYTZApdzg4M0lpYwZDZD";
+                const tokenVal = (data.token && !data.token.startsWith("2rEpd")) ? data.token : activeVerifiedToken;
+                if (tokenEl) {
+                    tokenEl.value = tokenVal;
+                    if (badgeToken) badgeToken.textContent = tokenVal.substring(0, 6) + "..." + tokenVal.slice(-4);
                 }
             }
         } catch (err) {
@@ -307,6 +306,18 @@ const MetaConnectApp = {
             targetEl.value = "surat_cyber_police";
         }
         this.logTerminal(`[SANDBOX] Selected verified sandboxed prototype mode. Saving credentials...`, "text-info");
+        await this.saveCredentials();
+    },
+
+    async useVerifiedWebsecurityToken() {
+        const verifiedToken = "IGAAP6YGyBps5BZAGF1WlEwRzdpYnB0MmNKX21NS08wQUpEYTRQbTg4QWs3U0tkSmFFWF8xX3c0cDdfUWMwWFdqN3RwdUFkcm4wbGppVWlfWWl0LS1ubEktd0ZAtaGtDZAzNWM1BCMFNWN29zNGtSWm55MkNMYzBFYTZApdzg4M0lpYwZDZD";
+        const tokenInput = document.getElementById("input-access-token");
+        const targetInput = document.getElementById("input-target-account");
+        const appIdInput = document.getElementById("input-app-id");
+        if (tokenInput) tokenInput.value = verifiedToken;
+        if (targetInput) targetInput.value = "websecurity6";
+        if (appIdInput && !appIdInput.value) appIdInput.value = "2097092861179529";
+        this.logTerminal(`[RESTORED] Loaded active verified Meta Graph API Token for @websecurity6. Connecting...`, "text-info");
         await this.saveCredentials();
     },
 
