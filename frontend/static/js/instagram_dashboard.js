@@ -906,9 +906,10 @@ const InstagramApp = {
             const oLower = originName.toLowerCase();
 
             // Strict 1-to-1 Origin & Platform Classification based on actual destination permalink
-            const isInstagram = linkStr.includes("instagram.com") || plat === "INSTAGRAM";
-            const isFacebook = !isInstagram && (linkStr.includes("facebook.com") || plat === "FACEBOOK");
-            const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN" || (oLower.includes("police") && !linkStr.includes("sandesh") && !linkStr.includes("tv9")));
+            // Strict 1-to-1 Classification: Driven directly by verified destination URL
+            const isInstagram = linkStr.includes("instagram.com");
+            const isFacebook = !isInstagram && linkStr.includes("facebook.com");
+            const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN");
             const isNews = !isInstagram && !isFacebook && !isPolice;
 
             let platformBadge = '';
