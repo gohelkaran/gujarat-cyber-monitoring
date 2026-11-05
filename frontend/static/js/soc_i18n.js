@@ -265,6 +265,7 @@
             "nav.dashboard": "Dashboard (Analysis)",
             "nav.connect": "Connect Meta API",
             "nav.officers": "Officer Accounts",
+            "nav.ai_hub": "AI Architect & Dev Hub",
             "nav.settings": "Settings",
             
             // Filters
@@ -331,6 +332,7 @@
             "nav.dashboard": "વિશ્લેષણ ડેશબોર્ડ",
             "nav.connect": "મેટા એપીઆઈ સેટિંગ્સ",
             "nav.officers": "પોલીસ અધિકારી ખાતા",
+            "nav.ai_hub": "AI આર્કિટેક્ટ અને ડેવ ટૂલ્સ",
             "nav.settings": "સિસ્ટમ સેટિંગ્સ",
 
             // Filters
