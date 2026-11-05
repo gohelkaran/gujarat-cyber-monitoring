@@ -296,6 +296,7 @@
             "table.watch_reel": "Watch Reel",
             "table.view_post": "View FB Post",
             "table.view_advisory": "View Advisory",
+            "table.verify_news": "Verify",
             "table.intel": "Intel",
 
             // Badges
@@ -361,6 +362,7 @@
             "table.watch_reel": "રીલ જુઓ",
             "table.view_post": "ફેસબુક પોસ્ટ",
             "table.view_advisory": "એડવાઇઝરી જુઓ",
+            "table.verify_news": "ચકાસો",
             "table.intel": "ગુપ્ત વિગત",
 
             // Badges

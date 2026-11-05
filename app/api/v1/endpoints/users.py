@@ -6,7 +6,7 @@ Gujarat Cyber Crime Social Media Intelligence & Early Warning System
 from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Request
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from app.core.database import get_db
 from app.core.constants import UserRole, AuditAction
@@ -22,7 +22,7 @@ router = APIRouter(prefix="/users", tags=["Officer & User Management"])
 class OfficerCreatePayload(BaseModel):
     badge_number: str = Field(..., description="Official badge number e.g. GJ-CYBER-1024")
     full_name: str = Field(..., description="Full officer name e.g. PI M. B. Jadeja")
-    email: EmailStr = Field(..., description="Official government email")
+    email: str = Field(..., description="Official government email")
     role: UserRole = Field(default=UserRole.CYBER_ANALYST, description="Assigned role")
     password: str = Field(default="GujaratPolice@2026", description="Initial temp password")
 

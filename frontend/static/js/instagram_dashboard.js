@@ -1148,7 +1148,16 @@ const InstagramApp = {
                             btnClass = "btn-outline-warning";
                             label = "Read Full News Article";
                         }
-                        permalinkEl.innerHTML = `<a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${btnClass} font-mono"><i class="bi ${icon} me-1"></i> ${label} <i class="bi bi-box-arrow-up-right ms-1"></i></a>`;
+                        const googleNewsUrl = `https://news.google.com/search?q=${encodeURIComponent((item.headline || item.title || '').replace(/\[.*?\]/g, '').trim())}&hl=gu&gl=IN&ceid=IN:gu`;
+                        const verifyLabel = window.SocI18n ? window.SocI18n.t('table.verify_news', 'Verify News') : 'Verify News';
+                        permalinkEl.innerHTML = `
+                            <a href="${this.escapeHtml(item.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${btnClass} font-mono me-2">
+                                <i class="bi ${icon} me-1"></i> ${label} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                            </a>
+                            <a href="${googleNewsUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary font-mono" title="Cross-verify authentic coverage on Google News">
+                                <i class="bi bi-google me-1"></i> ${verifyLabel}
+                            </a>
+                        `;
                     } else {
                         permalinkEl.textContent = 'None provided by source';
                     }

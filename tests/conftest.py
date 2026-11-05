@@ -7,7 +7,7 @@ import pytest
 import os
 
 # Set testing environment variables before importing app
-os.environ["APP_ENV"] = "development"
+os.environ["APP_ENV"] = "testing"
 os.environ["SECRET_KEY"] = "TESTING_SECRET_KEY_EXCEEDING_THIRTY_TWO_CHARACTERS_SECURE"
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["DB_PASSWORD"] = "testpassword"

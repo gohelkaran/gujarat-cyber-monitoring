@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     APP_NAME: str = "Gujarat Cyber Crime Social Media Intelligence & Early Warning System"
     APP_DESCRIPTION: str = "Law Enforcement Intelligence & Early Warning System for Authorized Public Streams"
     APP_VERSION: str = "0.1.0"
-    APP_ENV: Literal["development", "staging", "production"] = "development"
+    APP_ENV: Literal["development", "staging", "production", "testing"] = "development"
     DEBUG: bool = False
 
     # Server Binding

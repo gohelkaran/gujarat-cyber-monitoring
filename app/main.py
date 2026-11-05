@@ -51,13 +51,16 @@ async def lifespan(app: FastAPI):
         logger.warning(f"Database schema auto-creation notice: {e}")
 
     # Start Automated Background Ingestion Scheduler for Gir Somnath & Gujarat
-    from app.services.scheduler_service import BackgroundSchedulerService
-    scheduler = BackgroundSchedulerService.get_instance()
-    await scheduler.start()
+    scheduler = None
+    if settings.APP_ENV not in ["testing", "test"]:
+        from app.services.scheduler_service import BackgroundSchedulerService
+        scheduler = BackgroundSchedulerService.get_instance()
+        await scheduler.start()
 
     yield
 
-    await scheduler.stop()
+    if scheduler:
+        await scheduler.stop()
     logger.info("Shutting down Gujarat Cyber Crime Intelligence platform. Releasing resources.")
 
 
