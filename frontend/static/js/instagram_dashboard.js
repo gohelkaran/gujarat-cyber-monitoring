@@ -905,16 +905,11 @@ const InstagramApp = {
             const originName = row.origin_label || (row.source_account ? `@${row.source_account}` : 'Gujarat Police Network');
             const oLower = originName.toLowerCase();
 
-            // Strict 1-to-1 Origin & Platform Classification
-            // A newspaper outlet is ALWAYS a NEWS ARTICLE with a Read Article button pointing to that publisher
-            const isMediaOutlet = oLower.includes('sandesh') || oLower.includes('tv9') || oLower.includes('abp') || 
-                                  oLower.includes('samachar') || oLower.includes('bhaskar') || oLower.includes('deshgujarat') ||
-                                  oLower.includes('express') || oLower.includes('times');
-
-            const isInstagram = !isMediaOutlet && (plat === "INSTAGRAM" || oLower.includes('instagram') || linkStr.includes("instagram.com"));
-            const isFacebook = !isMediaOutlet && (plat === "FACEBOOK" || oLower.includes('facebook') || oLower.includes('(fb)') || linkStr.includes("facebook.com"));
-            const isPolice = !isMediaOutlet && (plat === "POLICE_BULLETIN" || (oLower.includes('police') && !isInstagram && !isFacebook) || linkStr.includes("police.gujarat.gov.in"));
-            const isNews = isMediaOutlet || (!isInstagram && !isFacebook && !isPolice);
+            // Strict 1-to-1 Origin & Platform Classification based on actual destination permalink
+            const isInstagram = linkStr.includes("instagram.com") || plat === "INSTAGRAM";
+            const isFacebook = !isInstagram && (linkStr.includes("facebook.com") || plat === "FACEBOOK");
+            const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN" || (oLower.includes("police") && !linkStr.includes("sandesh") && !linkStr.includes("tv9")));
+            const isNews = !isInstagram && !isFacebook && !isPolice;
 
             let platformBadge = '';
             let linkBtnLabel = 'Watch Reel';

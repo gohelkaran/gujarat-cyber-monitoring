@@ -137,16 +137,16 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "external_id": "crime_gs_02",
         "source_account": "sandeshnews",
         "city": "Somnath (Gir Somnath)",
-        "caption": "Sandesh Crime Watch: Cyber syndicate cheating pilgrims with fake Somnath Jyotirlinga VIP pass & room booking website. Gir Somnath Cyber Cell registers FIR and blocks 4 fraudulent domains. #Somnath #CyberSafety #SandeshNews",
-        "published_at": "2026-10-25T14:15:00Z",
+        "caption": "Gir Somnath Delwada: દેલવાડામાં 1.50 કરોડથી વધુની છેતરપિંડીનો આક્ષેપ, નિધિ ક્રેડિટ મંડળીના સંચાલક અને મેનેજર સામે ફરિયાદ. ઉના પોલીસ સ્ટેશનમાં તપાસ તેજ. #GirSomnath #Una #Delwada #CrimeNews",
+        "published_at": "2026-11-04T14:15:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://sandesh.com/gujarat/crime",
+        "permalink": "https://sandesh.com/gujarat/maru-saher-maru-gaam/news/crime/gir-somnath/gir-somnath-una-nidhi-credit-cooperative-investment-fraud-delwada",
         "likes": 520,
         "comments": 42,
         "shares": 80,
         "origin_label": "Sandesh News",
-        "crime_category": "Phishing & Religious Trust Impersonation"
+        "crime_category": "Cooperative Credit Society Fraud"
     },
     {
         "external_id": "crime_gs_03",
@@ -167,63 +167,63 @@ VERIFIED_33_DISTRICTS_CATALOG = [
         "external_id": "crime_gs_04",
         "source_account": "tv9gujarati",
         "city": "Una (Gir Somnath)",
-        "caption": "TV9 Gujarati: Cyber extortion alert in Una taluka. Businessman targeted by loan app blackmail network with morphed images. Gir Somnath Cyber Police freezes extortion accounts in golden hour. #TV9Gujarati #Una #LoanAppFraud",
-        "published_at": "2026-10-19T16:20:00Z",
+        "caption": "દિવાળી પર ફ્રી ગિફ્ટ અને લકી ડ્રોની લાલચ પડી શકે છે ભારે: નકલી લિંક્સ અને ટાસ્ક ફ્રોડ મેસેજથી સાવચેત રહેવા સાયબર ક્રાઈમ સેલની ચેતવણી. #TV9Gujarati #CyberSafety #OnlineFraud",
+        "published_at": "2026-11-04T16:20:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://tv9gujarati.com/crime",
+        "permalink": "https://tv9gujarati.com/technology/lure-of-free-gifts-during-diwali-could-prove-costly-beware-of-messages-regarding-lucky-draws-and-similar-offers-1543605.html",
         "likes": 410,
         "comments": 35,
         "shares": 65,
         "origin_label": "TV9 Gujarati",
-        "crime_category": "Loan App Extortion & Blackmail"
+        "crime_category": "Phishing & Fake Gift Draw Fraud"
     },
     # 2. Ahmedabad
     {
         "external_id": "crime_ahmd_01",
-        "source_account": "GujaratPoliceOfficial",
+        "source_account": "abpasmita",
         "city": "Ahmedabad",
-        "caption": "Gujarat Cyber Centre of Excellence (CCE) Mega Raid: Mastermind behind nationwide Digital Arrest racket arrested from Guwahati, Assam. Linked with 1,753 mule accounts & fraud exceeding Rs. 1,139 Crore. 10 live victims saved from digital arrest. #GujaratPolice #DigitalArrest #CyberCrime",
-        "published_at": "2026-10-29T10:00:00Z",
-        "platform": "POLICE_BULLETIN",
-        "media_type": "POLICE_BULLETIN",
-        "permalink": "https://police.gujarat.gov.in/",
+        "caption": "અમદાવાદમાં 25.64 કરોડના ડ્રગ્સ કેસમાં મોટો ધડાકો: સાબરમતી રિવરફ્રન્ટ પર ક્રાઇમ બ્રાન્ચ દ્વારા વોચ ગોઠવી આરોપી સામે કાર્યવાહી. #Ahmedabad #CrimeBranch #NDPS #ABPAsmita",
+        "published_at": "2026-11-04T10:00:00Z",
+        "platform": "NEWS_FEED",
+        "media_type": "ARTICLE",
+        "permalink": "https://gujarati.abplive.com/crime/ahmedabad-crime-branch-firing-on-drug-dealer-kafeel-ahmed-riverfront-994197",
         "likes": 2850,
         "comments": 190,
         "shares": 520,
-        "origin_label": "Gujarat Police CID Crime",
-        "crime_category": "Digital Arrest Syndicate"
+        "origin_label": "ABP Asmita",
+        "crime_category": "Narcotics Seizure & Crime Branch Action"
     },
     {
         "external_id": "crime_ahmd_02",
         "source_account": "sandeshnews",
         "city": "Ahmedabad",
-        "caption": "Sandesh Exclusive: Ahmedabad Cyber Crime busts fake institutional share trading center operating on SG Highway. Seized 42 SIM boxes and Rs. 3.4 Crore in frozen bank funds. #Ahmedabad #ShareMarketScam #SandeshNews",
-        "published_at": "2026-10-26T15:30:00Z",
+        "caption": "Ahmedabad News : નિકોલ પોલીસ સ્ટેશન વિસ્તારમાં ફરિયાદ, છેતરપિંડી અને કાયદાકીય તપાસ તેજ. અમદાવાદ પોલીસ દ્વારા પુરાવા એકત્ર કરાયા. #Ahmedabad #NikolPolice #SandeshNews",
+        "published_at": "2026-11-05T08:30:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://sandesh.com/gujarat/crime",
+        "permalink": "https://sandesh.com/gujarat/news/crime/ahmedabad/ahmedabad--wife-files-rape-complaint-against-husband-at-nikol-police-station",
         "likes": 980,
         "comments": 74,
         "shares": 145,
         "origin_label": "Sandesh News",
-        "crime_category": "Bogus Share Trading Application"
+        "crime_category": "Police Complaint & Investigation"
     },
     # 3. Surat
     {
         "external_id": "crime_surat_01",
-        "source_account": "tv9gujarati",
+        "source_account": "abpasmita",
         "city": "Surat",
-        "caption": "TV9 Investigation: Surat Cyber Crime Branch freezes Rs. 11.03 Crore stolen through bogus institutional IPO applications. Syndicate operated mule networks across 7 states. #Surat #CyberCrime #TV9Gujarati",
-        "published_at": "2026-10-27T12:00:00Z",
+        "caption": "Surat Crime: સુરતમાં અમરોલી વિસ્તારમાં ગંભીર ગુનાની ઘટના સામે આવી, પોલીસ કાફલો ઘટનાસ્થળે દોડી ગયો અને તપાસ હાથ ધરી. #Surat #Amroli #CrimeInvestigation #ABPAsmita",
+        "published_at": "2026-11-04T12:00:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://tv9gujarati.com/crime",
+        "permalink": "https://gujarati.abplive.com/crime/surat-amroli-daughter-murders-father-over-mobile-dispute-kosad-news-994712",
         "likes": 840,
         "comments": 62,
         "shares": 115,
-        "origin_label": "TV9 Gujarati",
-        "crime_category": "IPO & Share Trading Scam"
+        "origin_label": "ABP Asmita",
+        "crime_category": "Violent Crime & Police Investigation"
     },
     {
         "external_id": "crime_surat_02",
@@ -243,34 +243,34 @@ VERIFIED_33_DISTRICTS_CATALOG = [
     # 4. Vadodara
     {
         "external_id": "crime_vad_01",
-        "source_account": "deshgujarat",
+        "source_account": "tv9gujarati",
         "city": "Vadodara",
-        "caption": "Vadodara Cyber Crime Cell arrests 6 individuals in Gotri area for supplying mule bank accounts to Cambodia-based cyber fraud gangs. Over 80 debit cards recovered. #Vadodara #MuleAccounts #DeshGujarat",
-        "published_at": "2026-10-26T08:45:00Z",
+        "caption": "Vadodara News: સોશિયલ મીડિયા પર વાયરલ કથિત વીડિયો અંગે પોલીસ તપાસ, કાયદો અને વ્યવસ્થા જાળવવા કાર્યવાહી હાથ ધરાઈ. #Vadodara #PoliceInvestigation #TV9Gujarati",
+        "published_at": "2026-11-04T08:45:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://deshgujarat.com/",
+        "permalink": "https://tv9gujarati.com/videos/gujarat-videos/vadodara-vmc-engineer-assault-allegations-bjp-corporators-viral-video-sparks-row-1542252.html",
         "likes": 460,
         "comments": 38,
         "shares": 58,
-        "origin_label": "DeshGujarat",
-        "crime_category": "Mule Bank Account Trafficking"
+        "origin_label": "TV9 Gujarati",
+        "crime_category": "Public Order & Video Verification"
     },
     # 5. Rajkot
     {
         "external_id": "crime_raj_01",
         "source_account": "sandeshnews",
         "city": "Rajkot",
-        "caption": "Rajkot Cyber Crime Advisory: Spate of deceptive courier and parcel scam calls in Rajkot city. Accused posing as Customs & Narcotics officers on video calls. Police urge reporting on 1930. #Rajkot #CyberSafety #1930Helpline",
-        "published_at": "2026-10-27T13:20:00Z",
+        "caption": "Rajkot News: ડેકોરા ગ્રુપ દારૂ પાર્ટી કેસમાં માલવિયાનગર પોલીસ દ્વારા આરોપીઓની સઘન પૂછપરછ અને હોટેલ DVR જપ્ત કરાયા. #Rajkot #ProhibitionAct #PoliceAction #SandeshNews",
+        "published_at": "2026-11-05T09:20:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://sandesh.com/gujarat/crime",
+        "permalink": "https://sandesh.com/gujarat/news/crime/rajkot/rajkot-liquor-party-case--police-question-chirag-patel--seize-hotel-dvr",
         "likes": 730,
         "comments": 54,
         "shares": 105,
         "origin_label": "Sandesh News",
-        "crime_category": "Courier / Customs Impersonation"
+        "crime_category": "Prohibition Raid & Evidence Seizure"
     },
     # 6. Bhavnagar
     {
@@ -291,18 +291,18 @@ VERIFIED_33_DISTRICTS_CATALOG = [
     # 7. Jamnagar
     {
         "external_id": "crime_jam_01",
-        "source_account": "tv9gujarati",
+        "source_account": "sandeshnews",
         "city": "Jamnagar",
-        "caption": "Jamnagar Cyber Police nabs extortionist impersonating Enforcement Directorate (ED) officer. Accused coerced industrialist with fake summons and demanded cryptocurrency payments. #Jamnagar #EDImpersonation #TV9Gujarati",
-        "published_at": "2026-10-24T14:35:00Z",
+        "caption": "Jamnagar : દારૂડિયા રિક્ષાચાલકનો આતંક, 2 વ્યક્તિ અને 4 વાહનોને અડફેટે લીધાં; લોકોએ પકડીને પોલીસને સોંપ્યો. #Jamnagar #Accident #PoliceFIR #SandeshNews",
+        "published_at": "2026-11-05T08:15:00Z",
         "platform": "NEWS_FEED",
         "media_type": "ARTICLE",
-        "permalink": "https://tv9gujarati.com/crime",
+        "permalink": "https://sandesh.com/gujarat/maru-saher-maru-gaam/news/crime/jamnagar/jamnagar-drunk-auto-driver-accident-dkv-circle",
         "likes": 560,
         "comments": 41,
         "shares": 72,
-        "origin_label": "TV9 Gujarati",
-        "crime_category": "Law Enforcement Impersonation"
+        "origin_label": "Sandesh News",
+        "crime_category": "Road Hazard & Police Detainment"
     },
     # 8. Junagadh
     {
