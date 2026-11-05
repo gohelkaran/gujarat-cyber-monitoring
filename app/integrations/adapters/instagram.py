@@ -517,6 +517,7 @@ class InstagramAdapter(SocialSourceAdapter):
             # 1. Validate credentials
             cred_res = self.validate_credentials()
             if not cred_res.is_valid or cred_res.is_mock_mode:
+                self.fallback_to_mock = True
                 latency = round((time.perf_counter() - start) * 1000, 2)
                 logger.info(f"Instagram live credentials returned ({cred_res.message}). Engaging mock/test adapter safely.")
                 mock_status = self.mock_delegate.validate_access()
@@ -587,9 +588,8 @@ class InstagramAdapter(SocialSourceAdapter):
         - Exponential backoff on transient errors
         - Strict data minimization (zero PII collection)
         """
-        if not self.is_live_configured:
-            # Strictly return empty list rather than synthetic dummy links
-            return []
+        if not self.is_live_configured or getattr(self, "fallback_to_mock", False):
+            return self.mock_delegate.fetch_items(limit=limit)
 
         results: List[SocialMediaItem] = []
         page_count = 0
