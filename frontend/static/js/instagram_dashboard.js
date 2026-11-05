@@ -972,7 +972,6 @@ const InstagramApp = {
             const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN");
             const isNews = !isInstagram && !isFacebook && !isPolice;
 
-            const t = (k, fb) => window.SocI18n ? window.SocI18n.t(k, fb) : fb;
             let platformBadge = '';
             let linkBtnLabel = t('table.watch_reel', 'Watch Reel');
             let linkBtnIcon = 'bi-instagram';
