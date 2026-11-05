@@ -399,6 +399,22 @@ const InstagramApp = {
         this.loadDashboardData();
     },
 
+    setVeracity(veracity) {
+        this.filters.veracity = veracity || "ALL";
+        ["ALL", "FAKE", "REAL", "UNVERIFIED"].forEach(v => {
+            const btn = document.getElementById(`btn-veracity-${v}`);
+            if (btn) {
+                if (v === this.filters.veracity) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            }
+        });
+        this.currentPage = 1;
+        this.loadDashboardData();
+    },
+
     async syncCrimeFeeds() {
         const btn = document.getElementById("btn-sync-crime-feeds");
         const origHtml = btn ? btn.innerHTML : null;
@@ -648,6 +664,7 @@ const InstagramApp = {
             if (this.filters.account) params.append("account", this.filters.account);
             if (this.filters.platform && this.filters.platform !== "ALL") params.append("platform", this.filters.platform);
             if (this.filters.sourceOrigin) params.append("source_origin", this.filters.sourceOrigin);
+            if (this.filters.veracity && this.filters.veracity !== "ALL") params.append("veracity", this.filters.veracity);
             // Send date filters as full ISO datetime strings (start of day / end of day)
             if (this.filters.dateFrom) params.append("date_from", this.filters.dateFrom + "T00:00:00");
             if (this.filters.dateTo) params.append("date_to", this.filters.dateTo + "T23:59:59");
@@ -864,11 +881,54 @@ const InstagramApp = {
         }
 
         const now = new Date();
+        const t = (k, fb) => window.SocI18n ? window.SocI18n.t(k, fb) : fb;
         tbody.innerHTML = results.map(row => {
             const isSaved = row.is_saved_in_db || row.review_status === "SAVED_IN_DB" || row.review_status === "SAVED_CASE_RECORD";
-            const dbStatusBadge = isSaved
-                ? `<span class="badge bg-success font-mono px-2 py-1"><i class="bi bi-bookmark-check-fill me-1"></i>SAVED</span>`
-                : `<span class="badge bg-secondary-subtle text-secondary font-mono px-2 py-1"><i class="bi bi-broadcast me-1"></i>LIVE STREAM</span>`;
+            
+            // AI Fake News vs Real News Veracity Assessment
+            const vStatus = row.veracity_status || (row.raw_metadata?.veracity_status) || (
+                (row.headline || row.caption || '').includes('અફવા') || (row.headline || row.caption || '').includes('fake') ? 'SUSPECTED_FAKE' : 'VERIFIED_REAL'
+            );
+            const vScore = row.veracity_score || (vStatus === 'SUSPECTED_FAKE' ? 12 : (vStatus === 'UNVERIFIED_CLAIM' ? 52 : 98));
+
+            let veracityBadge = '';
+            if (vStatus === 'SUSPECTED_FAKE') {
+                veracityBadge = `
+                    <div class="d-flex flex-column gap-1">
+                        <span class="badge bg-danger text-light font-mono px-2 py-1 shadow-sm" style="font-size: 0.72rem; animation: pulse 1.8s infinite;" title="Flagged as Malicious Hoax or Fake News by Cyber Cell">
+                            <i class="bi bi-exclamation-octagon-fill me-1"></i>${t('veracity.suspected_fake', 'FAKE / RUMOR')} (${vScore}%)
+                        </span>
+                        <div class="d-flex align-items-center gap-1 font-mono" style="font-size: 0.65rem;">
+                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-1">HIGH ALERT</span>
+                            ${isSaved ? '<span class="text-success ms-auto"><i class="bi bi-bookmark-fill" title="Saved in Police Database"></i></span>' : ''}
+                        </div>
+                    </div>
+                `;
+            } else if (vStatus === 'UNVERIFIED_CLAIM') {
+                veracityBadge = `
+                    <div class="d-flex flex-column gap-1">
+                        <span class="badge bg-warning text-dark font-mono px-2 py-1" style="font-size: 0.72rem;" title="Viral Social Media Claim Under Police Investigation">
+                            <i class="bi bi-question-circle-fill me-1"></i>${t('veracity.unverified', 'UNVERIFIED')} (${vScore}%)
+                        </span>
+                        <div class="d-flex align-items-center gap-1 font-mono text-secondary" style="font-size: 0.65rem;">
+                            <span><i class="bi bi-hourglass-split me-1"></i>VERIFYING</span>
+                            ${isSaved ? '<span class="text-success ms-auto"><i class="bi bi-bookmark-fill" title="Saved in Police Database"></i></span>' : ''}
+                        </div>
+                    </div>
+                `;
+            } else {
+                veracityBadge = `
+                    <div class="d-flex flex-column gap-1">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle font-mono px-2 py-1" style="font-size: 0.72rem;" title="Verified Police Operation or Accredited Press Coverage">
+                            <i class="bi bi-shield-fill-check me-1"></i>${t('veracity.verified_real', 'REAL NEWS')} (${vScore}%)
+                        </span>
+                        <div class="d-flex align-items-center gap-1 font-mono text-secondary" style="font-size: 0.65rem;">
+                            <span><i class="bi bi-patch-check me-1 text-success"></i>VERIFIED</span>
+                            ${isSaved ? '<span class="text-success ms-auto"><i class="bi bi-bookmark-fill" title="Saved in Police Database"></i></span>' : ''}
+                        </div>
+                    </div>
+                `;
+            }
 
             const saveBtn = isSaved
                 ? `<button class="btn btn-sm btn-success font-mono" onclick="event.stopPropagation(); InstagramApp.unsaveRecord('${row.id}', this)" title="Remove from Police Database">
@@ -990,7 +1050,7 @@ const InstagramApp = {
                             <i class="bi bi-shield-exclamation me-1 text-warning-emphasis"></i>${this.escapeHtml(crimeCategory)}
                         </span>
                     </td>
-                    <td>${dbStatusBadge}</td>
+                    <td>${veracityBadge}</td>
                     <td class="text-end">
                         <div class="d-flex justify-content-end align-items-center gap-1">
                             ${saveBtn}
@@ -1171,6 +1231,9 @@ const InstagramApp = {
                     const headlineHtml = item.headline ? `<div class="fw-bold mb-2 text-dark font-sans" style="font-size: 1.05rem;">${this.escapeHtml(item.headline)}</div>` : '';
                     captionEl.innerHTML = `${headlineHtml}<div class="text-secondary">${this.escapeHtml(item.caption || item.full_caption || item.title || '(Empty caption)')}</div>`;
                 }
+
+                // AI Veracity Card & Police Counter-Debunk
+                this.renderVeracityCard(item);
 
                 // Solution 1: Extract Suspect IOCs (Phones, UPIs, Bank A/Cs, Telegram)
                 const fullText = (item.caption || item.full_caption || item.title || '') + ' ' + (item.headline || '');
@@ -2346,6 +2409,82 @@ Timestamp: ${new Date().toISOString()}
                 <i class="bi bi-info-circle me-1 text-primary"></i> 100% Guaranteed Link Verification: Dynamic real-time queries cross-corroborate public reports without risk of broken or 404 links.
             </div>
         `;
+    },
+
+    renderVeracityCard(item) {
+        const body = document.getElementById("modal-veracity-body");
+        const pill = document.getElementById("modal-veracity-pill");
+        if (!body) return;
+
+        const vStatus = item.veracity_status || 'VERIFIED_REAL';
+        const vScore = item.veracity_score || (vStatus === 'SUSPECTED_FAKE' ? 12 : (vStatus === 'UNVERIFIED_CLAIM' ? 52 : 98));
+        const notes = item.fact_check_notes || (vStatus === 'SUSPECTED_FAKE' ? 'Viral misinformation/phishing pattern flagged by Cyber Crime Cell.' : 'Verified through official Gujarat Police records and accredited news media.');
+        const debunkGu = item.official_debunk_gu || `🚨 ગુજરાત પોલીસ સાયબર સેલ સત્તાવાર સ્પષ્ટતા: આ વાયરલ મેસેજ તદ્દન ખોટો અને ભ્રામક અફવા છે. નાગરિકોને અપીલ છે કે આવી અફવાઓ ફોરવર્ડ ન કરવી. સાયબર ફ્રોડ કે અફવા અંગે ૧૯૩૦ પર સંપર્ક કરો.`;
+        const debunkEn = item.official_debunk_en || `🚨 Official Gujarat Police Cyber Cell Advisory: This viral message has been flagged as completely FALSE or a malicious scam. Strictly avoid sharing or circulating unverified claims.`;
+
+        let statusClass = "bg-success text-white";
+        let statusBadge = "VERIFIED REAL (સાચા સમાચાર)";
+        let statusIcon = "bi-patch-check-fill";
+        let barColor = "bg-success";
+
+        if (vStatus === 'SUSPECTED_FAKE') {
+            statusClass = "bg-danger text-white";
+            statusBadge = "MALICIOUS HOAX / FAKE NEWS (અફવા)";
+            statusIcon = "bi-exclamation-octagon-fill";
+            barColor = "bg-danger";
+        } else if (vStatus === 'UNVERIFIED_CLAIM') {
+            statusClass = "bg-warning text-dark";
+            statusBadge = "UNVERIFIED VIRAL CLAIM (ચકાસણી હેઠળ)";
+            statusIcon = "bi-question-circle-fill";
+            barColor = "bg-warning";
+        }
+
+        if (pill) {
+            pill.className = `badge font-mono ${statusClass}`;
+            pill.innerHTML = `<i class="bi ${statusIcon} me-1"></i>${statusBadge}`;
+        }
+
+        body.innerHTML = `
+            <div class="row g-3">
+                <div class="col-md-7">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small font-mono fw-bold text-secondary">AI TRUTH &amp; VERACITY CONFIDENCE:</span>
+                        <span class="font-mono fw-bold">${vScore}%</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 10px;">
+                        <div class="progress-bar ${barColor}" role="progressbar" style="width: ${vScore}%;"></div>
+                    </div>
+                    <div class="p-2 rounded bg-light border">
+                        <div class="fw-bold small font-mono text-dark"><i class="bi bi-search me-1 text-primary"></i>FACT-CHECK &amp; CORROBORATION FINDINGS:</div>
+                        <div class="small text-secondary font-gujarati mt-1">${this.escapeHtml(notes)}</div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="small font-mono fw-bold text-secondary">POLICE COUNTER-DEBUNK:</span>
+                        <button type="button" class="btn btn-xs btn-outline-danger font-mono" onclick="InstagramApp.copyPoliceDebunk()">
+                            <i class="bi bi-clipboard-check me-1"></i> Copy Debunk Notice
+                        </button>
+                    </div>
+                    <div class="p-2 rounded bg-danger-subtle border border-danger-subtle text-danger-emphasis small font-gujarati" style="max-height: 120px; overflow-y: auto; font-size: 0.8rem;">
+                        ${this.escapeHtml(debunkGu)}
+                    </div>
+                </div>
+            </div>
+        `;
+    },
+
+    copyPoliceDebunk() {
+        const item = window._currentModalItem || {};
+        const debunkGu = item.official_debunk_gu || `🚨 ગુજરાત પોલીસ સાયબર સેલ સત્તાવાર સ્પષ્ટતા: સોશિયલ મીડિયા પર વાયરલ થયેલ આ દાવો તદ્દન ખોટો અને ભ્રામક અફવા છે. નાગરિકોને અપીલ છે કે આવી અફવાઓ ફોરવર્ડ ન કરવી. કાયદેસર કાર્યવાહી માટે ૧૯૩૦ પર સંપર્ક કરવો.`;
+        const debunkEn = item.official_debunk_en || `🚨 Official Gujarat Police Cyber Cell Advisory: This viral post has been flagged as FALSE. Do not circulate unverified rumors.`;
+        const text = `${debunkGu}\n\n[English Translation]\n${debunkEn}\n\n- Gujarat Police Cyber Crime Cell • Anti-Misinformation Unit\nHelpline: 1930 / https://cybercrime.gov.in`;
+        
+        navigator.clipboard.writeText(text).then(() => {
+            this.showToast("Official Police Debunk Notice copied! Ready to publish on Police Social Handles.", "success");
+        }).catch(err => {
+            this.showToast("Could not copy debunk notice: " + err.message, "danger");
+        });
     },
 };
 

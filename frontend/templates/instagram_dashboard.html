@@ -426,6 +426,23 @@
                             <i class="bi bi-facebook me-1"></i> FACEBOOK PAGES
                         </button>
                     </div>
+
+                    <div class="vr mx-1 d-none d-lg-block"></div>
+                    <span class="text-secondary small font-mono fw-bold">AI VERACITY:</span>
+                    <div class="btn-group" role="group" aria-label="Veracity Filter">
+                        <button type="button" class="btn btn-sm btn-outline-secondary active font-mono" id="btn-veracity-ALL" onclick="InstagramApp.setVeracity('ALL')">
+                            ALL
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-danger font-mono" id="btn-veracity-FAKE" onclick="InstagramApp.setVeracity('FAKE')" title="Only Rumors & Fake News">
+                            <i class="bi bi-exclamation-octagon-fill me-1"></i> FAKE / RUMORS
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-success font-mono" id="btn-veracity-REAL" onclick="InstagramApp.setVeracity('REAL')" title="Only Verified Real Police Operations & Articles">
+                            <i class="bi bi-shield-check me-1"></i> VERIFIED REAL
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning font-mono" id="btn-veracity-UNVERIFIED" onclick="InstagramApp.setVeracity('UNVERIFIED')" title="Under Verification">
+                            <i class="bi bi-question-circle me-1"></i> UNVERIFIED
+                        </button>
+                    </div>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
@@ -741,7 +758,7 @@
                         <th style="width: 135px;" data-i18n="table.header_published">PUBLISHED</th>
                         <th data-i18n="table.header_content">CRIME INTELLIGENCE &amp; REPORT CONTENT</th>
                         <th style="width: 150px;" data-i18n="table.header_category">THREAT CATEGORY</th>
-                        <th style="width: 110px;" data-i18n="table.header_db_status">DB STATUS</th>
+                        <th style="width: 140px;" data-i18n="table.header_veracity">AI VERACITY &amp; STATUS</th>
                         <th style="width: 230px;" class="text-end" data-i18n="table.header_actions">ACTIONS</th>
                     </tr>
                 </thead>
@@ -842,6 +859,19 @@
                     <div class="col-md-6">
                         <label class="form-label text-secondary small fw-semibold">EXTRACTED HASHTAGS</label>
                         <div id="modal-hashtags-list" class="d-flex flex-wrap gap-1">--</div>
+                    </div>
+                </div>
+
+                <!-- AI Truth & Veracity Assessment + 1-Click Police Counter-Advisory -->
+                <div class="card border mb-3 shadow-sm" id="modal-veracity-card">
+                    <div class="card-header py-2 d-flex justify-content-between align-items-center bg-dark text-white">
+                        <span class="small font-mono fw-bold">
+                            <i class="bi bi-robot text-info me-1"></i> AI FAKE NEWS vs REAL NEWS DETECTOR &amp; OFFICIAL POLICE DEBUNK
+                        </span>
+                        <span class="badge font-mono" id="modal-veracity-pill">AI ANALYZED</span>
+                    </div>
+                    <div class="card-body p-3 bg-white" id="modal-veracity-body">
+                        <!-- Populated dynamically with veracity score, fact-check notes, and police debunk advisory -->
                     </div>
                 </div>
 

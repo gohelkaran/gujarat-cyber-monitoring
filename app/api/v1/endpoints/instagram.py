@@ -888,6 +888,7 @@ def get_dashboard_telemetry(
     account: Optional[str] = Query(None),
     platform: Optional[str] = Query(None),
     source_origin: Optional[str] = Query(None),
+    veracity: Optional[str] = Query(None, description="Veracity filter: ALL, FAKE, REAL, UNVERIFIED"),
     view_mode: str = Query("live", description="Either 'live' for real-time unpersisted stream, or 'saved' for database case records"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
@@ -912,6 +913,7 @@ def get_dashboard_telemetry(
         account=account,
         platform=platform,
         source_origin=source_origin,
+        veracity=veracity,
         view_mode=view_mode,
         page=page,
         page_size=page_size

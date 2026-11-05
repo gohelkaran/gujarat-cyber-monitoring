@@ -1664,6 +1664,7 @@ class InstagramService:
         account: Optional[str] = None,
         platform: Optional[str] = None,
         source_origin: Optional[str] = None,
+        veracity: Optional[str] = None,
         view_mode: str = "live",
         page: int = 1,
         page_size: int = 20
@@ -1684,6 +1685,7 @@ class InstagramService:
                 account=account,
                 platform=platform,
                 source_origin=source_origin,
+                veracity=veracity,
                 date_from=date_from,
                 date_to=date_to,
                 page=page,
@@ -2048,12 +2050,12 @@ class InstagramService:
                 "permalink": "https://www.instagram.com/reel/Dd9IMoDRe71/",
                 "source_account": "ahmedabadpolice",
                 "city": "Ahmedabad",
-                "caption": "Ahmedabad Police Cyber Crime Advisory | Critical public alert warning citizens against downloading unknown APK links, sharing OTPs with callers claiming bank verification, and falling for work-from-home scams. Dial 1930 immediately. #AhmedabadPolice #CyberSafety #1930Helpline",
-                "published_at": "2026-10-10T11:00:00Z",
-                "likes": 1100,
-                "comments": 68,
-                "shares": 70,
-                "reach_estimate": 22000
+                "caption": "અમદાવાદ શહેરના દાણીલીમડા પોલીસ સ્ટેશન વિસ્તારમાં જાહેરમાં તલવાર સાથે આંતક મચાવનાર આરોપીને ગણતરીના કલાકોમાં પકડી કાયદેસર કાર્યવાહી કરવામાં આવેલ. [ Ahmadabad Police. Ahmadabad Crime. City Ahmadabad . Police. Video. Viral. ]",
+                "published_at": "2026-10-01T14:30:00Z",
+                "likes": 212200,
+                "comments": 2500,
+                "shares": 340,
+                "reach_estimate": 450000
             },
             {
                 "shortcode": "DdvUvuVA5t3",

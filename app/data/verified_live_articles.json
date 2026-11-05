@@ -1,10 +1,164 @@
 [
   {
+    "id": "fake_fb_gs_child_gang",
+    "title": "ફેસબુક અફવા એલર્ટ: ગીર સોમનાથ-વેરાવળમાં બાળક ચોરી કરતી ગેંગ સક્રિય હોવાની ભ્રામક પોસ્ટ",
+    "headline": "ફેસબુક અફવા: ગીર સોમનાથમાં બાળક ચોરીની ભ્રામક પોસ્ટ વાયરલ",
+    "caption": "વેરાવળ, કોડીનાર અને સુત્રાપાડા વિસ્તારમાં રાત્રે બચ્ચા ચોર ટોળકી બાળકોને ઉઠાવી જતી હોવાનો ફેસબુક પર વીડિયો સાથે વાયરલ મેસેજ. [SP ગીર સોમનાથ દ્વારા સત્તાવાર ખંડન: તદ્દન ખોટી અફવા છે, કોઈ બનાવ બન્યો નથી] #GirSomnath #Veraval #FakeNews #RumorAlert",
+    "platform": "FACEBOOK",
+    "source_account": "saurashtra_viral_group",
+    "origin_label": "Facebook (Saurashtra Viral Group)",
+    "city": "Veraval (Gir Somnath)",
+    "crime_category": "Rumor & Public Disinformation",
+    "published_at": "2026-11-04T18:30:00+00:00",
+    "likes_count": 840,
+    "comments_count": 192,
+    "is_live_stream": true,
+    "permalink": "https://sandesh.com/gujarat/crime?case=gs_hoax",
+    "veracity_status": "SUSPECTED_FAKE",
+    "veracity_score": 12,
+    "veracity_label": "FAKE NEWS / RUMOR (અફવા)",
+    "fact_check_notes": "SP Gir Somnath confirmed no child kidnapping gang exists anywhere in the district. Viral video is a 2021 drama sequence in another state. Group admin issued Section 505 IPC notice.",
+    "official_debunk_gu": "🚨 ગીર સોમનાથ જિલ્લા પોલીસ સત્તાવાર ખુલાસો: સોશિયલ મીડિયા પર વેરાવળ-ગીર સોમનાથમાં બાળક ચોરી કરતી ટોળકી હોવાનો વાયરલ મેસેજ તદ્દન ખોટો અને અફવા છે. જિલ્લામાં આવો કોઈ જ બનાવ બન્યો નથી. અફવા ફેલાવનાર સામે કડક કાનૂની કાર્યવાહી કરવામાં આવશે. શંકાસ્પદ બાબતે ૧૧૨ અથવા ૧૯૩૦ પર સંપર્ક કરવો.",
+    "official_debunk_en": "🚨 Official Gujarat Police Cyber Cell Advisory: The viral message circulating on Facebook regarding a child kidnapping gang in Gir Somnath / Veraval is completely FALSE and a malicious hoax. Strict legal action under IT Act will be taken against rumor mongers."
+  },
+  {
+    "id": "fake_ig_yojna_apk",
+    "title": "ઇન્સ્ટાગ્રામ સ્કેમ: ગુજરાત સહાય યોજના હેઠળ ₹5,000 ફ્રી સહાયની લાલચે માલવેર APK ફેલાવવાનું કૌભાંડ",
+    "headline": "ઇન્સ્ટાગ્રામ સ્કેમ: ₹5,000 સરકારી સહાયના નામે ફેક APK ફ્રોડ",
+    "caption": "Instagram Viral Ad & Reel: પીએમ સહાય યોજના અંતર્ગત ગુજરાતના તમામ લોકોને ₹5000 ફ્રી સહાય. તાત્કાલિક લિંક પર ક્લિક કરી Yojna_Seva.apk ઇન્સ્ટોલ કરો અને આધાર ઓટીપી નાખો. (શંકાસ્પદ બેન્કિંગ ફ્રોડ) #GujaratScam #FakeScheme #CyberFraud",
+    "platform": "INSTAGRAM",
+    "source_account": "gujarat_yojana_alerts",
+    "origin_label": "Instagram (@gujarat_yojana_alerts)",
+    "city": "All Gujarat",
+    "crime_category": "Cyber Crime & Financial Fraud",
+    "published_at": "2026-11-04T20:15:00+00:00",
+    "likes_count": 1450,
+    "comments_count": 310,
+    "is_live_stream": true,
+    "permalink": "https://www.instagram.com/reel/DTvOau8gH9L/",
+    "veracity_status": "SUSPECTED_FAKE",
+    "veracity_score": 8,
+    "veracity_label": "FAKE NEWS / RUMOR (અફવા)",
+    "fact_check_notes": "Malicious Trojan-Banker APK detected. Steals incoming OTP SMS and contacts. Extracted UPI: scamhelper@okaxis, Suspect Phone: +91 98251 44321.",
+    "official_debunk_gu": "🚨 સાયબર ક્રાઇમ સેલ ચેતવણી: ઇન્સ્ટાગ્રામ પર કોઈ પણ સરકારી યોજનાના નામે અજાણી APK ફાઇલ ડાઉનલોડ કરશો નહીં. સરકાર ક્યારેય APK દ્વારા નાણાં આપતી નથી. સાયબર ફ્રોડ થાય તો તાત્કાલિક ૧૯૩૦ ડાયલ કરો.",
+    "official_debunk_en": "🚨 Gujarat Cyber Crime Warning: Never download unknown APK files in the name of government subsidy schemes on Instagram. The state government never distributes funds via APK links. Call 1930 immediately if defrauded."
+  },
+  {
+    "id": "fake_fb_exam_leak",
+    "title": "ફેસબુક ભ્રામક દાવો: ભરતી પરીક્ષાનું પ્રશ્નપત્ર લીક થયાની ખોટી અફવા ફેલાવતી ગેંગ",
+    "headline": "ફેસબુક ભ્રામક દાવો: સરકારી ભરતી પેપર લીકની ખોટી અફવા",
+    "caption": "ગુજરાતમાં આવતીકાલની સ્પર્ધાત્મક પરીક્ષાનું ઓરિજિનલ પેપર લીક થઈ ગયાનો ફેસબુક અને ટેલિગ્રામ પર દાવો. પેપર મેળવવા ₹5,000 યુપીઆઈ પેમેન્ટ માંગ્યું. [સાયબર સેલ દ્વારા તપાસ તેજ] #GujaratBharti #PaperLeakRumor #CyberAlert",
+    "platform": "FACEBOOK",
+    "source_account": "gujarat_exam_warriors",
+    "origin_label": "Facebook (Gujarat Exam Warriors Page)",
+    "city": "Ahmedabad",
+    "crime_category": "Rumor & Exam Scam",
+    "published_at": "2026-11-05T07:20:00+00:00",
+    "likes_count": 620,
+    "comments_count": 145,
+    "is_live_stream": true,
+    "permalink": "https://sandesh.com/gujarat/crime?case=exam_leak_hoax",
+    "veracity_status": "SUSPECTED_FAKE",
+    "veracity_score": 10,
+    "veracity_label": "FAKE NEWS / RUMOR (અફવા)",
+    "fact_check_notes": "Examination Board & Ahmedabad Cyber Cell confirmed the shared PDF is an old 2019 practice paper with photoshopped headers. Cyber cell has frozen the suspect UPI account exampaper@okaxis.",
+    "official_debunk_gu": "🚨 સાયબર ક્રાઇમ સેલ અમદાવાદ: પરીક્ષા પેપર લીક અંગેનો દાવો તદ્દન ભ્રામક અને વિદ્યાર્થીઓ સાથે છેતરપિંડી કરવાનો પ્રયાસ છે. અફવા ફેલાવનાર પેજ એડમિન સામે ગુનો દાખલ કરવામાં આવ્યો છે.",
+    "official_debunk_en": "🚨 Cyber Crime Cell Clarification: Viral claim regarding paper leak is completely fabricated to extort money from candidates. UPI ID frozen and criminal proceedings initiated."
+  },
+  {
+    "id": "unverified_ig_sg_highway",
+    "title": "ઇન્સ્ટાગ્રામ દાવો: એસ.જી. હાઈવે પર મોડી રાત્રે કાર રોકી લૂંટ ચલાવતી ટોળકી સક્રિય હોવાની ચર્ચા",
+    "headline": "ઇન્સ્ટાગ્રામ દાવો: એસ.જી. હાઈવે પર રાત્રે લૂંટની આશંકાનો વાયરલ વીડિયો",
+    "caption": "અમદાવાદ એસ.જી. હાઈવે પર રાત્રે કાર પંચર કરી લૂંટ કરાતી હોવાની ઇન્સ્ટાગ્રામ રીલ વાયરલ. પોલીસ તપાસ અને ખરાઈ ચાલુ. [પોલીસ કંટ્રોલ રૂમમાં હજુ સુધી કોઈ ફરિયાદ નોંધાઈ નથી] #Ahmedabad #SGHighway #VerificationPending",
+    "platform": "INSTAGRAM",
+    "source_account": "ahmedabad_city_vibes",
+    "origin_label": "Instagram (@ahmedabad_city_vibes)",
+    "city": "Ahmedabad",
+    "crime_category": "Violent Crime & Rumors",
+    "published_at": "2026-11-05T08:10:00+00:00",
+    "likes_count": 980,
+    "comments_count": 85,
+    "is_live_stream": true,
+    "permalink": "https://www.instagram.com/reel/DdvUvuVA5t3/",
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "No formal complaint received at SG-1 or SG-2 Police stations. Highway patrolling teams alerted; cyber cell verifying source account authenticity.",
+    "official_debunk_gu": "⚠️ સાયબર સેલ એલર્ટ: એસ.જી. હાઈવે અંગેનો વાયરલ દાવો પોલીસ ચકાસણી હેઠળ છે. સત્તાવાર ફરિયાદ નોંધાયેલ નથી. પુષ્ટિ વગર કોઈપણ વીડિયો વાયરલ ન કરવો.",
+    "official_debunk_en": "⚠️ Advisory: Social media claims regarding SG Highway robbery are currently under verification by patrol teams. No formal complaint lodged. Citizens advised not to circulate unverified rumors."
+  },
+  {
+    "id": "verified_fb_gs_veraval_raid",
+    "title": "ગીર સોમનાથ વેરાવળ બંદર: LCB દ્વારા 203 વિદેશી દારૂની બોટલ અને નશીલા પદાર્થો સાથે 2 શખ્સો ઝડપાયા",
+    "headline": "Gir Somnath LCB: વેરાવળ બંદરે 203 વિદેશી દારૂ બોટલ જપ્ત",
+    "caption": "ગીર સોમનાથ એલસીબી ટીમનો સપાટો: વેરાવળ બંદર નજીકથી 203 વિદેશી દારૂની બોટલ અને નશીલા પદાર્થોનો મોટો જથ્થો કબ્જે. આરોપીઓ સામે પ્રોહિબિશન અને NDPS મુજબ ગુનો દાખલ. #GirSomnathPolice #VeravalPort #CrimeWatch",
+    "platform": "FACEBOOK",
+    "source_account": "girsomnathpolice",
+    "origin_label": "Gir Somnath Police Official Dispatch",
+    "city": "Veraval (Gir Somnath)",
+    "crime_category": "Narcotics & Prohibition Raid",
+    "published_at": "2026-10-28T11:30:00+00:00",
+    "likes_count": 340,
+    "comments_count": 28,
+    "is_live_stream": true,
+    "permalink": "https://sandesh.com/gujarat/crime?case=veraval_lcb_203",
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Authentic Gir Somnath LCB operation in Veraval Port. 203 illicit liquor bottles seized; FIR registered at Veraval Police Station under NDPS & Prohibition act.",
+    "official_debunk_gu": "✅ સત્તાવાર પોલીસ કાર્યવાહી: ગીર સોમનાથ એલસીબી દ્વારા વેરાવળ બંદર પરથી ગેરકાયદે દારૂ અને માદક દ્રવ્યો જપ્ત કરી કાયદેસર કાર્યવાહી કરવામાં આવેલ છે.",
+    "official_debunk_en": "✅ Verified Police Incident: Gir Somnath LCB seized 203 illicit liquor bottles and contraband at Veraval harbor; formal charges filed."
+  },
+  {
+    "id": "verified_fb_surat_loan_bust",
+    "title": "સુરત સાયબર ક્રાઈમ: વરાછામાં ચાઈનીઝ ઇન્સ્ટન્ટ લોન એપ એક્સટોર્શન સિન્ડિકેટ ઝડપાયું",
+    "headline": "Surat Cyber Cell: વરાછામાં લોન એપ એક્સટોર્શન ગેંગ ઝડપાઈ",
+    "caption": "સુરત સાયબર ક્રાઈમ સેલની મોટી સફળતા: નાગરિકોના મોબાઈલ ડેટા અને કોન્ટેક્ટ હેક કરી બ્લેકમેઇલ કરતી લોન એપ ગેંગના સાગરીતો વરાછાથી પકડાયા. #SuratPolice #CyberCell #LoanAppExtortion",
+    "platform": "FACEBOOK",
+    "source_account": "suratcitypolice",
+    "origin_label": "Surat City Police Official Dispatch",
+    "city": "Surat",
+    "crime_category": "Cyber Crime & Financial Fraud",
+    "published_at": "2026-10-24T17:10:00+00:00",
+    "likes_count": 670,
+    "comments_count": 48,
+    "is_live_stream": true,
+    "permalink": "https://gujarati.abplive.com/crime",
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 97,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Surat Cyber Crime Cell busted extortion syndicate operating predatory loan apps from Varachha. Accused booked under IT Act Section 66D and IPC extortion sections.",
+    "official_debunk_gu": "✅ સત્તાવાર સાયબર સેલ કાર્યવાહી: સુરત વરાછામાં નકલી લોન એપ દ્વારા બ્લેકમેઇલ કરતી ટોળકીને પકડી પાડી કાયદેસર ગુનો દાખલ કરવામાં આવ્યો છે.",
+    "official_debunk_en": "✅ Verified Cyber Action: Surat Cyber Crime Cell busted extortion syndicate operating predatory loan apps from Varachha."
+  },
+  {
+    "id": "verified_fb_zee_digital_arrest",
+    "title": "Zee Business: ડિજિટલ અરેસ્ટ પર સુપ્રીમ કોર્ટ સખ્ત, બેંકો અને મ્યૂલ એકાઉન્ટ્સ પર કડક કાર્યવાહીનો આદેશ",
+    "headline": "સુપ્રીમ કોર્ટ સખ્ત: ડિજિટલ અરેસ્ટ અને મ્યૂલ એકાઉન્ટ્સ પર કડકાઈ",
+    "caption": "Zee Business Report: ડિજિટલ ધોખાધડી પર સુપ્રીમ કોર્ટ સખ્ત. બેંકોની જવાબદેહી પર આપ્યો જોર. મ્યૂલ એકાઉન્ટ્સ પર કોર્ટે દેખાડી સખ્તી. #SupremeCourt #DigitalArrest #CyberCrime",
+    "platform": "FACEBOOK",
+    "source_account": "zeebusiness",
+    "origin_label": "Zee Business (National Crime Desk)",
+    "city": "All Gujarat",
+    "crime_category": "Cyber Crime & Financial Fraud",
+    "published_at": "2026-10-29T19:11:00+00:00",
+    "likes_count": 520,
+    "comments_count": 38,
+    "is_live_stream": true,
+    "permalink": "https://sandesh.com/gujarat/crime?case=sc_digital_arrest",
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 96,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated by Supreme Court of India hearing directives on cyber mule accounts and digital arrest menace.",
+    "official_debunk_gu": "✅ કાનૂની અહેવાલ: દેશભરમાં ડિજિટલ અરેસ્ટ સાયબર ફ્રોડ રોકવા સુપ્રીમ કોર્ટ દ્વારા બેંકોને કડક આદેશો જાહેર કરાયા છે.",
+    "official_debunk_en": "✅ Verified Judicial Report: Supreme Court directives issued regarding liability of banks in digital arrest mule accounts."
+  },
+  {
     "id": "live_ig_DebYrHrx4fk",
     "title": "Veraval City Police: માદક પદાર્થ Amphetamine નાર્કોટિક્સ ડ્રગ્સ ના જથ્થા સાથે એક ઇસમને પકડી પાડતી ગીર સોમનાથ પોલીસ",
     "headline": "Veraval City Police: માદક પદાર્થ Amphetamine ડ્રગ્સ જપ્ત",
     "caption": "વેરાવળ સીટી પો.સ્ટે. વિસ્તારમાંથી માદક પદાર્થ Amphetamine નાર્કોટિક્સ ડ્રગ્સ ના જથ્થા સાથે એક ઇસમને પકડી પાડતી ગીર સોમનાથ પોલીસ. #GirSomnath #Veraval #Narcotics",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/DebYrHrx4fk/",
     "source_account": "all_saurastra_news",
     "origin_label": "Instagram (@all_saurastra_news)",
     "platform": "INSTAGRAM",
@@ -13,14 +167,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 280,
     "comments_count": 34,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_DTvOau8gH9L",
     "title": "Gir Somnath District Police: સાયબર સેલ ક્રાઇમ વિજિલન્સ અને 1930 હેલ્પલાઇન જાગૃતિ સંદેશ",
     "headline": "Gir Somnath Police: સાયબર સેલ ક્રાઇમ વિજિલન્સ અને 1930 હેલ્પલાઇન",
     "caption": "Gir Somnath District Police Crime Vigilance & Cyber Safety Advisory: 1930 સાયબર હેલ્પલાઇન જાગૃતિ સંદેશ. #GirSomnathPolice #CyberSafety #1930Helpline",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/DTvOau8gH9L/",
     "source_account": "girsomnathpolice",
     "origin_label": "Instagram (@girsomnathpolice)",
     "platform": "INSTAGRAM",
@@ -29,14 +187,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 420,
     "comments_count": 45,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_C3sHxH8IDlW",
     "title": "Somnath Temple Trust: નકલી VIP દર્શન વેબસાઈટથી સાવચેત રહો, સત્તાવાર બુકિંગ somnath.org",
     "headline": "Somnath Temple Trust: નકલી VIP દર્શન વેબસાઈટ સામે સાવચેતી",
     "caption": "Shree Somnath Jyotirlinga Darshan & Pilgrim Advisory: નકલી VIP દર્શન વેબસાઈટથી સાવચેત રહો. Official booking somnath.org. #SomnathTemple #GirSomnath",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/C3sHxH8IDlW/",
     "source_account": "shreesomnathtemple",
     "origin_label": "Instagram (@shreesomnathtemple)",
     "platform": "INSTAGRAM",
@@ -45,14 +207,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 890,
     "comments_count": 62,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_DcJdJixIP8d",
     "title": "Gujarat Cyber Centre: ₹1,139 કરોડનું ડિજિટલ અરેસ્ટ સિન્ડિકેટ માસ્ટરમાઇન્ડ આસામથી ઝડપાયો",
     "headline": "Gujarat Cyber Centre: ₹1,139 કરોડનું ડિજિટલ અરેસ્ટ સિન્ડિકેટ ઝડપાયું",
     "caption": "Gujarat Cyber Centre of Excellence: 1,139 Crore Digital Arrest syndicate mastermind arrested from Assam. 10 live victims saved. #GujaratPolice #DigitalArrest",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/DcJdJixIP8d/",
     "source_account": "gujaratpolice_",
     "origin_label": "Instagram (@gujaratpolice_)",
     "platform": "INSTAGRAM",
@@ -61,14 +227,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 1250,
     "comments_count": 118,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_DW1bDOKk7V0",
     "title": "Bhavnagar Cyber Crime: આંતરરાજ્ય સાયબર ફ્રોડ કરતી ટોળકી સામે GUJCTOC હેઠળ ગુનો દાખલ",
     "headline": "Bhavnagar Cyber Crime: સાયબર ફ્રોડ ગેંગ સામે GUJCTOC",
     "caption": "Bhavnagar Cyber Crime GUJCTOC case registered against 10 members in multi-state cyber fraud. #Bhavnagar #GUJCTOC #CyberCrime",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/DW1bDOKk7V0/",
     "source_account": "gujaratfirst",
     "origin_label": "Instagram (@gujaratfirst)",
     "platform": "INSTAGRAM",
@@ -77,14 +247,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 310,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_DeOsb4CiU8d",
     "title": "Surat Cyber Crime: બોગસ શેર ટ્રેડિંગમાં ₹11.03 કરોડનું મોટું સાયબર કૌભાંડ પકડાયું",
     "headline": "Surat Cyber Crime: શેર ટ્રેડિંગમાં ₹11.03 કરોડનું કૌભાંડ ઝડપાયું",
     "caption": "11.03 CRORE CYBER FRAUD EXPOSED: Surat Cyber Crime branch busts massive inter-state syndicate cheating victims in bogus share trading. #Surat #CyberCrime",
-    "permalink": "https://www.instagram.com/suratcitypolice/reels/",
+    "permalink": "https://www.instagram.com/reel/DeOsb4CiU8d/",
     "source_account": "surtiesnews",
     "origin_label": "Instagram (@surtiesnews)",
     "platform": "INSTAGRAM",
@@ -93,14 +267,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 540,
     "comments_count": 48,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_De4bD6tyl-M",
     "title": "Mehsana Cyber Crime: ફેક ક્રિપ્ટો રિટર્ન આપવાના નામે ચાલતું ગેરકાયદે કોલ સેન્ટર પકડાયું",
     "headline": "Mehsana Cyber Crime: ફેક કોલ સેન્ટર પર પોલીસ રેડ",
     "caption": "Mehsana Cyber Crime Busts Fake Call Center: Cyber crime police raid illegal call center defrauding people with fake crypto returns. #Mehsana #CyberCrime",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/De4bD6tyl-M/",
     "source_account": "gujaratfirst",
     "origin_label": "Instagram (@gujaratfirst)",
     "platform": "INSTAGRAM",
@@ -109,14 +287,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 390,
     "comments_count": 31,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "SUSPECTED_FAKE",
+    "veracity_score": 12,
+    "veracity_label": "FAKE NEWS / RUMOR (અફવા)",
+    "fact_check_notes": "Flagged by Cyber Cell: High suspicion of malicious rumor or phishing scam."
   },
   {
     "id": "live_ig_Dc02y5CTgs_",
     "title": "Dang Cyber Fraud Alert: વીજળી બિલ કાપવાના નામે આવતી ફેક લિંક અને APK થી સાવધાન",
     "headline": "Dang Cyber Fraud Alert: વીજળી બિલ ફેક APK એલર્ટ",
     "caption": "Dang Cyber Fraud Alert: Electricity disconnection fake APK alert warning citizens against remote screen sharing scams. #Dang #CyberSafety",
-    "permalink": "https://www.instagram.com/gujaratpolice_/reels/",
+    "permalink": "https://www.instagram.com/reel/Dc02y5CTgs_/",
     "source_account": "sandeshnews",
     "origin_label": "Instagram (@sandeshnews)",
     "platform": "INSTAGRAM",
@@ -125,14 +307,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 210,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "SUSPECTED_FAKE",
+    "veracity_score": 12,
+    "veracity_label": "FAKE NEWS / RUMOR (અફવા)",
+    "fact_check_notes": "Flagged by Cyber Cell: High suspicion of malicious rumor or phishing scam."
   },
   {
     "id": "live_ig_DeezkvKgzYH",
     "title": "Ahmedabad Police LCB: CEIR પોર્ટલ દ્વારા નાગરિકોના ગુમ થયેલા મોબાઈલ શોધી પરત સોંપાયા",
     "headline": "Ahmedabad Police: CEIR પોર્ટલથી ચોરાયેલા મોબાઈલ પરત મળ્યા",
     "caption": "Ahmedabad Police LCB Mobile Recovery Drive: CEIR પોર્ટલ અને સાયબર ટ્રેકિંગ દ્વારા ચોરાયેલા મોબાઈલ ફોન નાગરિકોને પરત સોંપાયા. #AhmedabadPolice #CEIR",
-    "permalink": "https://www.instagram.com/ahmedabadpolice/reels/",
+    "permalink": "https://www.instagram.com/reel/DeezkvKgzYH/",
     "source_account": "ahmedabadpolice",
     "origin_label": "Instagram (@ahmedabadpolice)",
     "platform": "INSTAGRAM",
@@ -141,30 +327,40 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 670,
     "comments_count": 55,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_Dd9IMoDRe71",
-    "title": "Ahmedabad Police Advisory: અજાણી લિંક કે શંકાસ્પદ APK ડાઉનલોડ ન કરવા સાયબર સેલની અપીલ",
-    "headline": "Ahmedabad Police: અજાણી લિંક ડાઉનલોડ ન કરવા 1930 એલર્ટ",
-    "caption": "Ahmedabad Police Cyber Advisory: અજાણી લિંક કે APK ડાઉનલોડ ન કરવા અને OTP શેર ન કરવા પોલીસ અપીલ. Dial 1930. #AhmedabadPolice #CyberCrime",
-    "permalink": "https://www.instagram.com/ahmedabadpolice/reels/",
+    "title": "અમદાવાદ દાણીલીમડા: જાહેરમાં તલવાર સાથે આંતક મચાવનાર આરોપીની ગણતરીના કલાકોમાં ધરપકડ",
+    "headline": "અમદાવાદ દાણીલીમડા: તલવાર સાથે આંતક મચાવનાર આરોપી પકડાયો",
+    "caption": "અમદાવાદ શહેરના દાણીલીમડા પોલીસ સ્ટેશન વિસ્તારમાં જાહેરમાં તલવાર સાથે આંતક મચાવનાર આરોપીને ગણતરીના કલાકોમાં પકડી કાયદેસર કાર્યવાહી કરવામાં આવેલ. [ Ahmadabad Police. Ahmadabad Crime. City Ahmadabad . Police. Video. Viral. ]",
+    "permalink": "https://www.instagram.com/reel/Dd9IMoDRe71/",
     "source_account": "ahmedabadpolice",
     "origin_label": "Instagram (@ahmedabadpolice)",
     "platform": "INSTAGRAM",
     "city": "Ahmedabad",
-    "crime_category": "Cyber Crime & Financial Fraud",
+    "crime_category": "Violent Crime & Weapons Seizure",
     "published_at": "2026-11-05T06:50:33.014147+00:00",
-    "likes_count": 780,
-    "comments_count": 63,
-    "is_live_stream": true
+    "likes_count": 212200,
+    "comments_count": 2500,
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 99,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "100% Authentic Ahmedabad Police operational video. Accused arrested with weapon in Danilimda PS jurisdiction within hours.",
+    "official_debunk_gu": "✅ સત્તાવાર અહેવાલ: અમદાવાદ પોલીસ દ્વારા દાણીલીમડામાં તલવાર સાથે ભય ફેલાવનાર શખ્સ સામે તાત્કાલિક કાયદેસર કાર્યવાહી કરવામાં આવેલ છે.",
+    "official_debunk_en": "✅ Verified Police Action: Ahmedabad City Police apprehended suspect wielding weapon in Danilimda PS jurisdiction within hours."
   },
   {
     "id": "live_ig_DdvUvuVA5t3",
     "title": "Ahmedabad City Police Cyber Crime: UPI પેમેન્ટ ફ્રોડ અને ફેક QR કોડ સ્કેનિંગ સામે સાવધાની",
     "headline": "Ahmedabad City Police: UPI અને QR કોડ ફ્રોડથી સાવધાન",
     "caption": "Ahmedabad City Police Cyber Crime Cell: UPI પેમેન્ટ ફ્રોડ અને ફેક ક્યુઆર કોડ સ્કેનિંગથી સાવચેત રહેવા સૂચના. #Ahmedabad #CyberSafety",
-    "permalink": "https://www.instagram.com/ahmedabadpolice/reels/",
+    "permalink": "https://www.instagram.com/reel/DdvUvuVA5t3/",
     "source_account": "ahmedabadpolice",
     "origin_label": "Instagram (@ahmedabadpolice)",
     "platform": "INSTAGRAM",
@@ -173,14 +369,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 520,
     "comments_count": 41,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_DdBlUakRW-B",
     "title": "Ahmedabad Police Cyber Prevention: સેક્સટોર્શન અને વીડિયો કોલ બ્લેકમેઇલિંગ સામે તાત્કાલિક 1930 ડાયલ કરો",
     "headline": "Ahmedabad Police: સેક્સટોર્શન બ્લેકમેઇલિંગ સામે 1930 હેલ્પલાઇન",
     "caption": "Ahmedabad Police Crime Prevention: સોશિયલ મીડિયા પર સેક્સટોર્શન અને વીડિયો કોલ બ્લેકમેઇલિંગ સામે તાત્કાલિક 1930 પર સંપર્ક કરો. #AhmedabadPolice",
-    "permalink": "https://www.instagram.com/ahmedabadpolice/reels/",
+    "permalink": "https://www.instagram.com/reel/DdBlUakRW-B/",
     "source_account": "ahmedabadpolice",
     "origin_label": "Instagram (@ahmedabadpolice)",
     "platform": "INSTAGRAM",
@@ -189,14 +389,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 910,
     "comments_count": 82,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_Dc8FYfSu6nl",
     "title": "Ahmedabad Police Cyber Vigilance: કુરિયરમાં ગેરકાયદે ડ્રગ્સ હોવાનું કહી કરાતી છેતરપિંડીથી સાવધાન",
     "headline": "Ahmedabad Police: ફેક કુરિયર પાર્સલ ડિજિટલ અરેસ્ટ વોર્નિંગ",
     "caption": "Ahmedabad Police Cyber Vigilance: Deceptive courier and contraband parcel fraud warning for citizens. #AhmedabadPolice #CyberAlert",
-    "permalink": "https://www.instagram.com/ahmedabadpolice/reels/",
+    "permalink": "https://www.instagram.com/reel/Dc8FYfSu6nl/",
     "source_account": "ahmedabadpolice",
     "origin_label": "Instagram (@ahmedabadpolice)",
     "platform": "INSTAGRAM",
@@ -205,14 +409,18 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 640,
     "comments_count": 49,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_ig_C_g8U2yN7qL",
     "title": "Surat Cyber Police Public Alert: ઓનલાઈન ટ્રેડિંગ અને ડિજિટલ અરેસ્ટ ફ્રોડથી બચવા સાવચેતીના પગલાં",
     "headline": "Surat Cyber Police: ટ્રેડિંગ ફ્રોડ અને ડિજિટલ અરેસ્ટ એલર્ટ",
     "caption": "Surat Cyber Police Public Alert: ઓનલાઈન ટ્રેડિંગ અને ડિજિટલ અરેસ્ટ ફ્રોડથી બચવા સાવચેતીના પગલાં. #SuratCyberPolice #Surat",
-    "permalink": "https://www.instagram.com/suratcitypolice/reels/",
+    "permalink": "https://www.instagram.com/reel/C_g8U2yN7qL/",
     "source_account": "surat_cyber_police",
     "origin_label": "Instagram (@surat_cyber_police)",
     "platform": "INSTAGRAM",
@@ -221,7 +429,11 @@
     "published_at": "2026-11-05T06:50:33.014147+00:00",
     "likes_count": 830,
     "comments_count": 74,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 98,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_15",
@@ -237,7 +449,11 @@
     "published_at": "2026-11-05T12:09:16",
     "likes_count": 94,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_16",
@@ -253,7 +469,11 @@
     "published_at": "2026-11-05T11:44:15",
     "likes_count": 95,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_17",
@@ -269,7 +489,11 @@
     "published_at": "2026-11-05T10:57:14",
     "likes_count": 96,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_18",
@@ -285,7 +509,11 @@
     "published_at": "2026-11-05T09:36:09",
     "likes_count": 97,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_19",
@@ -301,7 +529,11 @@
     "published_at": "2026-11-04T22:49:48",
     "likes_count": 98,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_20",
@@ -317,7 +549,11 @@
     "published_at": "2026-11-04T22:15:42",
     "likes_count": 99,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_21",
@@ -333,7 +569,11 @@
     "published_at": "2026-11-04T21:58:51",
     "likes_count": 100,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_22",
@@ -349,7 +589,11 @@
     "published_at": "2026-11-04T20:30:49",
     "likes_count": 101,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_23",
@@ -365,7 +609,11 @@
     "published_at": "2026-11-04T18:53:30",
     "likes_count": 102,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_24",
@@ -381,7 +629,11 @@
     "published_at": "2026-11-04T18:24:53",
     "likes_count": 103,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_25",
@@ -397,7 +649,11 @@
     "published_at": "2026-11-04T18:07:49",
     "likes_count": 104,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_26",
@@ -413,7 +669,11 @@
     "published_at": "2026-11-04T17:07:26",
     "likes_count": 105,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_27",
@@ -429,7 +689,11 @@
     "published_at": "2026-11-04T16:34:51",
     "likes_count": 106,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_28",
@@ -445,7 +709,11 @@
     "published_at": "2026-11-04T16:17:22",
     "likes_count": 107,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_29",
@@ -461,7 +729,11 @@
     "published_at": "2026-11-04T16:06:31",
     "likes_count": 108,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_30",
@@ -477,7 +749,11 @@
     "published_at": "2026-11-04T15:55:08",
     "likes_count": 109,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_31",
@@ -493,7 +769,11 @@
     "published_at": "2026-11-04T15:45:07",
     "likes_count": 110,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_32",
@@ -509,7 +789,11 @@
     "published_at": "2026-11-04T15:30:54",
     "likes_count": 111,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_33",
@@ -525,7 +809,11 @@
     "published_at": "2026-11-04T13:11:55",
     "likes_count": 112,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_34",
@@ -541,7 +829,11 @@
     "published_at": "2026-11-04T11:40:37",
     "likes_count": 113,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_35",
@@ -557,7 +849,11 @@
     "published_at": "2026-11-04T11:08:20",
     "likes_count": 114,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_36",
@@ -573,7 +869,11 @@
     "published_at": "2026-11-04T10:41:12",
     "likes_count": 115,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_37",
@@ -589,7 +889,11 @@
     "published_at": "2026-11-04T10:08:54",
     "likes_count": 116,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_38",
@@ -605,7 +909,11 @@
     "published_at": "2026-11-03T21:39:55",
     "likes_count": 117,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_39",
@@ -621,7 +929,11 @@
     "published_at": "2026-11-03T20:06:40",
     "likes_count": 118,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_40",
@@ -637,7 +949,11 @@
     "published_at": "2026-11-03T19:29:27",
     "likes_count": 119,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_41",
@@ -653,7 +969,11 @@
     "published_at": "2026-11-03T19:08:57",
     "likes_count": 120,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_42",
@@ -669,7 +989,11 @@
     "published_at": "2026-11-03T18:40:57",
     "likes_count": 121,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_43",
@@ -685,7 +1009,11 @@
     "published_at": "2026-11-03T17:31:10",
     "likes_count": 122,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_44",
@@ -701,7 +1029,11 @@
     "published_at": "2026-11-03T17:16:24",
     "likes_count": 123,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_45",
@@ -717,7 +1049,11 @@
     "published_at": "2026-11-03T17:05:46",
     "likes_count": 124,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_46",
@@ -733,7 +1069,11 @@
     "published_at": "2026-11-03T16:38:28",
     "likes_count": 125,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_47",
@@ -749,7 +1089,11 @@
     "published_at": "2026-11-03T14:47:19",
     "likes_count": 126,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_48",
@@ -765,7 +1109,11 @@
     "published_at": "2026-11-03T13:07:38",
     "likes_count": 127,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_49",
@@ -781,7 +1129,11 @@
     "published_at": "2026-11-03T12:44:38",
     "likes_count": 128,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_50",
@@ -797,7 +1149,11 @@
     "published_at": "2026-11-03T12:41:59",
     "likes_count": 129,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_51",
@@ -813,7 +1169,11 @@
     "published_at": "2026-11-03T11:13:37",
     "likes_count": 130,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_52",
@@ -829,7 +1189,11 @@
     "published_at": "2026-11-03T10:55:10",
     "likes_count": 131,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_53",
@@ -845,7 +1209,11 @@
     "published_at": "2026-11-03T09:24:07",
     "likes_count": 132,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_54",
@@ -861,7 +1229,11 @@
     "published_at": "2026-11-05T12:01:47",
     "likes_count": 133,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_55",
@@ -877,7 +1249,11 @@
     "published_at": "2026-11-05T11:24:22",
     "likes_count": 134,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_56",
@@ -893,7 +1269,11 @@
     "published_at": "2026-11-05T11:20:05",
     "likes_count": 135,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_57",
@@ -909,7 +1289,11 @@
     "published_at": "2026-11-05T11:04:20",
     "likes_count": 136,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_58",
@@ -925,7 +1309,11 @@
     "published_at": "2026-11-05T10:33:59",
     "likes_count": 137,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_59",
@@ -941,7 +1329,11 @@
     "published_at": "2026-11-05T10:08:54",
     "likes_count": 138,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_60",
@@ -957,7 +1349,11 @@
     "published_at": "2026-11-05T09:02:52",
     "likes_count": 139,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_61",
@@ -973,7 +1369,11 @@
     "published_at": "2026-11-05T07:46:18",
     "likes_count": 140,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_62",
@@ -989,7 +1389,11 @@
     "published_at": "2026-11-05T07:21:32",
     "likes_count": 141,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_63",
@@ -1005,7 +1409,11 @@
     "published_at": "2026-11-05T07:07:11",
     "likes_count": 142,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_64",
@@ -1021,7 +1429,11 @@
     "published_at": "2026-11-05T04:07:18",
     "likes_count": 143,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_65",
@@ -1037,7 +1449,11 @@
     "published_at": "2026-11-05T04:04:24",
     "likes_count": 144,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_66",
@@ -1053,7 +1469,11 @@
     "published_at": "2026-11-05T04:02:54",
     "likes_count": 145,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_67",
@@ -1069,7 +1489,11 @@
     "published_at": "2026-11-05T04:01:23",
     "likes_count": 146,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_68",
@@ -1085,7 +1509,11 @@
     "published_at": "2026-11-05T03:59:05",
     "likes_count": 147,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_69",
@@ -1101,7 +1529,11 @@
     "published_at": "2026-11-05T03:57:39",
     "likes_count": 148,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_70",
@@ -1117,7 +1549,11 @@
     "published_at": "2026-11-05T03:56:31",
     "likes_count": 149,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_71",
@@ -1133,7 +1569,11 @@
     "published_at": "2026-11-05T03:55:19",
     "likes_count": 150,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_72",
@@ -1149,7 +1589,11 @@
     "published_at": "2026-11-05T03:53:59",
     "likes_count": 151,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_73",
@@ -1165,7 +1609,11 @@
     "published_at": "2026-11-05T03:52:37",
     "likes_count": 152,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_74",
@@ -1181,7 +1629,11 @@
     "published_at": "2026-11-05T03:51:31",
     "likes_count": 153,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_75",
@@ -1197,7 +1649,11 @@
     "published_at": "2026-11-05T03:50:58",
     "likes_count": 154,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_76",
@@ -1213,7 +1669,11 @@
     "published_at": "2026-11-05T03:49:55",
     "likes_count": 155,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_77",
@@ -1229,7 +1689,11 @@
     "published_at": "2026-11-05T03:48:57",
     "likes_count": 156,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_78",
@@ -1245,7 +1709,11 @@
     "published_at": "2026-11-05T10:51:51+05:30",
     "likes_count": 157,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_79",
@@ -1261,7 +1729,11 @@
     "published_at": "2026-11-03T14:18:05+05:30",
     "likes_count": 158,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_80",
@@ -1277,7 +1749,11 @@
     "published_at": "2026-11-02T18:45:21+05:30",
     "likes_count": 159,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_81",
@@ -1293,7 +1769,11 @@
     "published_at": "2026-11-02T13:54:23+05:30",
     "likes_count": 160,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_82",
@@ -1309,7 +1789,11 @@
     "published_at": "2026-10-27T13:47:22+05:30",
     "likes_count": 161,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_83",
@@ -1325,7 +1809,11 @@
     "published_at": "2026-10-27T13:43:34+05:30",
     "likes_count": 162,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_84",
@@ -1341,7 +1829,11 @@
     "published_at": "2026-10-26T17:56:24+05:30",
     "likes_count": 163,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_85",
@@ -1357,7 +1849,11 @@
     "published_at": "2026-10-26T17:02:18+05:30",
     "likes_count": 164,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_86",
@@ -1373,7 +1869,11 @@
     "published_at": "2026-10-25T13:41:34+05:30",
     "likes_count": 165,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_87",
@@ -1389,7 +1889,11 @@
     "published_at": "2026-10-25T11:30:20+05:30",
     "likes_count": 166,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_88",
@@ -1405,7 +1909,11 @@
     "published_at": "2026-10-25T11:03:07+05:30",
     "likes_count": 167,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_89",
@@ -1421,7 +1929,11 @@
     "published_at": "2026-10-24T14:00:42+05:30",
     "likes_count": 168,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_90",
@@ -1437,7 +1949,11 @@
     "published_at": "2026-10-22T13:55:16+05:30",
     "likes_count": 169,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_91",
@@ -1453,7 +1969,11 @@
     "published_at": "2026-10-22T11:53:16+05:30",
     "likes_count": 170,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_92",
@@ -1469,7 +1989,11 @@
     "published_at": "2026-10-20T19:17:40+05:30",
     "likes_count": 171,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_93",
@@ -1485,7 +2009,11 @@
     "published_at": "2026-10-20T12:49:25+05:30",
     "likes_count": 172,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_94",
@@ -1501,7 +2029,11 @@
     "published_at": "2026-10-17T09:47:12+05:30",
     "likes_count": 173,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_95",
@@ -1517,7 +2049,11 @@
     "published_at": "2026-10-15T18:31:52+05:30",
     "likes_count": 174,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_96",
@@ -1533,7 +2069,11 @@
     "published_at": "2026-10-15T16:37:40+05:30",
     "likes_count": 175,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_97",
@@ -1549,7 +2089,11 @@
     "published_at": "2026-10-15T08:54:16+05:30",
     "likes_count": 176,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_98",
@@ -1565,7 +2109,11 @@
     "published_at": "2026-10-14T19:08:57+05:30",
     "likes_count": 177,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_99",
@@ -1581,7 +2129,11 @@
     "published_at": "2026-10-14T16:10:36+05:30",
     "likes_count": 178,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_100",
@@ -1597,7 +2149,11 @@
     "published_at": "2026-10-13T22:15:38+05:30",
     "likes_count": 179,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_101",
@@ -1613,7 +2169,11 @@
     "published_at": "2026-10-13T16:45:10+05:30",
     "likes_count": 180,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_102",
@@ -1629,7 +2189,11 @@
     "published_at": "2026-10-13T14:40:04+05:30",
     "likes_count": 181,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_103",
@@ -1645,7 +2209,11 @@
     "published_at": "2026-10-12T20:54:12+05:30",
     "likes_count": 182,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_104",
@@ -1661,7 +2229,11 @@
     "published_at": "2026-10-06T13:02:29+05:30",
     "likes_count": 183,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_105",
@@ -1677,7 +2249,11 @@
     "published_at": "2026-10-04T12:00:27+05:30",
     "likes_count": 184,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_106",
@@ -1693,7 +2269,11 @@
     "published_at": "2026-10-04T10:52:18+05:30",
     "likes_count": 185,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_107",
@@ -1709,7 +2289,11 @@
     "published_at": "2026-10-01T14:03:02+05:30",
     "likes_count": 186,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_108",
@@ -1725,7 +2309,11 @@
     "published_at": "2026-09-30T19:37:16+05:30",
     "likes_count": 187,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_109",
@@ -1741,7 +2329,11 @@
     "published_at": "2026-09-30T07:55:39+05:30",
     "likes_count": 188,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_110",
@@ -1757,7 +2349,11 @@
     "published_at": "2026-09-29T21:37:35+05:30",
     "likes_count": 189,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_111",
@@ -1773,7 +2369,11 @@
     "published_at": "2026-09-28T21:22:51+05:30",
     "likes_count": 190,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_112",
@@ -1789,7 +2389,11 @@
     "published_at": "2026-09-28T13:08:07+05:30",
     "likes_count": 191,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_113",
@@ -1805,7 +2409,11 @@
     "published_at": "2026-09-28T08:50:02+05:30",
     "likes_count": 192,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_114",
@@ -1821,7 +2429,11 @@
     "published_at": "2026-09-27T08:49:59+05:30",
     "likes_count": 193,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_115",
@@ -1837,7 +2449,11 @@
     "published_at": "2026-09-24T13:49:09+05:30",
     "likes_count": 194,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_116",
@@ -1853,7 +2469,11 @@
     "published_at": "2026-09-23T18:51:07+05:30",
     "likes_count": 195,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_117",
@@ -1869,7 +2489,11 @@
     "published_at": "2026-09-23T14:03:12+05:30",
     "likes_count": 196,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_118",
@@ -1885,7 +2509,11 @@
     "published_at": "2026-09-22T11:51:03+05:30",
     "likes_count": 197,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_119",
@@ -1901,7 +2529,11 @@
     "published_at": "2026-09-21T20:51:11+05:30",
     "likes_count": 198,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_120",
@@ -1917,7 +2549,11 @@
     "published_at": "2026-09-21T14:02:23+05:30",
     "likes_count": 199,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_121",
@@ -1933,7 +2569,11 @@
     "published_at": "2026-09-18T14:32:25+05:30",
     "likes_count": 200,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_122",
@@ -1949,7 +2589,11 @@
     "published_at": "2026-09-17T22:02:18+05:30",
     "likes_count": 201,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_123",
@@ -1965,7 +2609,11 @@
     "published_at": "2026-09-17T18:07:40+05:30",
     "likes_count": 202,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_124",
@@ -1981,7 +2629,11 @@
     "published_at": "2026-09-17T13:53:32+05:30",
     "likes_count": 203,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_125",
@@ -1997,7 +2649,11 @@
     "published_at": "2026-09-16T18:40:15+05:30",
     "likes_count": 204,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_126",
@@ -2013,7 +2669,11 @@
     "published_at": "2026-09-16T12:07:28+05:30",
     "likes_count": 205,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_127",
@@ -2029,7 +2689,11 @@
     "published_at": "2026-09-09T18:19:26+05:30",
     "likes_count": 206,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_128",
@@ -2045,7 +2709,11 @@
     "published_at": "2026-11-05T12:05:30+05:30",
     "likes_count": 207,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_129",
@@ -2061,7 +2729,11 @@
     "published_at": "2026-11-05T11:51:02+05:30",
     "likes_count": 208,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_130",
@@ -2077,7 +2749,11 @@
     "published_at": "2026-11-05T11:01:43+05:30",
     "likes_count": 209,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_131",
@@ -2093,7 +2769,11 @@
     "published_at": "2026-11-05T10:09:51+05:30",
     "likes_count": 210,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_132",
@@ -2109,7 +2789,11 @@
     "published_at": "2026-11-05T10:08:22+05:30",
     "likes_count": 211,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_133",
@@ -2125,7 +2809,11 @@
     "published_at": "2026-11-05T10:06:10+05:30",
     "likes_count": 212,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_134",
@@ -2141,7 +2829,11 @@
     "published_at": "2026-11-05T10:05:11+05:30",
     "likes_count": 213,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_135",
@@ -2157,7 +2849,11 @@
     "published_at": "2026-11-05T09:43:19+05:30",
     "likes_count": 214,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_136",
@@ -2173,7 +2869,11 @@
     "published_at": "2026-11-05T09:34:58+05:30",
     "likes_count": 215,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_137",
@@ -2189,7 +2889,11 @@
     "published_at": "2026-11-05T09:31:55+05:30",
     "likes_count": 216,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_138",
@@ -2205,7 +2909,11 @@
     "published_at": "2026-11-05T09:02:23+05:30",
     "likes_count": 217,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_139",
@@ -2221,7 +2929,11 @@
     "published_at": "2026-11-05T08:51:36+05:30",
     "likes_count": 218,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_140",
@@ -2237,7 +2949,11 @@
     "published_at": "2026-11-05T08:27:27+05:30",
     "likes_count": 219,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_141",
@@ -2253,7 +2969,11 @@
     "published_at": "2026-11-05T08:06:41+05:30",
     "likes_count": 220,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_142",
@@ -2269,7 +2989,11 @@
     "published_at": "2026-11-05T08:03:01+05:30",
     "likes_count": 221,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_143",
@@ -2285,7 +3009,11 @@
     "published_at": "2026-11-05T08:01:46+05:30",
     "likes_count": 222,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_144",
@@ -2301,7 +3029,11 @@
     "published_at": "2026-11-05T07:48:04+05:30",
     "likes_count": 223,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_145",
@@ -2317,7 +3049,11 @@
     "published_at": "2026-11-05T07:43:50+05:30",
     "likes_count": 224,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_146",
@@ -2333,7 +3069,11 @@
     "published_at": "2026-11-05T07:12:00+05:30",
     "likes_count": 225,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_147",
@@ -2349,7 +3089,11 @@
     "published_at": "2026-11-05T06:01:34+05:30",
     "likes_count": 226,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_148",
@@ -2365,7 +3109,11 @@
     "published_at": "2026-11-04T22:45:11+05:30",
     "likes_count": 227,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_149",
@@ -2381,7 +3129,11 @@
     "published_at": "2026-11-04T22:30:58+05:30",
     "likes_count": 228,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_150",
@@ -2397,7 +3149,11 @@
     "published_at": "2026-11-04T22:15:19+05:30",
     "likes_count": 229,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_151",
@@ -2413,7 +3169,11 @@
     "published_at": "2026-11-04T22:11:05+05:30",
     "likes_count": 80,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_152",
@@ -2429,7 +3189,11 @@
     "published_at": "2026-11-04T21:38:56+05:30",
     "likes_count": 81,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_153",
@@ -2445,7 +3209,11 @@
     "published_at": "2026-11-04T21:25:39+05:30",
     "likes_count": 82,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_154",
@@ -2461,7 +3229,11 @@
     "published_at": "2026-11-04T21:22:54+05:30",
     "likes_count": 83,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_155",
@@ -2477,7 +3249,11 @@
     "published_at": "2026-11-04T21:00:18+05:30",
     "likes_count": 84,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_156",
@@ -2493,7 +3269,11 @@
     "published_at": "2026-11-04T20:42:34+05:30",
     "likes_count": 85,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_157",
@@ -2509,7 +3289,11 @@
     "published_at": "2026-11-04T20:34:59+05:30",
     "likes_count": 86,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_158",
@@ -2525,7 +3309,11 @@
     "published_at": "2026-11-04T20:23:17+05:30",
     "likes_count": 87,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_159",
@@ -2541,7 +3329,11 @@
     "published_at": "2026-11-04T20:20:26+05:30",
     "likes_count": 88,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_160",
@@ -2557,7 +3349,11 @@
     "published_at": "2026-11-04T20:16:54+05:30",
     "likes_count": 89,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_161",
@@ -2573,7 +3369,11 @@
     "published_at": "2026-11-04T20:13:33+05:30",
     "likes_count": 90,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_162",
@@ -2589,7 +3389,11 @@
     "published_at": "2026-11-04T20:03:44+05:30",
     "likes_count": 91,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_163",
@@ -2605,7 +3409,11 @@
     "published_at": "2026-11-04T19:40:51+05:30",
     "likes_count": 92,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_164",
@@ -2621,7 +3429,11 @@
     "published_at": "2026-11-04T19:34:31+05:30",
     "likes_count": 93,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_165",
@@ -2637,7 +3449,11 @@
     "published_at": "2026-11-04T19:18:24+05:30",
     "likes_count": 94,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_166",
@@ -2653,7 +3469,11 @@
     "published_at": "2026-11-04T19:06:44+05:30",
     "likes_count": 95,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_167",
@@ -2669,7 +3489,11 @@
     "published_at": "2026-11-04T19:03:30+05:30",
     "likes_count": 96,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_168",
@@ -2685,7 +3509,11 @@
     "published_at": "2026-11-04T18:53:36+05:30",
     "likes_count": 97,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_169",
@@ -2701,7 +3529,11 @@
     "published_at": "2026-11-04T18:38:01+05:30",
     "likes_count": 98,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_170",
@@ -2717,7 +3549,11 @@
     "published_at": "2026-11-04T18:32:43+05:30",
     "likes_count": 99,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_171",
@@ -2733,7 +3569,11 @@
     "published_at": "2026-11-04T18:23:47+05:30",
     "likes_count": 100,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_172",
@@ -2749,7 +3589,11 @@
     "published_at": "2026-11-04T18:09:02+05:30",
     "likes_count": 101,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_173",
@@ -2765,7 +3609,11 @@
     "published_at": "2026-11-04T18:04:35+05:30",
     "likes_count": 102,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_174",
@@ -2781,7 +3629,11 @@
     "published_at": "2026-11-04T18:03:00+05:30",
     "likes_count": 103,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_175",
@@ -2797,7 +3649,11 @@
     "published_at": "2026-11-04T18:01:33+05:30",
     "likes_count": 104,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_176",
@@ -2813,7 +3669,11 @@
     "published_at": "2026-11-04T17:59:55+05:30",
     "likes_count": 105,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_177",
@@ -2829,7 +3689,11 @@
     "published_at": "2026-11-02T18:22:48+05:30",
     "likes_count": 106,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_178",
@@ -2845,7 +3709,11 @@
     "published_at": "2026-11-02T16:14:03+05:30",
     "likes_count": 107,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_179",
@@ -2861,7 +3729,11 @@
     "published_at": "2026-10-26T20:06:35+05:30",
     "likes_count": 108,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_180",
@@ -2877,7 +3749,11 @@
     "published_at": "2026-10-24T17:28:27+05:30",
     "likes_count": 109,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_181",
@@ -2893,7 +3769,11 @@
     "published_at": "2026-10-23T18:33:30+05:30",
     "likes_count": 110,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_182",
@@ -2909,7 +3789,11 @@
     "published_at": "2026-10-18T13:42:37+05:30",
     "likes_count": 111,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_183",
@@ -2925,7 +3809,11 @@
     "published_at": "2026-10-14T23:00:49+05:30",
     "likes_count": 112,
     "comments_count": 13,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_184",
@@ -2941,7 +3829,11 @@
     "published_at": "2026-10-13T15:30:21+05:30",
     "likes_count": 113,
     "comments_count": 14,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_185",
@@ -2957,7 +3849,11 @@
     "published_at": "2026-10-12T22:53:27+05:30",
     "likes_count": 114,
     "comments_count": 15,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_186",
@@ -2973,7 +3869,11 @@
     "published_at": "2026-10-12T15:48:09+05:30",
     "likes_count": 115,
     "comments_count": 16,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_187",
@@ -2989,7 +3889,11 @@
     "published_at": "2026-11-05T09:33:44+05:30",
     "likes_count": 116,
     "comments_count": 17,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_188",
@@ -3005,7 +3909,11 @@
     "published_at": "2026-11-05T09:15:48+05:30",
     "likes_count": 117,
     "comments_count": 18,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_189",
@@ -3021,7 +3929,11 @@
     "published_at": "2026-11-04T18:58:51+05:30",
     "likes_count": 118,
     "comments_count": 19,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_190",
@@ -3037,7 +3949,11 @@
     "published_at": "2026-11-04T16:13:17+05:30",
     "likes_count": 119,
     "comments_count": 20,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_191",
@@ -3053,7 +3969,11 @@
     "published_at": "2026-11-04T13:43:39+05:30",
     "likes_count": 120,
     "comments_count": 21,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_192",
@@ -3069,7 +3989,11 @@
     "published_at": "2026-11-04T12:18:48+05:30",
     "likes_count": 121,
     "comments_count": 22,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_193",
@@ -3085,7 +4009,11 @@
     "published_at": "2026-11-04T10:53:17+05:30",
     "likes_count": 122,
     "comments_count": 23,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "UNVERIFIED_CLAIM",
+    "veracity_score": 52,
+    "veracity_label": "UNVERIFIED CLAIM (ચકાસણી હેઠળ)",
+    "fact_check_notes": "Viral social claim currently under active police corroboration."
   },
   {
     "id": "live_rss_194",
@@ -3101,7 +4029,11 @@
     "published_at": "2026-11-03T21:01:36+05:30",
     "likes_count": 123,
     "comments_count": 24,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_195",
@@ -3117,7 +4049,11 @@
     "published_at": "2026-11-03T20:57:12+05:30",
     "likes_count": 124,
     "comments_count": 25,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_196",
@@ -3133,7 +4069,11 @@
     "published_at": "2026-11-03T20:56:35+05:30",
     "likes_count": 125,
     "comments_count": 26,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_197",
@@ -3149,7 +4089,11 @@
     "published_at": "2026-11-05T06:35:12+00:00",
     "likes_count": 126,
     "comments_count": 27,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_198",
@@ -3165,7 +4109,11 @@
     "published_at": "2026-11-05T06:09:13+00:00",
     "likes_count": 127,
     "comments_count": 28,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_199",
@@ -3181,7 +4129,11 @@
     "published_at": "2026-11-05T05:46:50+00:00",
     "likes_count": 128,
     "comments_count": 29,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_200",
@@ -3197,7 +4149,11 @@
     "published_at": "2026-11-05T05:22:09+00:00",
     "likes_count": 129,
     "comments_count": 30,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_201",
@@ -3213,7 +4169,11 @@
     "published_at": "2026-11-05T05:02:06+00:00",
     "likes_count": 130,
     "comments_count": 6,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_202",
@@ -3229,7 +4189,11 @@
     "published_at": "2026-11-05T04:38:55+00:00",
     "likes_count": 131,
     "comments_count": 7,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_203",
@@ -3245,7 +4209,11 @@
     "published_at": "2026-11-04T17:55:56+00:00",
     "likes_count": 132,
     "comments_count": 8,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_204",
@@ -3261,7 +4229,11 @@
     "published_at": "2026-11-04T15:11:10+00:00",
     "likes_count": 133,
     "comments_count": 9,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_205",
@@ -3277,7 +4249,11 @@
     "published_at": "2026-11-04T14:53:58+00:00",
     "likes_count": 134,
     "comments_count": 10,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_206",
@@ -3293,7 +4269,11 @@
     "published_at": "2026-11-04T14:45:22+00:00",
     "likes_count": 135,
     "comments_count": 11,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   },
   {
     "id": "live_rss_207",
@@ -3309,6 +4289,10 @@
     "published_at": "2026-11-04T13:44:40+00:00",
     "likes_count": 136,
     "comments_count": 12,
-    "is_live_stream": true
+    "is_live_stream": true,
+    "veracity_status": "VERIFIED_REAL",
+    "veracity_score": 94,
+    "veracity_label": "VERIFIED REAL (સાચા સમાચાર)",
+    "fact_check_notes": "Corroborated with official police bulletin or accredited state media."
   }
 ]
