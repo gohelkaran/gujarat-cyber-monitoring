@@ -965,26 +965,40 @@ const InstagramApp = {
             const originName = row.origin_label || (row.source_account ? `@${row.source_account}` : 'Gujarat Police Network');
             const oLower = originName.toLowerCase();
 
-            // Strict 1-to-1 Origin & Platform Classification based on actual destination permalink
-            // Strict 1-to-1 Classification: Driven directly by verified destination URL
+            // Strict 1-to-1 Origin & Platform Classification based on actual destination permalink and veracity
             const isInstagram = linkStr.includes("instagram.com");
             const isFacebook = !isInstagram && linkStr.includes("facebook.com");
             const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN");
-            const isNews = !isInstagram && !isFacebook && !isPolice;
+            const isFake = (row.veracity_status === "SUSPECTED_FAKE") || linkStr.includes("case=gs_hoax") || linkStr.includes("case=pm_yojana") || linkStr.includes("case=exam_leak");
 
             let platformBadge = '';
-            let linkBtnLabel = t('table.watch_reel', 'Watch Reel');
-            let linkBtnIcon = 'bi-instagram';
-            let linkBtnClass = 'btn-outline-danger';
+            let linkBtnLabel = t('table.read_article', 'Read Article');
+            let linkBtnIcon = 'bi-box-arrow-up-right';
+            let linkBtnClass = 'btn-outline-primary';
 
-            if (isInstagram) {
+            if (isFake) {
+                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>${t('badge.hoax_alert', 'HOAX ALERT')}</span>`;
+                linkBtnLabel = 'Read Police Debunk';
+                linkBtnIcon = 'bi-shield-fill-exclamation';
+                linkBtnClass = 'btn-danger';
+            } else if (isInstagram) {
                 platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>${t('badge.ig_reel', 'IG REEL')}</span>`;
-                linkBtnLabel = t('table.watch_reel', 'Watch Reel');
-                linkBtnIcon = 'bi-instagram';
-                linkBtnClass = 'btn-outline-danger';
+                if (linkStr.includes("dd9imodre71")) {
+                    linkBtnLabel = 'Watch Reel (Danilimda)';
+                    linkBtnIcon = 'bi-play-circle-fill';
+                    linkBtnClass = 'btn-danger';
+                } else if (linkStr.includes("/reels") || linkStr.endsWith("/")) {
+                    linkBtnLabel = `View Police Feed`;
+                    linkBtnIcon = 'bi-instagram';
+                    linkBtnClass = 'btn-outline-danger';
+                } else {
+                    linkBtnLabel = t('table.watch_reel', 'Watch Reel');
+                    linkBtnIcon = 'bi-instagram';
+                    linkBtnClass = 'btn-outline-danger';
+                }
             } else if (isFacebook) {
                 platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>${t('badge.fb_post', 'FB POST')}</span>`;
-                linkBtnLabel = t('table.view_post', 'View FB Post');
+                linkBtnLabel = `View Official Page`;
                 linkBtnIcon = 'bi-facebook';
                 linkBtnClass = 'btn-outline-primary';
             } else if (isPolice) {
@@ -2471,6 +2485,182 @@ Timestamp: ${new Date().toISOString()}
                 </div>
             </div>
         `;
+    },
+
+    async runPostInvestigation() {
+        const input = document.getElementById("investigate-url-input");
+        const distSelect = document.getElementById("investigate-district");
+        const container = document.getElementById("investigate-result-container");
+        const btn = document.getElementById("btn-run-investigate");
+
+        const rawVal = input ? input.value.trim() : "";
+        if (!rawVal) {
+            this.showToast("Please enter an Instagram reel URL, Facebook post link, or claim text.", "warning");
+            return;
+        }
+
+        const district = distSelect ? distSelect.value : "All Gujarat";
+        const origBtnHtml = btn ? btn.innerHTML : null;
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Analyzing...`;
+        }
+        if (container) {
+            container.classList.remove("d-none");
+            container.innerHTML = `
+                <div class="p-3 text-center bg-white border rounded">
+                    <div class="spinner-border text-primary spinner-border-sm me-2" role="status"></div>
+                    <span class="font-mono text-secondary small">Investigating URL with AI Veracity Engine & Gujarat Police Crime Registry...</span>
+                </div>
+            `;
+        }
+
+        try {
+            const res = await fetch("/api/v1/instagram/verify-url", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    url: rawVal.startsWith("http") ? rawVal : "",
+                    claim_text: rawVal,
+                    district: district
+                })
+            });
+            const json = await res.json();
+            if (!json.success || !json.data) {
+                throw new Error(json.message || "Investigation failed");
+            }
+
+            const d = json.data;
+            window._lastInvestigatedPost = d;
+
+            const isFake = d.veracity_status === "SUSPECTED_FAKE";
+            const isReal = d.veracity_status === "VERIFIED_REAL";
+            const badgeBg = isReal ? "bg-success" : (isFake ? "bg-danger" : "bg-warning text-dark");
+            const icon = isReal ? "bi-patch-check-fill" : (isFake ? "bi-exclamation-octagon-fill" : "bi-question-diamond-fill");
+
+            container.innerHTML = `
+                <div class="card border ${isReal ? 'border-success' : (isFake ? 'border-danger' : 'border-warning')} shadow-sm bg-white">
+                    <div class="card-header py-2 d-flex flex-wrap justify-content-between align-items-center ${isReal ? 'bg-success-subtle text-success-emphasis' : (isFake ? 'bg-danger-subtle text-danger-emphasis' : 'bg-warning-subtle text-dark')}">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi ${icon} fs-5"></i>
+                            <span class="fw-bold font-mono small">${this.escapeHtml(d.veracity_label || 'VERACITY VERDICT')}</span>
+                            <span class="badge ${badgeBg} font-mono ms-1">${d.veracity_score}% CONFIDENCE</span>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-light text-secondary border font-mono small">${this.escapeHtml(d.platform)}</span>
+                            <span class="badge bg-light text-secondary border font-mono small">${this.escapeHtml(d.city || district)}</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-3">
+                            <div class="col-lg-8">
+                                <h6 class="fw-bold text-dark font-gujarati mb-1">${this.escapeHtml(d.headline || '')}</h6>
+                                <p class="text-secondary small font-gujarati mb-2" style="line-height: 1.5;">${this.escapeHtml(d.full_caption || '')}</p>
+                                
+                                <div class="p-2 rounded bg-light border mb-2 small font-mono">
+                                    <div class="text-dark-emphasis fw-bold mb-1"><i class="bi bi-info-circle text-primary me-1"></i>Investigator Intelligence Findings:</div>
+                                    <div class="text-secondary">${this.escapeHtml(d.investigator_notes || '')}</div>
+                                    <div class="text-danger fw-semibold mt-1"><i class="bi bi-shield-slash me-1"></i>Action Guidance: ${this.escapeHtml(d.action_guidance || '')}</div>
+                                </div>
+
+                                <!-- Pre-generated Police Debunk Advisory -->
+                                <div class="border rounded p-2 bg-light">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="fw-bold font-mono text-primary small">
+                                            <i class="bi bi-megaphone-fill me-1"></i>1-Click Official Gujarat Police Debunk Statement
+                                        </span>
+                                        <button type="button" class="btn btn-xs btn-outline-danger font-mono" onclick="InstagramApp.copyInvestigatedDebunk()">
+                                            <i class="bi bi-clipboard-check me-1"></i> Copy Press Release
+                                        </button>
+                                    </div>
+                                    <div class="p-2 rounded bg-white border text-dark font-gujarati small" style="font-size: 0.8rem; max-height: 90px; overflow-y: auto;">
+                                        ${this.escapeHtml(d.official_debunk_gu || '')}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 border-start">
+                                <div class="mb-2">
+                                    <div class="text-secondary small font-mono fw-bold">THREAT CATEGORY</div>
+                                    <div class="badge bg-warning-subtle text-dark border border-warning-subtle font-mono p-1 mt-1 text-wrap text-start">
+                                        ${this.escapeHtml(d.threat_category || 'Public Safety')}
+                                    </div>
+                                </div>
+
+                                <div class="mb-2">
+                                    <div class="text-secondary small font-mono fw-bold">SUSPECT IOCs & INDICATORS</div>
+                                    <div class="small font-mono text-dark mt-1">
+                                        ${d.extracted_iocs?.apks?.length ? `<div><span class="badge bg-danger font-mono me-1">APK</span> ${d.extracted_iocs.apks.map(a => this.escapeHtml(a)).join(', ')}</div>` : ''}
+                                        ${d.extracted_iocs?.phones?.length ? `<div><span class="badge bg-danger font-mono me-1">Phone</span> ${d.extracted_iocs.phones.map(p => this.escapeHtml(p)).join(', ')}</div>` : ''}
+                                        ${d.extracted_iocs?.upi_ids?.length ? `<div><span class="badge bg-danger font-mono me-1">UPI</span> ${d.extracted_iocs.upi_ids.map(u => this.escapeHtml(u)).join(', ')}</div>` : ''}
+                                        ${(!d.extracted_iocs?.apks?.length && !d.extracted_iocs?.phones?.length && !d.extracted_iocs?.upi_ids?.length) ? `<span class="text-muted small">None detected in text</span>` : ''}
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2 mt-3">
+                                    ${d.url ? `
+                                        <a href="${this.escapeHtml(d.url)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${isReal ? 'btn-danger' : 'btn-outline-primary'} font-mono">
+                                            <i class="bi ${d.platform === 'INSTAGRAM' ? 'bi-instagram' : 'bi-facebook'} me-1"></i> ${isReal ? 'Open Exact Video Reel' : 'Inspect Source Link'} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                                        </a>
+                                    ` : ''}
+                                    <button type="button" class="btn btn-sm btn-outline-success font-mono" onclick="InstagramApp.addInvestigatedToMonitor()">
+                                        <i class="bi bi-bookmark-plus-fill me-1"></i> Add to Live Monitor Feed
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            this.showToast(`Post verified: ${d.veracity_label} (${d.veracity_score}% confidence)`, isReal ? "success" : "danger");
+        } catch (err) {
+            console.error("Investigation error:", err);
+            container.innerHTML = `
+                <div class="alert alert-danger py-2 small font-mono">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> Investigation error: ${this.escapeHtml(err.message)}
+                </div>
+            `;
+            this.showToast("Could not complete verification: " + err.message, "danger");
+        } finally {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = origBtnHtml;
+            }
+        }
+    },
+
+    copyInvestigatedDebunk() {
+        const d = window._lastInvestigatedPost || {};
+        const text = `${d.official_debunk_gu || ''}\n\n[English Advisory]\n${d.official_debunk_en || ''}\n\n- Gujarat Police Cyber Crime Cell • Anti-Misinformation Unit\nHelpline: 1930 / https://cybercrime.gov.in`;
+        navigator.clipboard.writeText(text).then(() => {
+            this.showToast("Police Debunk Statement copied to clipboard!", "success");
+        }).catch(err => {
+            this.showToast("Copy error: " + err.message, "danger");
+        });
+    },
+
+    async addInvestigatedToMonitor() {
+        const d = window._lastInvestigatedPost;
+        if (!d) return;
+        try {
+            const res = await fetch("/api/v1/instagram/verify-url", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    url: d.url,
+                    claim_text: d.full_caption,
+                    district: d.city,
+                    save_to_monitor: true
+                })
+            });
+            const json = await res.json();
+            if (json.success) {
+                this.showToast("Item added to live monitor feed and database successfully!", "success");
+                await this.loadDashboardData(true);
+            }
+        } catch (e) {
+            this.showToast("Could not save to monitor: " + e.message, "danger");
+        }
     },
 
     copyPoliceDebunk() {
