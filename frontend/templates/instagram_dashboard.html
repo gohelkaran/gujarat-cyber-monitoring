@@ -516,14 +516,17 @@
                     <div class="col-lg-4 col-md-4">
                         <div class="d-flex justify-content-between align-items-center mb-1">
                             <label class="form-label small text-primary fw-bold mb-0">
-                                <i class="bi bi-search me-1"></i>Search Keyword / Topic / Location
+                                <i class="bi bi-search me-1"></i><span data-i18n="filter.keyword">Search Keyword / Topic / Location</span>
                             </label>
                             <span class="badge bg-success-subtle text-success border border-success-subtle font-mono" style="font-size: 0.65rem;">
                                 <i class="bi bi-lightning-fill me-1"></i>LIVE AUTO-SEARCH
                             </span>
                         </div>
                         <div class="input-group input-group-sm">
-                            <input type="text" id="filter-keyword" class="form-control font-mono" placeholder="Type letters to search live (e.g. digital arrest, kyc, surat)..." oninput="InstagramApp.handleLiveSearch(this.value)">
+                            <button class="btn btn-sm btn-outline-secondary font-mono" type="button" id="btn-guj-keyboard-toggle" title="Toggle Gujarati phonetic typing / ગુજરાતી ટાઈપિંગ">
+                                <i class="bi bi-keyboard me-1"></i>English
+                            </button>
+                            <input type="text" id="filter-keyword" class="form-control font-mono" data-i18n-placeholder="filter.keyword_placeholder" placeholder="Type letters to search live (e.g. digital arrest, kyc, surat)..." oninput="InstagramApp.handleLiveSearch(this.value)">
                             <button class="btn btn-outline-secondary" type="button" onclick="InstagramApp.clearSearch()" title="Clear search">
                                 <i class="bi bi-x-lg"></i>
                             </button>
@@ -734,12 +737,12 @@
             <table class="table table-hover align-middle mb-0 font-sans">
                 <thead class="table-light font-mono small text-secondary">
                     <tr>
-                        <th style="width: 220px;">ORIGIN &amp; DISTRICT</th>
-                        <th style="width: 135px;">PUBLISHED</th>
-                        <th>CRIME INTELLIGENCE &amp; REPORT CONTENT</th>
-                        <th style="width: 150px;">THREAT CATEGORY</th>
-                        <th style="width: 110px;">DB STATUS</th>
-                        <th style="width: 230px;" class="text-end">ACTIONS</th>
+                        <th style="width: 220px;" data-i18n="table.header_origin">ORIGIN &amp; DISTRICT</th>
+                        <th style="width: 135px;" data-i18n="table.header_published">PUBLISHED</th>
+                        <th data-i18n="table.header_content">CRIME INTELLIGENCE &amp; REPORT CONTENT</th>
+                        <th style="width: 150px;" data-i18n="table.header_category">THREAT CATEGORY</th>
+                        <th style="width: 110px;" data-i18n="table.header_db_status">DB STATUS</th>
+                        <th style="width: 230px;" class="text-end" data-i18n="table.header_actions">ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody id="monitoring-results-tbody">

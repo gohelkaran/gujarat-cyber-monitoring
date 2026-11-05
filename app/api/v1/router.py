@@ -15,12 +15,14 @@ from app.api.v1.endpoints import (
     social_harvester,
     sources,
     keywords,
+    users,
 )
 
 api_v1_router = APIRouter(prefix="/v1")
 api_v1_router.include_router(health.router)
 api_v1_router.include_router(system.router)
 api_v1_router.include_router(auth.router)
+api_v1_router.include_router(users.router)
 api_v1_router.include_router(instagram.router)
 api_v1_router.include_router(facebook.router)
 api_v1_router.include_router(crime_feeds.router)

@@ -912,24 +912,25 @@ const InstagramApp = {
             const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN");
             const isNews = !isInstagram && !isFacebook && !isPolice;
 
+            const t = (k, fb) => window.SocI18n ? window.SocI18n.t(k, fb) : fb;
             let platformBadge = '';
-            let linkBtnLabel = 'Watch Reel';
+            let linkBtnLabel = t('table.watch_reel', 'Watch Reel');
             let linkBtnIcon = 'bi-instagram';
             let linkBtnClass = 'btn-outline-danger';
 
             if (isInstagram) {
-                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>IG REEL</span>`;
-                linkBtnLabel = 'Watch Reel';
+                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>${t('badge.ig_reel', 'IG REEL')}</span>`;
+                linkBtnLabel = t('table.watch_reel', 'Watch Reel');
                 linkBtnIcon = 'bi-instagram';
                 linkBtnClass = 'btn-outline-danger';
             } else if (isFacebook) {
-                platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>FB POST</span>`;
-                linkBtnLabel = 'View FB Post';
+                platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>${t('badge.fb_post', 'FB POST')}</span>`;
+                linkBtnLabel = t('table.view_post', 'View FB Post');
                 linkBtnIcon = 'bi-facebook';
                 linkBtnClass = 'btn-outline-primary';
             } else if (isPolice) {
-                platformBadge = `<span class="badge badge-origin-police font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-shield-fill-check me-1"></i>POLICE ADVISORY</span>`;
-                linkBtnLabel = 'View Advisory';
+                platformBadge = `<span class="badge badge-origin-police font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-shield-fill-check me-1"></i>${t('badge.police_advisory', 'POLICE ADVISORY')}</span>`;
+                linkBtnLabel = t('table.view_advisory', 'View Advisory');
                 linkBtnIcon = 'bi-shield-check';
                 linkBtnClass = 'btn-outline-primary';
             } else {
@@ -939,8 +940,8 @@ const InstagramApp = {
                 else if (oLower.includes('abp')) oClass = 'badge-origin-abp';
                 else if (oLower.includes('express') || oLower.includes('times')) oClass = 'badge-origin-express';
 
-                platformBadge = `<span class="badge ${oClass} font-mono" style="font-size: 0.68rem;"><i class="bi bi-newspaper me-1"></i>NEWS ARTICLE</span>`;
-                linkBtnLabel = 'Read Article';
+                platformBadge = `<span class="badge ${oClass} font-mono" style="font-size: 0.68rem;"><i class="bi bi-newspaper me-1"></i>${t('badge.news_article', 'NEWS ARTICLE')}</span>`;
+                linkBtnLabel = t('table.read_article', 'Read Article');
                 linkBtnIcon = 'bi-box-arrow-up-right';
                 linkBtnClass = 'btn-outline-primary';
             }
@@ -999,7 +1000,7 @@ const InstagramApp = {
                                 </a>
                             ` : ''}
                             <button type="button" class="btn btn-sm btn-outline-info font-mono" onclick="InstagramApp.openItemModal('${row.id}')" title="Full Evidence, Origin & Telemetry Details">
-                                <i class="bi bi-eye me-1"></i> Intel
+                                <i class="bi bi-eye me-1"></i> ${window.SocI18n ? window.SocI18n.t('table.intel', 'Intel') : 'Intel'}
                             </button>
                         </div>
                     </td>
@@ -1390,7 +1391,11 @@ const InstagramApp = {
                     const hLower = (r.headline || '').toLowerCase();
                     cityMatch = cLower.includes(cityFilter) || hLower.includes(cityFilter);
                 }
-                const kwMatch = !kw || text.includes(kw);
+                let kwGuj = '';
+                if (window.GujaratiTransliterator && kw) {
+                    kwGuj = window.GujaratiTransliterator.transliterateWord(kw);
+                }
+                const kwMatch = !kw || text.includes(kw) || (kwGuj && kwGuj !== kw && text.includes(kwGuj));
                 return cityMatch && kwMatch;
             });
             if (matched.length > 0) {
