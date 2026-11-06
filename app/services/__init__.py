@@ -9,7 +9,7 @@ from app.services.health_service import HealthService
 from app.services.audit_service import AuditService
 from app.services.source_service import SourceService
 from app.services.keyword_service import KeywordService
-from app.services.instagram_service import InstagramService
+from app.services.gemini_service import GeminiAIService, get_gemini_service
 from app.services.notification_service import NotificationService
 
 __all__ = [
@@ -18,6 +18,7 @@ __all__ = [
     "AuditService",
     "SourceService",
     "KeywordService",
-    "InstagramService",
+    "GeminiAIService",
+    "get_gemini_service",
     "NotificationService",
 ]

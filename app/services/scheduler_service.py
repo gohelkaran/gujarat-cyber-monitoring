@@ -61,7 +61,7 @@ class BackgroundSchedulerService:
             diff = (self.next_run_time - now).total_seconds()
             seconds_remaining = max(0, int(diff))
 
-        from app.services.instagram_service import MetaQuotaTracker
+        from app.integrations.meta.client import MetaQuotaTracker
         quota = MetaQuotaTracker.get_instance().get_quota_status()
 
         return {
@@ -168,8 +168,7 @@ class BackgroundSchedulerService:
 
         # Ingest in database using a fresh thread-safe session
         def _db_ingest():
-            from app.services.instagram_service import InstagramService, MetaQuotaTracker
-            from app.services.facebook_service import FacebookService
+            from app.integrations.meta.client import MetaQuotaTracker
             from app.services.crime_feed_service import CrimeFeedService
             MetaQuotaTracker.get_instance().record_call(1)
             db = SessionLocal()

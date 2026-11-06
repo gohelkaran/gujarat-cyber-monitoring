@@ -2516,7 +2516,7 @@ Timestamp: ${new Date().toISOString()}
         }
 
         try {
-            const res = await fetch("/api/v1/instagram/verify-url", {
+            const res = await fetch("/api/v1/ai/investigate-post", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -2643,14 +2643,14 @@ Timestamp: ${new Date().toISOString()}
         const d = window._lastInvestigatedPost;
         if (!d) return;
         try {
-            const res = await fetch("/api/v1/instagram/verify-url", {
+            const res = await fetch("/api/v1/ai/investigate-post", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     url: d.url,
                     claim_text: d.full_caption,
                     district: d.city,
-                    save_to_monitor: true
+                    save_to_feed: true
                 })
             });
             const json = await res.json();

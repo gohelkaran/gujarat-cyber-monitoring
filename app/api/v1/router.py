@@ -9,10 +9,10 @@ from app.api.v1.endpoints import (
     health,
     system,
     auth,
+    meta,
+    ai_investigator,
     instagram,
-    facebook,
     crime_feeds,
-    social_harvester,
     sources,
     keywords,
     users,
@@ -23,9 +23,9 @@ api_v1_router.include_router(health.router)
 api_v1_router.include_router(system.router)
 api_v1_router.include_router(auth.router)
 api_v1_router.include_router(users.router)
+api_v1_router.include_router(meta.router)
+api_v1_router.include_router(ai_investigator.router)
 api_v1_router.include_router(instagram.router)
-api_v1_router.include_router(facebook.router)
 api_v1_router.include_router(crime_feeds.router)
-api_v1_router.include_router(social_harvester.router)
 api_v1_router.include_router(sources.router)
 api_v1_router.include_router(keywords.router)

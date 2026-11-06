@@ -88,7 +88,7 @@ class Settings(BaseSettings):
     # Meta / Facebook & Instagram Official Graph API Configuration
     META_APP_ID: Optional[str] = Field(default=None, description="Meta App / Client ID")
     META_APP_SECRET: Optional[SecretStr] = Field(default=None, description="Meta App Secret")
-    META_API_VERSION: str = Field(default="v19.0", description="Meta Graph API Version")
+    META_API_VERSION: str = Field(default="v20.0", description="Meta Graph API Version")
     META_GRAPH_BASE_URL: str = Field(default="https://graph.facebook.com", description="Meta Graph API Base URL")
     META_DEFAULT_ACCESS_TOKEN: Optional[SecretStr] = Field(default=None, description="Default fallback Meta access token")
     META_WEBHOOK_VERIFY_TOKEN: str = Field(default="gujarat_cyber_webhook_2026", description="Meta Webhook Verification Token")
@@ -98,6 +98,12 @@ class Settings(BaseSettings):
     META_MAX_RETRIES: int = Field(default=3, description="Maximum retry attempts on transient network failures")
     META_BACKOFF_FACTOR: float = Field(default=1.5, description="Exponential backoff multiplier")
     META_RATE_LIMIT_THRESHOLD_PERCENT: float = Field(default=85.0, description="Usage percentage threshold to trigger rate limit protection")
+
+    # Google Gemini AI Intelligence Configuration
+    GEMINI_API_KEY: Optional[SecretStr] = Field(default=None, description="Google Gemini API Key for grounded verification & threat analysis")
+    GEMINI_MODEL: str = Field(default="gemini-2.5-flash", description="Default Google Gemini model")
+    GEMINI_PRO_MODEL: str = Field(default="gemini-1.5-pro", description="Deep forensic reasoning Gemini model")
+    GEMINI_ENABLE_SEARCH_GROUNDING: bool = Field(default=True, description="Enable Google Search grounding for real-time news fact-checking")
 
     # Government Audit & Data Governance
     DEFAULT_DATA_CLASSIFICATION: Literal["UNCLASSIFIED", "RESTRICTED", "CONFIDENTIAL", "SECRET"] = "RESTRICTED"
