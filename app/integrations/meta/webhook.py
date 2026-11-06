@@ -58,3 +58,4 @@ class MetaWebhookHandler:
         if not is_valid:
             logger.error("Meta webhook HMAC signature mismatch.")
         return is_valid
+

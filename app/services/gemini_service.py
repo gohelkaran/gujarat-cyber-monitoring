@@ -34,7 +34,11 @@ class GeminiAIService:
             or (settings.GEMINI_API_KEY.get_secret_value() if settings.GEMINI_API_KEY else None)
             or os.environ.get("GEMINI_API_KEY")
         )
-        self.model = model or getattr(settings, "GEMINI_MODEL", "gemini-2.5-flash")
+        raw_model = model or getattr(settings, "GEMINI_MODEL", "gemini-3.5-flash")
+        if not raw_model or "gemini-2.5" in str(raw_model):
+            self.model = "gemini-3.5-flash"
+        else:
+            self.model = raw_model
         self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
         self.timeout = 25.0
 
@@ -271,3 +275,4 @@ class GeminiAIService:
 def get_gemini_service() -> GeminiAIService:
     """Dependency injector / factory for GeminiAIService."""
     return GeminiAIService()
+

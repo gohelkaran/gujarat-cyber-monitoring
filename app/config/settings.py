@@ -101,8 +101,8 @@ class Settings(BaseSettings):
 
     # Google Gemini AI Intelligence Configuration
     GEMINI_API_KEY: Optional[SecretStr] = Field(default=None, description="Google Gemini API Key for grounded verification & threat analysis")
-    GEMINI_MODEL: str = Field(default="gemini-2.5-flash", description="Default Google Gemini model")
-    GEMINI_PRO_MODEL: str = Field(default="gemini-1.5-pro", description="Deep forensic reasoning Gemini model")
+    GEMINI_MODEL: str = Field(default="gemini-3.5-flash", description="Default Google Gemini model")
+    GEMINI_PRO_MODEL: str = Field(default="gemini-pro-latest", description="Deep forensic reasoning Gemini model")
     GEMINI_ENABLE_SEARCH_GROUNDING: bool = Field(default=True, description="Enable Google Search grounding for real-time news fact-checking")
 
     # Government Audit & Data Governance
