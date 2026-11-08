@@ -479,23 +479,6 @@
                             <i class="bi bi-facebook me-1"></i> FACEBOOK PAGES
                         </button>
                     </div>
-
-                    <div class="vr mx-1 d-none d-lg-block"></div>
-                    <span class="text-secondary small font-mono fw-bold">AI VERACITY:</span>
-                    <div class="btn-group" role="group" aria-label="Veracity Filter">
-                        <button type="button" class="btn btn-sm btn-outline-secondary active font-mono" id="btn-veracity-ALL" onclick="InstagramApp.setVeracity('ALL')">
-                            ALL
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-danger font-mono" id="btn-veracity-FAKE" onclick="InstagramApp.setVeracity('FAKE')" title="Only Rumors & Fake News">
-                            <i class="bi bi-exclamation-octagon-fill me-1"></i> FAKE / RUMORS
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-success font-mono" id="btn-veracity-REAL" onclick="InstagramApp.setVeracity('REAL')" title="Only Verified Real Police Operations & Articles">
-                            <i class="bi bi-shield-check me-1"></i> VERIFIED REAL
-                        </button>
-                        <button type="button" class="btn btn-sm btn-outline-warning font-mono" id="btn-veracity-UNVERIFIED" onclick="InstagramApp.setVeracity('UNVERIFIED')" title="Under Verification">
-                            <i class="bi bi-question-circle me-1"></i> UNVERIFIED
-                        </button>
-                    </div>
                 </div>
 
                 <div class="d-flex align-items-center gap-2">
@@ -799,7 +782,7 @@
     <div class="card mb-3 shadow-sm" id="results-section">
         <div class="card-header py-2 d-flex justify-content-between align-items-center">
             <div class="fw-semibold small font-mono">
-                <i class="bi bi-newspaper me-1 text-primary"></i> VERIFIED GUJARAT CRIME &amp; SOCIAL INTELLIGENCE FEEDS
+                <i class="bi bi-broadcast me-1 text-primary"></i> GUJARAT NEWS CHANNELS &amp; SOCIAL MEDIA MONITORING FEED
             </div>
             <div class="small text-secondary font-mono" id="results-count-label">Displaying results...</div>
         </div>
@@ -807,19 +790,18 @@
             <table class="table table-hover align-middle mb-0 font-sans">
                 <thead class="table-light font-mono small text-secondary">
                     <tr>
-                        <th style="width: 220px;" data-i18n="table.header_origin">ORIGIN &amp; DISTRICT</th>
-                        <th style="width: 135px;" data-i18n="table.header_published">PUBLISHED</th>
-                        <th data-i18n="table.header_content">CRIME INTELLIGENCE &amp; REPORT CONTENT</th>
-                        <th style="width: 150px;" data-i18n="table.header_category">THREAT CATEGORY</th>
-                        <th style="width: 140px;" data-i18n="table.header_veracity">AI VERACITY &amp; STATUS</th>
-                        <th style="width: 230px;" class="text-end" data-i18n="table.header_actions">ACTIONS</th>
+                        <th style="width: 220px;">SOURCE &amp; JURISDICTION</th>
+                        <th style="width: 140px;">PUBLISHED</th>
+                        <th>HEADLINE &amp; NEWS CONTENT</th>
+                        <th style="width: 220px;" class="text-center">ORIGINAL SOURCE LINK</th>
+                        <th style="width: 130px;" class="text-end">SAVE / ARCHIVE</th>
                     </tr>
                 </thead>
                 <tbody id="monitoring-results-tbody">
                     <tr>
-                        <td colspan="6" class="text-center py-5 text-secondary">
+                        <td colspan="5" class="text-center py-5 text-secondary">
                             <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
-                            Loading Gujarat cyber crime feeds...
+                            Loading Gujarat news &amp; social media feeds...
                         </td>
                     </tr>
                 </tbody>

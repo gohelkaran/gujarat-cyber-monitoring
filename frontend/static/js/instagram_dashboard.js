@@ -969,36 +969,19 @@ const InstagramApp = {
             const isInstagram = linkStr.includes("instagram.com");
             const isFacebook = !isInstagram && linkStr.includes("facebook.com");
             const isPolice = !isInstagram && !isFacebook && (linkStr.includes("police.gujarat.gov.in") || plat === "POLICE_BULLETIN");
-            const isFake = (row.veracity_status === "SUSPECTED_FAKE") || linkStr.includes("case=gs_hoax") || linkStr.includes("case=pm_yojana") || linkStr.includes("case=exam_leak");
-
             let platformBadge = '';
-            let linkBtnLabel = t('table.read_article', 'Read Article');
+            let linkBtnLabel = 'Open News Article';
             let linkBtnIcon = 'bi-box-arrow-up-right';
-            let linkBtnClass = 'btn-outline-primary';
+            let linkBtnClass = 'btn-outline-success';
 
-            if (isFake) {
-                platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-exclamation-triangle-fill me-1"></i>${t('badge.hoax_alert', 'HOAX ALERT')}</span>`;
-                linkBtnLabel = 'Read Police Debunk';
-                linkBtnIcon = 'bi-shield-fill-exclamation';
-                linkBtnClass = 'btn-danger';
-            } else if (isInstagram) {
+            if (isInstagram) {
                 platformBadge = `<span class="badge bg-danger-subtle text-danger border border-danger-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-instagram me-1"></i>${t('badge.ig_reel', 'IG REEL')}</span>`;
-                if (linkStr.includes("dd9imodre71")) {
-                    linkBtnLabel = 'Watch Reel (Danilimda)';
-                    linkBtnIcon = 'bi-play-circle-fill';
-                    linkBtnClass = 'btn-danger';
-                } else if (linkStr.includes("/reels") || linkStr.endsWith("/")) {
-                    linkBtnLabel = `Watch Reel`;
-                    linkBtnIcon = 'bi-instagram';
-                    linkBtnClass = 'btn-outline-danger';
-                } else {
-                    linkBtnLabel = t('table.watch_reel', 'Watch Reel');
-                    linkBtnIcon = 'bi-instagram';
-                    linkBtnClass = 'btn-outline-danger';
-                }
+                linkBtnLabel = 'Watch Reel';
+                linkBtnIcon = 'bi-play-circle-fill';
+                linkBtnClass = 'btn-outline-danger';
             } else if (isFacebook) {
                 platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>${t('badge.fb_post', 'FB POST')}</span>`;
-                linkBtnLabel = `View FB Post`;
+                linkBtnLabel = 'View FB Post';
                 linkBtnIcon = 'bi-facebook';
                 linkBtnClass = 'btn-outline-primary';
             } else if (isPolice) {
@@ -1014,9 +997,9 @@ const InstagramApp = {
                 else if (oLower.includes('express') || oLower.includes('times')) oClass = 'badge-origin-express';
 
                 platformBadge = `<span class="badge ${oClass} font-mono" style="font-size: 0.68rem;"><i class="bi bi-newspaper me-1"></i>${t('badge.news_article', 'NEWS ARTICLE')}</span>`;
-                linkBtnLabel = t('table.read_article', 'Read Article');
+                linkBtnLabel = 'Open News Article';
                 linkBtnIcon = 'bi-box-arrow-up-right';
-                linkBtnClass = 'btn-outline-primary';
+                linkBtnClass = 'btn-outline-success';
             }
 
             const crimeCategory = row.crime_category || (row.raw_metadata?.crime_category) || 'Cyber Crime & Public Safety';
@@ -1040,45 +1023,32 @@ const InstagramApp = {
                     <td class="font-mono">
                         <div class="fw-semibold text-dark-emphasis" style="font-size:0.84rem;">${pubDate}</div>
                         <div class="text-secondary" style="font-size:0.74rem;">${pubTime}</div>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle font-mono px-1 mt-1" style="font-size: 0.68rem;">
+                        <span class="badge bg-light text-secondary border font-mono px-1 mt-1" style="font-size: 0.68rem;">
                             <i class="bi bi-clock me-1"></i>${relTime}
                         </span>
                     </td>
                     <td>
-                        <div class="news-headline font-gujarati">
+                        <div class="news-headline font-gujarati fw-bold text-dark mb-1" style="font-size: 0.95rem; line-height: 1.4;">
                             ${this.escapeHtml(headline)}
                         </div>
-                        <div class="news-caption font-gujarati text-truncate mb-1" style="max-width: 460px;" title="${this.escapeHtml(row.full_caption || '')}">
-                            ${this.escapeHtml(row.caption_snippet || row.full_caption || '(No caption)')}
+                        <div class="news-caption font-gujarati text-secondary text-truncate mb-1" style="max-width: 520px;" title="${this.escapeHtml(row.full_caption || '')}">
+                            ${this.escapeHtml(row.caption_snippet || row.full_caption || '')}
                         </div>
                         <div class="d-flex flex-wrap align-items-center gap-2 font-mono small text-secondary" style="font-size: 0.74rem;">
-                            <span class="text-secondary"><i class="bi bi-heart-fill text-danger me-1"></i>${row.like_count || 0}</span>
-                            <span class="text-secondary"><i class="bi bi-chat-dots-fill text-primary me-1"></i>${row.comments_count || 0}</span>
-                            <span class="text-secondary"><i class="bi bi-share-fill me-1"></i>${sharesCount}</span>
-                            ${hashtags.slice(0, 3).map(h => `<span class="badge bg-light text-secondary border" style="font-size: 0.65rem;">${this.escapeHtml(h)}</span>`).join('')}
+                            <span class="text-secondary"><i class="bi bi-heart text-danger me-1"></i>${row.like_count || 0}</span>
+                            <span class="text-secondary"><i class="bi bi-chat-dots text-primary me-1"></i>${row.comments_count || 0}</span>
+                            ${row.permalink ? `<span class="text-truncate text-muted" style="max-width: 250px;"><i class="bi bi-link-45deg me-1"></i>${this.escapeHtml(row.permalink)}</span>` : ''}
                         </div>
                     </td>
-                    <td>
-                        <span class="badge bg-warning-subtle text-dark border border-warning-subtle font-mono" style="font-size: 0.74rem; white-space: normal; text-align: left;" title="${this.escapeHtml(crimeCategory)}">
-                            <i class="bi bi-shield-exclamation me-1 text-warning-emphasis"></i>${this.escapeHtml(crimeCategory)}
-                        </span>
-                    </td>
-                    <td>${veracityBadge}</td>
-                    <td class="text-end">
-                        <div class="d-flex justify-content-end align-items-center gap-1">
-                            ${saveBtn}
-                            ${row.permalink ? `
-                                <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${linkBtnClass} font-mono" title="Open source: ${this.escapeHtml(row.permalink)}">
-                                    <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel}
-                                </a>
-                            ` : ''}
-                            <a href="https://news.google.com/search?q=${encodeURIComponent((row.headline || row.caption_snippet || '').replace(/\[.*?\]/g, '').trim())}&hl=gu&gl=IN&ceid=IN:gu" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-secondary font-mono" title="100% Guaranteed Live News Cross-Verification (Zero 404)">
-                                <i class="bi bi-patch-check-fill text-success me-1"></i> ${t('table.verify_news', 'Verify')}
+                    <td class="text-center">
+                        ${row.permalink ? `
+                            <a href="${this.escapeHtml(row.permalink)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm ${linkBtnClass} font-mono fw-bold shadow-sm px-3" title="Open source: ${this.escapeHtml(row.permalink)}">
+                                <i class="bi ${linkBtnIcon} me-1"></i> ${linkBtnLabel}
                             </a>
-                            <button type="button" class="btn btn-sm btn-outline-info font-mono" onclick="InstagramApp.openItemModal('${row.id}')" title="Full Evidence, Origin & Telemetry Details">
-                                <i class="bi bi-eye me-1"></i> ${window.SocI18n ? window.SocI18n.t('table.intel', 'Intel') : 'Intel'}
-                            </button>
-                        </div>
+                        ` : '<span class="text-muted small">No source link</span>'}
+                    </td>
+                    <td class="text-end">
+                        ${saveBtn}
                     </td>
                 </tr>
             `;

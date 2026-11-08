@@ -467,37 +467,10 @@ class LiveStreamService:
         return p if p.startswith("http") else "https://police.gujarat.gov.in"
 
     def _ensure_veracity(self, item: Dict[str, Any]) -> Dict[str, Any]:
-        """Classifies each intelligence item into VERIFIED_REAL, SUSPECTED_FAKE, or UNVERIFIED_CLAIM."""
-        if item.get("veracity_status") and item.get("veracity_score") is not None:
-            return item
-        
-        caption = (item.get("caption") or "").lower()
-        title = (item.get("title") or "").lower()
-        orig = (item.get("origin_label") or "").lower()
-        full = f"{title} {caption} {orig}"
-
-        if any(w in full for w in ["અફવા", "બચ્ચા ચોર", "બાળ ચોરી", "પેપર લીક", "₹5000", "ફ્રી સહાય", "fake", "rumor", "hoax"]):
-            item["veracity_status"] = "SUSPECTED_FAKE"
-            item["veracity_score"] = 12
-            item["veracity_label"] = "FAKE NEWS / RUMOR (અફવા)"
-            item["fact_check_notes"] = "Flagged by Cyber Cell heuristic engine: Misinformation or scam indicator detected."
-            item["official_debunk_gu"] = "🚨 સાયબર ક્રાઇમ સેલ સત્તાવાર ખુલાસો: સોશિયલ મીડિયા પર વાયરલ થયેલ આ દાવો તદ્દન ખોટો અને ભ્રામક અફવા છે. નાગરિકોને અપીલ છે કે આવી અફવાઓ ફોરવર્ડ ન કરવી. કાયદેસર કાર્યવાહી માટે 1930 ડાયલ કરો."
-            item["official_debunk_en"] = "🚨 Gujarat Cyber Police Advisory: This viral post has been flagged as completely FALSE or a malicious scam. Do not share or download any links."
-        elif any(w in full for w in ["કથિત", "શંકાસ્પદ", "તપાસ હેઠળ", "ચકાસણી", "વાયરલ વીડિયો"]):
-            item["veracity_status"] = "UNVERIFIED_CLAIM"
-            item["veracity_score"] = 52
-            item["veracity_label"] = "UNVERIFIED CLAIM (ચકાસણી હેઠળ)"
-            item["fact_check_notes"] = "Viral social claim currently under corroboration by district cyber crime surveillance."
-            item["official_debunk_gu"] = "⚠️ સાયબર સેલ એલર્ટ: આ સોશિયલ મીડિયા દાવો હાલ પોલીસ ચકાસણી હેઠળ છે. સત્તાવાર પુષ્ટિ વગર ફોરવર્ડ ન કરવું."
-            item["official_debunk_en"] = "⚠️ Police Advisory: Social media claims regarding this incident are under active police verification. Avoid amplifying unconfirmed reports."
-        else:
-            item["veracity_status"] = "VERIFIED_REAL"
-            item["veracity_score"] = 98 if "police" in orig else 94
-            item["veracity_label"] = "VERIFIED REAL (સાચા સમાચાર)"
-            item["fact_check_notes"] = "Corroborated with official police bulletin or accredited state media reports."
-            item["official_debunk_gu"] = "✅ સત્તાવાર અહેવાલ: આ સમાચાર/પોલીસ કાર્યવાહી સત્તાવાર દસ્તાવેજો અને તપાસ દ્વારા પુષ્ટિ થયેલ છે."
-            item["official_debunk_en"] = "✅ Verified Incident: Corroborated with official Gujarat Police FIR / mainstream press dispatches."
-        
+        """Ensures every crawled news article or post is categorized as an authentic original source."""
+        item["veracity_status"] = "ORIGINAL_SOURCE"
+        item["veracity_score"] = 100
+        item["veracity_label"] = "Original Source"
         return item
 
     def get_live_stream(
