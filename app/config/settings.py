@@ -34,7 +34,7 @@ class Settings(BaseSettings):
 
     # Server Binding
     HOST: str = "127.0.0.1"
-    PORT: int = 8000
+    PORT: int = 8080
     ALLOWED_HOSTS: List[str] = ["127.0.0.1", "localhost"]
 
     # Security & Cryptography

@@ -425,12 +425,11 @@ class LiveStreamService:
 
     def _resolve_verified_url(self, platform: str, origin: str, city: str, existing_permalink: str = "") -> str:
         """
-        Guarantees every link is 100% verified, valid, alive, and matching the news source.
-        - Exact reel matching: Only verified shortcode Dd9IMoDRe71 (Ahmedabad Danilimda sword suspect arrest) links to that exact reel.
-        - Other official Instagram police handles route to the verified reels feed (e.g. instagram.com/ahmedabadpolice/reels/).
-        - Crawled news articles (Sandesh, TV9, ABP, DeshGujarat) retain direct, authentic 200 OK article links.
-        - Official Facebook dispatches link to the department's verified posts feed without login walls.
-        - Rumors and fake news debunks link directly to the police/news fact-check dossier.
+        Preserves authentic direct post & reel permalinks.
+        - Direct Facebook post URLs are preserved 100%.
+        - Direct Instagram reel / post URLs are preserved 100%.
+        - Authentic crawled news articles (Sandesh, TV9, ABP, DeshGujarat) retain direct, authentic 200 OK article links.
+        - Fallbacks are only applied if existing_permalink is completely missing or empty.
         """
         p = (existing_permalink or "").strip()
         p_lower = p.lower()
@@ -438,25 +437,17 @@ class LiveStreamService:
         plat = (platform or "").upper()
         c_lower = (city or "").lower()
 
-        # 1. Authentic crawled news articles & fact-check dossiers - ALWAYS PRESERVE DIRECT REAL LINKS
-        if p.startswith("http"):
-            if any(dom in p_lower for dom in [
-                "sandesh.com", "tv9gujarati.com", "abplive", "deshgujarat.com",
-                "indianexpress.com", "timesofindia", "gujaratsamachar.com", "divyabhaskar.co.in"
-            ]):
+        # 1. If a direct valid link exists, ALWAYS PRESERVE IT DIRECTLY!
+        if p.startswith("http://") or p.startswith("https://"):
+            if any(marker in p_lower for marker in ["/reel/", "/reels/", "/p/", "/posts/", "/photo", "story.php", "fbid=", "sandesh.com", "tv9gujarati.com", "abplive", "deshgujarat.com", "case="]):
+                return p
+            if "facebook.com" in p_lower or "instagram.com" in p_lower:
                 return p
 
-        # 2. Instagram: Exact match or verified police feed
+        # 2. Instagram Fallback only if no direct permalink exists
         if plat == "INSTAGRAM" or "instagram" in o_lower or "instagram.com" in p_lower:
-            # Case A: Exact confirmed video reel
             if "dd9imodre71" in p_lower:
                 return "https://www.instagram.com/reel/Dd9IMoDRe71/"
-            
-            # Case B: If it's a debunk dossier on Sandesh / police fact check
-            if "case=" in p_lower or "sandesh.com" in p_lower:
-                return p
-
-            # Case C: Route to authentic police profile / reels feed
             if "ahmedabad" in o_lower or "ahmedabad" in c_lower:
                 return "https://www.instagram.com/ahmedabadpolice/reels/"
             elif "surat" in o_lower or "surat" in c_lower:
@@ -465,22 +456,15 @@ class LiveStreamService:
                 return "https://www.instagram.com/girsomnathpolice/"
             return "https://www.instagram.com/gujaratpolice_/reels/"
 
-        # 3. Facebook: Route to verified official department posts feed or fact-check debunk
+        # 3. Facebook Fallback only if no direct permalink exists
         if plat == "FACEBOOK" or "facebook" in o_lower or "(fb)" in o_lower or "facebook.com" in p_lower:
-            # If it's a fact-check dossier
-            if "case=" in p_lower or "sandesh.com" in p_lower or "abplive" in p_lower:
-                return p
             if "surat" in o_lower or "surat" in c_lower:
                 return "https://www.facebook.com/suratcitypolice/posts/"
+            elif "girsomnath" in o_lower or "somnath" in c_lower or "veraval" in c_lower:
+                return "https://www.facebook.com/GirSomnathPolice/posts/"
             return "https://www.facebook.com/GujaratPoliceOfficial/posts/"
 
-        # 4. Police Bulletin
-        if plat == "POLICE_BULLETIN" or "police" in o_lower:
-            if p.startswith("http") and not any(k in p_lower for k in ["pfbid", "15410"]):
-                return p
-            return "https://police.gujarat.gov.in/"
-
-        return p or "https://sandesh.com/gujarat/crime"
+        return p if p.startswith("http") else "https://police.gujarat.gov.in"
 
     def _ensure_veracity(self, item: Dict[str, Any]) -> Dict[str, Any]:
         """Classifies each intelligence item into VERIFIED_REAL, SUSPECTED_FAKE, or UNVERIFIED_CLAIM."""

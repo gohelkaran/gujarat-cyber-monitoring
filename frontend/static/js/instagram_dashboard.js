@@ -460,7 +460,7 @@ const InstagramApp = {
 
         this.showToast("Crawling public Instagram reels and Facebook pages across Gujarat Police handles...");
         try {
-            const res = await fetch("/api/v1/harvester/crawl-public?max_profiles=10", { method: "POST" });
+            const res = await fetch("/api/v1/meta/feed?platform=INSTAGRAM?max_profiles=10", { method: "POST" });
             const json = await res.json();
             const count = json.data?.crawled_count || 0;
             const total = json.data?.total_available || 0;
@@ -485,7 +485,7 @@ const InstagramApp = {
 
     async loadScraperStatus() {
         try {
-            const res = await fetch("/api/v1/harvester/status");
+            const res = await fetch("/api/v1/meta/status");
             const json = await res.json();
             if (json && json.data) {
                 const data = json.data;
@@ -579,7 +579,7 @@ const InstagramApp = {
             if (this.filters.city && this.filters.city !== "All Gujarat") params.append("city", this.filters.city);
             if (this.filters.account) params.append("account", this.filters.account);
 
-            const res = await fetch(`/api/v1/facebook/gather?${params.toString()}`, { method: "POST" });
+            const res = await fetch(`/api/v1/meta/feed?platform=FACEBOOK?${params.toString()}`, { method: "POST" });
             const json = await res.json();
             
             // Switch view so the harvested Facebook posts are immediately visible
@@ -624,9 +624,9 @@ const InstagramApp = {
                         date_to: this.filters.dateTo || null
                     })
                 }),
-                fetch("/api/v1/facebook/gather", { method: "POST" }),
+                fetch("/api/v1/meta/feed?platform=FACEBOOK", { method: "POST" }),
                 fetch("/api/v1/crime-feeds/sync", { method: "POST" }),
-                fetch("/api/v1/harvester/crawl-public", { method: "POST" })
+                fetch("/api/v1/meta/feed?platform=INSTAGRAM", { method: "POST" })
             ]);
 
             this.showToast("All streams synchronized: Instagram, Facebook & 33 Gujarat district feeds updated.", "success");
@@ -988,7 +988,7 @@ const InstagramApp = {
                     linkBtnIcon = 'bi-play-circle-fill';
                     linkBtnClass = 'btn-danger';
                 } else if (linkStr.includes("/reels") || linkStr.endsWith("/")) {
-                    linkBtnLabel = `View Police Feed`;
+                    linkBtnLabel = `Watch Reel`;
                     linkBtnIcon = 'bi-instagram';
                     linkBtnClass = 'btn-outline-danger';
                 } else {
@@ -998,7 +998,7 @@ const InstagramApp = {
                 }
             } else if (isFacebook) {
                 platformBadge = `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono" style="font-size: 0.68rem;"><i class="bi bi-facebook me-1"></i>${t('badge.fb_post', 'FB POST')}</span>`;
-                linkBtnLabel = `View Official Page`;
+                linkBtnLabel = `View FB Post`;
                 linkBtnIcon = 'bi-facebook';
                 linkBtnClass = 'btn-outline-primary';
             } else if (isPolice) {
@@ -1754,7 +1754,7 @@ const InstagramApp = {
                         date_to: this.filters.dateTo || null
                     })
                 }),
-                fetch(`/api/v1/facebook/gather?${new URLSearchParams({
+                fetch(`/api/v1/meta/feed?platform=FACEBOOK?${new URLSearchParams({
                     keyword: this.filters.keyword || '',
                     city: this.filters.city && this.filters.city !== 'All Gujarat' ? this.filters.city : '',
                     account: this.filters.account || ''

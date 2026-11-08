@@ -83,65 +83,9 @@ PLATFORM_ACCESS_LIMITATIONS = [
 
 ]
 
+from app.integrations.meta.client import MetaQuotaTracker
+
 _last_status_cache = {"data": None, "timestamp": 0.0}
-
-
-class MetaQuotaTracker:
-    """
-    Thread-safe sliding-window rate limit and quota tracker for Meta Graph API.
-    Meta Graph API Business use case limit: 200 calls/hour per app/user.
-    Provides real-time tracking of remaining quota as live queries and background
-    scheduler jobs execute.
-    """
-    _instance: Optional["MetaQuotaTracker"] = None
-    _lock = threading.Lock()
-
-    def __init__(self, limit: int = 200, window_seconds: int = 3600):
-        self.limit = limit
-        self.window_seconds = window_seconds
-        now = time.time()
-        # Seed with 2 calls 5 minutes ago to display realistic 198/200 on fresh startup
-        self.call_timestamps: List[float] = [now - 300, now - 150]
-        self._mutex = threading.Lock()
-
-    @classmethod
-    def get_instance(cls) -> "MetaQuotaTracker":
-        with cls._lock:
-            if cls._instance is None:
-                cls._instance = MetaQuotaTracker()
-            return cls._instance
-
-    def record_call(self, count: int = 1) -> int:
-        """Records API calls made right now and returns the updated remaining quota."""
-        with self._mutex:
-            now = time.time()
-            self._purge_expired(now)
-            for _ in range(count):
-                self.call_timestamps.append(now)
-            return max(0, self.limit - len(self.call_timestamps))
-
-    def get_quota_status(self) -> Dict[str, Any]:
-        """Returns current quota telemetry: remaining, limit, used, and percentage."""
-        with self._mutex:
-            now = time.time()
-            self._purge_expired(now)
-            used = len(self.call_timestamps)
-            remaining = max(0, self.limit - used)
-            pct_available = round((remaining / self.limit) * 100, 1)
-            first_ts = self.call_timestamps[0] if self.call_timestamps else now
-            return {
-                "limit": self.limit,
-                "used": used,
-                "remaining": remaining,
-                "percentage_available": pct_available,
-                "window_seconds": self.window_seconds,
-                "reset_in_seconds": max(0, int(first_ts + self.window_seconds - now))
-            }
-
-    def _purge_expired(self, now: float) -> None:
-        cutoff = now - self.window_seconds
-        self.call_timestamps = [ts for ts in self.call_timestamps if ts > cutoff]
-
 
 class InstagramService:
 

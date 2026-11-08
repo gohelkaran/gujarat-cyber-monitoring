@@ -54,16 +54,19 @@ class GeminiAIService:
         response_json: bool = False,
         model_name: Optional[str] = None
     ) -> Dict[str, Any]:
-        """Low-level robust REST call to Gemini generateContent endpoint."""
+        """Low-level robust REST call to Gemini generateContent endpoint with automatic model fallback."""
         if not self.is_configured():
             logger.warning("Gemini API key not configured. Using local police heuristic engine.")
             return {"error": "API_KEY_NOT_CONFIGURED"}
 
-        target_model = model_name or self.model
-        url = f"{self.base_url}/{target_model}:generateContent?key={self.api_key}"
+        primary_model = model_name or self.model
+        # Robust candidate list in priority order
+        model_candidates = [primary_model]
+        for fallback in ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-pro"]:
+            if fallback not in model_candidates:
+                model_candidates.append(fallback)
 
         payload: Dict[str, Any] = {"contents": contents}
-
         if system_instruction:
             payload["systemInstruction"] = {
                 "parts": [{"text": system_instruction}]
@@ -78,32 +81,38 @@ class GeminiAIService:
         payload["generationConfig"] = generation_config
 
         if use_search_grounding:
-            # Enable Google Search Grounding for live web fact-checking
             payload["tools"] = [{"googleSearch": {}}]
 
-        try:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
-                res = await client.post(url, json=payload, headers={"Content-Type": "application/json"})
-                if res.status_code == 200:
-                    data = res.json()
-                    candidates = data.get("candidates", [])
-                    if candidates:
-                        content_parts = candidates[0].get("content", {}).get("parts", [])
-                        text = "".join(p.get("text", "") for p in content_parts)
-                        grounding_metadata = candidates[0].get("groundingMetadata", {})
-                        return {
-                            "text": text,
-                            "grounding_metadata": grounding_metadata,
-                            "finish_reason": candidates[0].get("finishReason")
-                        }
-                    return {"text": "", "error": "No candidates returned."}
-                else:
-                    err_msg = res.text
-                    logger.error(f"Gemini API returned status {res.status_code}: {err_msg}")
-                    return {"error": f"HTTP {res.status_code}: {err_msg}"}
-        except Exception as e:
-            logger.error(f"Gemini API request failed: {e}")
-            return {"error": str(e)}
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            for candidate in model_candidates:
+                url = f"{self.base_url}/{candidate}:generateContent?key={self.api_key}"
+                try:
+                    res = await client.post(url, json=payload, headers={"Content-Type": "application/json"})
+                    if res.status_code == 200:
+                        data = res.json()
+                        candidates = data.get("candidates", [])
+                        if candidates:
+                            content_parts = candidates[0].get("content", {}).get("parts", [])
+                            text = "".join(p.get("text", "") for p in content_parts)
+                            grounding_metadata = candidates[0].get("groundingMetadata", {})
+                            return {
+                                "text": text,
+                                "grounding_metadata": grounding_metadata,
+                                "finish_reason": candidates[0].get("finishReason"),
+                                "model_used": candidate
+                            }
+                        return {"text": "", "error": "No candidates returned."}
+                    elif res.status_code in [404, 400] and "models/" in res.text:
+                        logger.warning(f"Model {candidate} not available ({res.status_code}). Trying next fallback candidate...")
+                        continue
+                    else:
+                        logger.error(f"Gemini API returned status {res.status_code}: {res.text[:200]}")
+                        return {"error": f"HTTP {res.status_code}: {res.text[:200]}"}
+                except Exception as e:
+                    logger.error(f"Gemini API request failed for {candidate}: {e}")
+                    continue
+
+        return {"error": "All Gemini model candidates failed or timed out."}
 
     async def analyze_social_post(
         self,

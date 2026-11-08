@@ -37,9 +37,10 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application startup and graceful shutdown lifecycle."""
+    current_settings = get_settings()
     logger.info(
-        f"Starting {settings.APP_NAME} [Environment: {settings.APP_ENV}]",
-        extra={"version": settings.APP_VERSION, "timezone": settings.DEFAULT_TIMEZONE}
+        f"Starting {current_settings.APP_NAME} [Environment: {current_settings.APP_ENV}]",
+        extra={"version": current_settings.APP_VERSION, "timezone": current_settings.DEFAULT_TIMEZONE}
     )
 
     # Automatically create tables for prototype development
@@ -52,7 +53,7 @@ async def lifespan(app: FastAPI):
 
     # Start Automated Background Ingestion Scheduler for Gir Somnath & Gujarat
     scheduler = None
-    if settings.APP_ENV not in ["testing", "test"]:
+    if current_settings.APP_ENV not in ["testing", "test"]:
         from app.services.scheduler_service import BackgroundSchedulerService
         scheduler = BackgroundSchedulerService.get_instance()
         await scheduler.start()
