@@ -425,44 +425,15 @@ class LiveStreamService:
 
     def _resolve_verified_url(self, platform: str, origin: str, city: str, existing_permalink: str = "") -> str:
         """
-        Guarantees 100% DIRECT POST AND REEL LINKS (never generic profile/account links).
-        - Direct Facebook post URLs (facebook.com/.../posts/...) are strictly preserved.
-        - Direct Instagram reel URLs (instagram.com/reel/...) are strictly preserved.
-        - News articles (TV9, Sandesh, DeshGujarat) retain direct, authentic 200 OK article links.
-        - Fallbacks are always specific, verified direct reel or post URLs.
+        Preserves authentic direct links without fabricating non-existent post IDs.
+        - If an item already has a direct URL (from live RSS, live Graph API, or verified DB item), keep it 100%!
+        - Never invent fake Facebook post numbers like /posts/122109876543210 (which fail with 404/not available).
+        - Never force unrelated news to open the Danilimda sword reel.
         """
         p = (existing_permalink or "").strip()
-        p_lower = p.lower()
-        o_lower = (origin or "").lower()
-        plat = (platform or "").upper()
-        c_lower = (city or "").lower()
-
-        # 1. If an existing direct link to a reel, post, or article exists, preserve it!
         if p.startswith("http://") or p.startswith("https://"):
-            if any(marker in p_lower for marker in ["/reel/", "/p/", "/posts/", "/photo", "story.php", "fbid="]):
-                return p
-            if any(dom in p_lower for dom in ["tv9gujarati.com", "deshgujarat.com", "sandesh.com", "abplive"]):
-                return p
-
-        # 2. Instagram: Always return a DIRECT REEL LINK (never an account link!)
-        if plat == "INSTAGRAM" or "instagram" in o_lower or "instagram.com" in p_lower:
-            if "dd9imodre71" in p_lower or "ahmedabad" in o_lower or "ahmedabad" in c_lower:
-                return "https://www.instagram.com/reel/Dd9IMoDRe71/"
-            elif "surat" in o_lower or "surat" in c_lower:
-                return "https://www.instagram.com/reel/De4bD6tyl-M/"
-            elif "girsomnath" in o_lower or "somnath" in c_lower or "veraval" in c_lower:
-                return "https://www.instagram.com/reel/DWEd5U2CLsG/"
-            return "https://www.instagram.com/reel/DW1bDOKk7V0/"
-
-        # 3. Facebook: Always return a DIRECT POST LINK (never an account link!)
-        if plat == "FACEBOOK" or "facebook" in o_lower or "(fb)" in o_lower or "facebook.com" in p_lower:
-            if "surat" in o_lower or "surat" in c_lower:
-                return "https://www.facebook.com/suratcitypolice/posts/1054321987654321"
-            elif "girsomnath" in o_lower or "somnath" in c_lower or "veraval" in c_lower:
-                return "https://www.facebook.com/GirSomnathPolice/posts/987654321098765"
-            return "https://www.facebook.com/GujaratPoliceOfficial/posts/122109876543210"
-
-        return p if p.startswith("http") else "https://police.gujarat.gov.in"
+            return p
+        return "https://police.gujarat.gov.in"
 
     def _ensure_veracity(self, item: Dict[str, Any]) -> Dict[str, Any]:
         """Ensures every crawled news article or post is categorized as an authentic original source."""
