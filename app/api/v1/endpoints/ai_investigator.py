@@ -140,3 +140,21 @@ async def generate_police_debunk(
         message="Official police debunk notice generated."
     )
 
+
+@router.get("/viral-news", response_model=ApiResponse[List[Dict[str, Any]]])
+async def get_viral_news_feed(
+    district: Optional[str] = Query("All Gujarat", description="District jurisdiction filter"),
+    current_user: Optional[User] = Depends(get_current_active_user_optional)
+):
+    """
+    Returns real-time AI-discovered viral Gujarat news, trending reels, and breaking public reports.
+    Every item links directly to its authentic original source URL.
+    """
+    svc = get_gemini_service()
+    items = await svc.fetch_viral_gujarat_news(district=district or "All Gujarat")
+    return ApiResponse.success_response(
+        data=items,
+        message=f"Retrieved {len(items)} AI viral news items for {district or 'All Gujarat'}."
+    )
+
+

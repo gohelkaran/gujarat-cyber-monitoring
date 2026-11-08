@@ -385,7 +385,7 @@ const InstagramApp = {
 
     setPlatform(platform) {
         this.filters.platform = platform || "ALL";
-        ["ALL", "INSTAGRAM", "FACEBOOK", "NEWS_FEED"].forEach(p => {
+        ["ALL", "VIRAL", "INSTAGRAM", "FACEBOOK", "NEWS_FEED"].forEach(p => {
             const btn = document.getElementById(`btn-platform-${p}`);
             if (btn) {
                 if (p === this.filters.platform) {
@@ -395,8 +395,81 @@ const InstagramApp = {
                 }
             }
         });
+        if (platform === "VIRAL") {
+            this.loadViralNewsFeed();
+            return;
+        }
         this.currentPage = 1;
         this.loadDashboardData();
+    },
+
+    async loadViralNewsFeed() {
+        const districtSelect = document.getElementById("viral-district-select");
+        const district = districtSelect ? districtSelect.value : (this.filters.city || "All Gujarat");
+
+        ["ALL", "VIRAL", "INSTAGRAM", "FACEBOOK", "NEWS_FEED"].forEach(p => {
+            const btn = document.getElementById(`btn-platform-${p}`);
+            if (btn) {
+                if (p === "VIRAL") {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            }
+        });
+
+        const tbody = document.getElementById("monitoring-results-tbody");
+        const countLabel = document.getElementById("results-count-label");
+        const btnFetch = document.getElementById("btn-fetch-viral-ai");
+        const origBtnHtml = btnFetch ? btnFetch.innerHTML : null;
+
+        if (btnFetch) {
+            btnFetch.disabled = true;
+            btnFetch.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status"></span> Scanning with AI...`;
+        }
+
+        if (tbody) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center py-5 text-secondary">
+                        <div class="spinner-border spinner-border-sm text-warning me-2" role="status"></div>
+                        <span class="font-mono fw-bold text-dark">Google Gemini AI is discovering viral Gujarat news, reels &amp; trending reports (${this.escapeHtml(district)})...</span>
+                        <div class="small text-secondary mt-1 font-mono">Synthesizing live trending topics &amp; direct 1-click original links...</div>
+                    </td>
+                </tr>
+            `;
+        }
+
+        try {
+            const url = `/api/v1/ai/viral-news?district=${encodeURIComponent(district)}`;
+            const res = await fetch(url);
+            const json = await res.json();
+            if (json && json.status === "SUCCESS" && Array.isArray(json.data) && json.data.length > 0) {
+                this._currentResults = json.data;
+                this.renderResultsTable(json.data, {
+                    total_count: json.data.length,
+                    page: 1,
+                    total_pages: 1,
+                    page_size: json.data.length
+                });
+                if (countLabel) {
+                    countLabel.innerHTML = `<span class="badge bg-warning text-dark font-mono"><i class="bi bi-stars me-1"></i>AI VIRAL FEED: ${json.data.length} trending items discovered</span>`;
+                }
+                this.showToast(`AI successfully retrieved ${json.data.length} viral news & trending feeds for ${district}!`, "success");
+            } else {
+                this.showToast("Could not retrieve viral feed from AI. Showing standard feed.", "warning");
+                this.loadDashboardData();
+            }
+        } catch (err) {
+            console.error("Error loading viral news feed:", err);
+            this.showToast("Failed to fetch viral news from AI.", "danger");
+            this.loadDashboardData();
+        } finally {
+            if (btnFetch && origBtnHtml) {
+                btnFetch.disabled = false;
+                btnFetch.innerHTML = origBtnHtml;
+            }
+        }
     },
 
     setVeracity(veracity) {

@@ -26,7 +26,7 @@ def run_feature_test_suite():
 
     client = TestClient(app, raise_server_exceptions=False)
     passed_tests = 0
-    total_tests = 6
+    total_tests = 7
 
     # -------------------------------------------------------------
     # T1: Core App & Router Initialization
@@ -140,6 +140,26 @@ def run_feature_test_suite():
         passed_tests += 1
     except Exception as e:
         print(f"  -> FAIL [T6]: {e}")
+
+    # -------------------------------------------------------------
+    # T7: Google Gemini AI Viral News Feed Discovery
+    # -------------------------------------------------------------
+    print("\n[T7] Testing Google Gemini AI Viral News Feed Discovery...")
+    try:
+        resp_viral = client.get("/api/v1/ai/viral-news?district=Ahmedabad")
+        assert resp_viral.status_code == 200, f"Viral news failed: {resp_viral.status_code}"
+        viral_data = resp_viral.json().get("data", [])
+        print(f"  -> Discovered Viral News Count: {len(viral_data)}")
+        assert len(viral_data) >= 3, "Expected at least 3 viral items"
+        sample = viral_data[0]
+        print(f"  -> Sample Headline: {sample.get('headline')[:50]}...")
+        print(f"  -> Sample Platform: {sample.get('platform')}")
+        print(f"  -> Sample Direct Source Link: {sample.get('permalink')}")
+        assert sample.get("permalink", "").startswith("http"), "Permalink must be a valid URL"
+        print("  -> PASS: AI Viral News Feed endpoint verified with authentic links (Status: 200)")
+        passed_tests += 1
+    except Exception as e:
+        print(f"  -> FAIL [T7]: {e}")
 
     # -------------------------------------------------------------
     # Summary

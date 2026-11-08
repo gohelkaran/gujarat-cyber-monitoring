@@ -407,55 +407,46 @@
         </div>
 
         <!-- ========================================================================= -->
-        <!-- LIVE SOCIAL MEDIA POST & FAKE NEWS INVESTIGATOR                           -->
+        <!-- AI VIRAL NEWS & TRENDING INTELLIGENCE FEED (POWERED BY GOOGLE GEMINI)     -->
         <!-- ========================================================================= -->
-        <div class="card mb-3 border-primary shadow-sm" style="background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);">
-            <div class="card-header bg-primary text-white py-2 d-flex flex-wrap justify-content-between align-items-center gap-2">
-                <span class="fw-bold font-mono small d-flex align-items-center">
-                    <i class="bi bi-shield-check fs-5 me-2 text-warning"></i>
-                    <span>⚡ LIVE SOCIAL MEDIA POST &amp; FAKE NEWS INVESTIGATOR</span>
+        <div class="card mb-3 border-warning shadow-sm" style="background: linear-gradient(135deg, #fffcf0 0%, #ffffff 100%);">
+            <div class="card-header bg-warning bg-opacity-25 py-2 d-flex flex-wrap justify-content-between align-items-center gap-2 border-warning border-opacity-50">
+                <span class="fw-bold font-mono small d-flex align-items-center text-dark">
+                    <i class="bi bi-stars fs-5 me-2 text-warning-emphasis"></i>
+                    <span>⚡ AI VIRAL NEWS &amp; TRENDING SOCIAL FEED</span>
                 </span>
-                <span class="badge bg-white text-primary font-mono fw-bold">
-                    <i class="bi bi-instagram me-1"></i>Reels &bull; <i class="bi bi-facebook me-1"></i>FB Posts &bull; <i class="bi bi-chat-quote-fill me-1"></i>Viral Rumors
+                <span class="badge bg-warning text-dark font-mono fw-bold">
+                    <i class="bi bi-robot me-1"></i>Google Gemini AI &bull; Direct Original Links
                 </span>
             </div>
             <div class="card-body p-3">
-                <p class="text-secondary small mb-2 font-mono">
-                    Paste any Instagram Reel URL, Facebook Post link, or circulating WhatsApp/social claim. The AI Veracity Engine checks authenticity against official police records, calculates truth probability, extracts threat indicators, and generates a ready-to-publish Gujarat Police Debunk Counter-Advisory.
-                </p>
                 <div class="row g-2 align-items-center">
                     <div class="col-lg-7 col-md-12">
-                        <div class="input-group">
-                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-link-45deg text-primary fs-5"></i></span>
-                            <input type="text" id="investigate-url-input" class="form-control border-start-0 font-mono" 
-                                   placeholder="Paste Instagram Reel URL, Facebook Post link, or viral rumor text...">
-                            <button class="btn btn-outline-secondary font-mono small" type="button" 
-                                    onclick="document.getElementById('investigate-url-input').value='https://www.instagram.com/reel/Dd9IMoDRe71/'" 
-                                    title="Load Ahmedabad Police Danilimda Sword Arrest Reel">
-                                Danilimda Sample
-                            </button>
+                        <div class="fw-semibold text-dark font-sans" style="font-size: 0.95rem;">
+                            Live AI Detection of Viral Gujarat Social Media &amp; News Bulletins
                         </div>
+                        <p class="text-secondary small mb-0 font-mono mt-1">
+                            Discovers trending Gujarat crime reports, viral reels, public alerts, and breaking news. In 1-click, open the authentic original publisher article or video with zero fake scores.
+                        </p>
                     </div>
                     <div class="col-lg-3 col-md-6">
-                        <select id="investigate-district" class="form-select font-mono form-select-sm">
+                        <select id="viral-district-select" class="form-select font-mono form-select-sm">
                             <option value="All Gujarat">District: All Gujarat Statewide</option>
-                            <option value="Gir Somnath">Gir Somnath / Veraval</option>
                             <option value="Ahmedabad">Ahmedabad</option>
                             <option value="Surat">Surat</option>
                             <option value="Rajkot">Rajkot</option>
-                            <option value="Bhavnagar">Bhavnagar</option>
                             <option value="Vadodara">Vadodara</option>
+                            <option value="Gir Somnath">Gir Somnath / Veraval</option>
+                            <option value="Bhavnagar">Bhavnagar</option>
+                            <option value="Jamnagar">Jamnagar</option>
                         </select>
                     </div>
                     <div class="col-lg-2 col-md-6 d-grid">
-                        <button type="button" class="btn btn-primary font-mono fw-bold shadow-sm" id="btn-run-investigate" onclick="InstagramApp.runPostInvestigation()">
-                            <i class="bi bi-search me-1"></i> Verify Post
+                        <button type="button" class="btn btn-warning font-mono fw-bold shadow-sm" id="btn-fetch-viral-ai" onclick="InstagramApp.loadViralNewsFeed()">
+                            <i class="bi bi-stars me-1"></i> Fetch Viral (AI)
                         </button>
                     </div>
                 </div>
-
-                <!-- Dynamic Live Investigation Findings Card -->
-                <div id="investigate-result-container" class="mt-3 d-none"></div>
             </div>
         </div>
 
@@ -468,6 +459,9 @@
                     <div class="btn-group" role="group" aria-label="Platform Filter">
                         <button type="button" class="btn btn-sm btn-outline-primary active font-mono" id="btn-platform-ALL" onclick="InstagramApp.setPlatform('ALL')">
                             ALL STREAMS
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-warning font-mono fw-bold" id="btn-platform-VIRAL" onclick="InstagramApp.loadViralNewsFeed()">
+                            <i class="bi bi-stars text-warning me-1"></i> VIRAL NEWS (AI)
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-primary font-mono" id="btn-platform-NEWS_FEED" onclick="InstagramApp.setPlatform('NEWS_FEED')">
                             <i class="bi bi-newspaper me-1"></i> GUJARAT NEWS
