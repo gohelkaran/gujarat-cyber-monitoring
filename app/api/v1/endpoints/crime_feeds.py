@@ -71,3 +71,24 @@ def list_crime_feed_sources():
         message="Monitored news and police sources retrieved."
     )
 
+
+@router.get("/gir-somnath/watchlist", response_model=ApiResponse[list])
+def get_gir_somnath_watchlist():
+    """
+    Returns curated local social media handles, Facebook pages, and news desks
+    monitored specifically for Gir Somnath District and surrounding villages.
+    """
+    from pathlib import Path
+    import json
+    watchlist_path = Path(__file__).resolve().parents[3] / "data" / "gir_somnath_watchlist.json"
+    if watchlist_path.exists():
+        with open(watchlist_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    else:
+        data = []
+    return ApiResponse.success_response(
+        data=data,
+        message=f"Retrieved {len(data)} monitored Gir Somnath local sources."
+    )
+
+

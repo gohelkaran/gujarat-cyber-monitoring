@@ -43,7 +43,7 @@ class GeminiAIService:
         else:
             self.model = raw_model
         self.base_url = "https://generativelanguage.googleapis.com/v1beta/models"
-        self.timeout = 25.0
+        self.timeout = 12.0
 
     def is_configured(self) -> bool:
         """Checks if a valid Gemini API key is configured."""
@@ -63,9 +63,9 @@ class GeminiAIService:
             return {"error": "API_KEY_NOT_CONFIGURED"}
 
         primary_model = model_name or self.model
-        # Robust candidate list in priority order (using modern active Gemini 3.5/3.8 releases)
+        # Robust candidate list in priority order (fast & responsive candidates first)
         model_candidates = [primary_model]
-        for fallback in ["gemini-3.5-flash", "gemini-3.8-flash", "gemini-3.5-flash-lite", "gemini-flash-latest"]:
+        for fallback in ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-3.8-flash", "gemini-flash-latest"]:
             if fallback not in model_candidates:
                 model_candidates.append(fallback)
 

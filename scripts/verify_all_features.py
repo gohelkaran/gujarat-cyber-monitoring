@@ -26,7 +26,7 @@ def run_feature_test_suite():
 
     client = TestClient(app, raise_server_exceptions=False)
     passed_tests = 0
-    total_tests = 7
+    total_tests = 8
 
     # -------------------------------------------------------------
     # T1: Core App & Router Initialization
@@ -160,6 +160,38 @@ def run_feature_test_suite():
         passed_tests += 1
     except Exception as e:
         print(f"  -> FAIL [T7]: {e}")
+
+    # -------------------------------------------------------------
+    # T8: Gir Somnath Village Geolocation & Watchlist Desk
+    # -------------------------------------------------------------
+    print("\n[T8] Testing Gir Somnath Village Geolocation & Watchlist Desk...")
+    try:
+        from app.data.gir_somnath_geo import detect_gir_somnath_geo
+        geo1 = detect_gir_somnath_geo("ઉના તાલુકાના દેલવાડા ગામે મોટી છેતરપિંડીની ફરિયાદ")
+        assert geo1 is not None, "Failed to detect Delwada village"
+        assert geo1["taluka"] == "Una" and "Una" in geo1["police_station"]
+        print(f"  -> Village Detection: 'દેલવાડા' -> {geo1['display_badge']} | PS: {geo1['police_station']}")
+
+        geo2 = detect_gir_somnath_geo("Veraval Port marine police boat patrol operation")
+        assert geo2 is not None and geo2["taluka"] == "Veraval"
+        print(f"  -> Port Detection: 'Veraval Port' -> {geo2['display_badge']} | PS: {geo2['police_station']}")
+
+        resp_wl = client.get("/api/v1/crime-feeds/gir-somnath/watchlist")
+        assert resp_wl.status_code == 200, f"Watchlist failed: {resp_wl.status_code}"
+        wl_data = resp_wl.json().get("data", [])
+        print(f"  -> Monitored Gir Somnath Handles/Pages: {len(wl_data)}")
+        assert len(wl_data) >= 5, "Expected at least 5 Gir Somnath sources in watchlist"
+
+        resp_gs_viral = client.get("/api/v1/ai/viral-news?district=Gir+Somnath")
+        assert resp_gs_viral.status_code == 200
+        gs_viral_items = resp_gs_viral.json().get("data", [])
+        print(f"  -> Gir Somnath Viral Feed Items: {len(gs_viral_items)}")
+        assert len(gs_viral_items) >= 3, "Expected at least 3 Gir Somnath viral items"
+
+        print("  -> PASS: Gir Somnath village geocoding and local watchlist desk verified (Status: 200)")
+        passed_tests += 1
+    except Exception as e:
+        print(f"  -> FAIL [T8]: {e}")
 
     # -------------------------------------------------------------
     # Summary

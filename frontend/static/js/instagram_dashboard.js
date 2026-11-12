@@ -1088,8 +1088,8 @@ const InstagramApp = {
                         </div>
                         <div class="d-flex flex-wrap align-items-center gap-1 mt-1">
                             ${platformBadge}
-                            ${row.city ? (row.city.includes("Gir Somnath") 
-                                ? `<span class="badge bg-primary-subtle text-primary border border-primary-subtle font-mono fw-bold" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill me-1"></i>${this.escapeHtml(row.city)}</span>` 
+                            ${row.city ? (row.city.includes("Gir Somnath") || row.city.includes("Veraval") || row.city.includes("Somnath") || row.city.includes("Una") || row.city.includes("Kodinar") || row.city.includes("Talala") || row.city.includes("Sutrapada")
+                                ? `<span class="badge bg-warning-subtle text-dark border border-warning font-mono fw-bold shadow-sm" style="font-size: 0.68rem;"><i class="bi bi-geo-alt-fill text-danger me-1"></i>${this.escapeHtml(row.city)}</span>` 
                                 : `<span class="badge bg-light text-secondary border font-mono" style="font-size: 0.66rem;"><i class="bi bi-geo-alt me-1"></i>${this.escapeHtml(row.city)}</span>`) : ''}
                         </div>
                     </td>

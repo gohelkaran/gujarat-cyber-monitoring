@@ -1,0 +1,110 @@
+[
+  {
+    "id": "watch_gs_police_fb",
+    "handle": "girsomnathpolice",
+    "name": "Gir Somnath District Police (Official FB)",
+    "platform": "FACEBOOK",
+    "category": "Official Law Enforcement",
+    "taluka": "Veraval",
+    "profile_url": "https://www.facebook.com/girsomnathpolice/",
+    "is_official": true,
+    "monitoring_priority": "CRITICAL",
+    "description": "Official Facebook handle of Gir Somnath District Police. Dispatches FIR press notes, arrest announcements, traffic advisories, and cyber warnings."
+  },
+  {
+    "id": "watch_gs_police_ig",
+    "handle": "girsomnathpolice",
+    "name": "Gir Somnath District Police (Official Insta)",
+    "platform": "INSTAGRAM",
+    "category": "Official Law Enforcement",
+    "taluka": "Veraval",
+    "profile_url": "https://www.instagram.com/girsomnathpolice/",
+    "is_official": true,
+    "monitoring_priority": "CRITICAL",
+    "description": "Official Instagram reel and post handle for Gir Somnath Police public advisories and operation reels."
+  },
+  {
+    "id": "watch_gs_cyber_cell",
+    "handle": "cybercellgirsomnath",
+    "name": "Gir Somnath Cyber Crime Cell",
+    "platform": "FACEBOOK",
+    "category": "Cyber Crime & Advisory",
+    "taluka": "Veraval",
+    "profile_url": "https://www.facebook.com/girsomnathpolice/",
+    "is_official": true,
+    "monitoring_priority": "CRITICAL",
+    "description": "Monitors digital arrest scams, fake investment apps, and fraudulent Somnath Trust VIP booking portals."
+  },
+  {
+    "id": "watch_gs_somnath_trust",
+    "handle": "shreesomnathtrust",
+    "name": "Shree Somnath Trust Public Announcements",
+    "platform": "NEWS_FEED",
+    "category": "Pilgrimage Administration",
+    "taluka": "Somnath",
+    "profile_url": "https://girsomnath.gujarat.gov.in",
+    "is_official": true,
+    "monitoring_priority": "HIGH",
+    "description": "Official trust notices, pilgrim crowd management, VIP darshan protocols, and security advisories."
+  },
+  {
+    "id": "watch_gs_sandesh_desk",
+    "handle": "sandesh_girsomnath",
+    "name": "Sandesh News (Gir Somnath & Saurashtra Desk)",
+    "platform": "NEWS_FEED",
+    "category": "Accredited Media",
+    "taluka": "Veraval",
+    "profile_url": "https://sandesh.com/gujarat/saurashtra/gir-somnath",
+    "is_official": false,
+    "monitoring_priority": "HIGH",
+    "description": "Accredited Gujarati daily tracking crime, court hearings, police raids, and village-level complaints."
+  },
+  {
+    "id": "watch_gs_bhaskar_veraval",
+    "handle": "bhaskar_veraval",
+    "name": "Divya Bhaskar (Veraval & Somnath Desk)",
+    "platform": "NEWS_FEED",
+    "category": "Accredited Media",
+    "taluka": "Veraval",
+    "profile_url": "https://www.divyabhaskar.co.in/gujarat/veraval/",
+    "is_official": false,
+    "monitoring_priority": "HIGH",
+    "description": "Daily ground coverage of Veraval Port, fishermen issues, municipal grievances, and local court reporting."
+  },
+  {
+    "id": "watch_gs_una_desk",
+    "handle": "una_news_bulletin",
+    "name": "Una & Delwada Police News Desk",
+    "platform": "NEWS_FEED",
+    "category": "Local Media",
+    "taluka": "Una",
+    "profile_url": "https://sandesh.com/gujarat/maru-saher-maru-gaam/news/crime/gir-somnath/gir-somnath-una-nidhi-credit-cooperative-investment-fraud-delwada",
+    "is_official": false,
+    "monitoring_priority": "HIGH",
+    "description": "Covers Una town, Delwada, Nava Bandar fishermen issues, and interstate Diu border checkpost monitoring."
+  },
+  {
+    "id": "watch_gs_talala_lion_news",
+    "handle": "talala_gir_reporter",
+    "name": "Talala Gir & Sasan Forest Watch Desk",
+    "platform": "INSTAGRAM",
+    "category": "Wildlife & Forest Surveillance",
+    "taluka": "Talala",
+    "profile_url": "https://sandesh.com/gujarat/saurashtra/gir-somnath",
+    "is_official": false,
+    "monitoring_priority": "HIGH",
+    "description": "Surveillance desk for illegal lion safari reels, wildlife harassment complaints, and forest fringe law & order."
+  },
+  {
+    "id": "watch_gs_kodinar_coastal",
+    "handle": "kodinar_coastal_pulse",
+    "name": "Kodinar & Ghatwad Checkpost Desk",
+    "platform": "NEWS_FEED",
+    "category": "Local Media",
+    "taluka": "Kodinar",
+    "profile_url": "https://sandesh.com/gujarat/saurashtra/gir-somnath",
+    "is_official": false,
+    "monitoring_priority": "MEDIUM",
+    "description": "Industrial corridor monitoring, Ghatwad checkpost prohibition seizures, and Mul Dwarka maritime news."
+  }
+]

@@ -26,6 +26,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from app.core.logging_config import get_logger
+from app.data.gir_somnath_geo import detect_gir_somnath_geo
 
 logger = get_logger("live_stream_service")
 
@@ -811,6 +812,11 @@ class LiveStreamService:
         if not title:
             return "All Gujarat"
         title_lower = title.lower()
+
+        # Priority 0: Deep Gir Somnath Village & Landing Point Geolocation
+        gs_geo = detect_gir_somnath_geo(f"{title} {desc}")
+        if gs_geo:
+            return gs_geo["display_badge"]
 
         # Priority 1: Check Gir Somnath Talukas in Title (Headline is authoritative)
         for taluka_key, (label, terms) in GIR_SOMNATH_TALUKAS.items():
